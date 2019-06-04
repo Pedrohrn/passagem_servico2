@@ -1,0 +1,7 @@
+angular.module('scApp').lazy
+.factory 'Templates', ->
+	obj =
+		passagem_servicos:
+			show: "<%= asset_path('passagem_servicos/show.html') %>"
+
+	obj

@@ -1,0 +1,37 @@
+#top-bar-content {
+	padding: .6em .8em;
+	height: 52px;
+}
+
+#top-bar {
+	z-index: 97;
+	position: relative;
+}
+
+#top-bar-filter {
+	position: relative;
+	margin: 0 -0.8em;
+	top: .6em;
+	left: 0;
+	right: 0;
+	background-color: #ECECEE;
+	box-shadow: 0 0.8em 1.6em rgba(0,0,0,0.35);
+}
+
+#breadcrumb {
+	color: #7d858c;
+  font-size: 0.8em;
+  padding: 0 1em .6em;
+  background-color: #f3f3f4;
+  border-bottom: 1px solid #D7D9DB;
+}
+
+.sc-p-none-xs {
+	padding: 0 !important;
+}
+
+@media (max-width: 479px) {
+	body .sc-text-sm-xs {
+		font-size: 0.8em;
+	}
+}

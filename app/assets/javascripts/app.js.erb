@@ -1,0 +1,94 @@
+// templates
+app = angular.module('scApp', ['ngRoute', 'ngResource', 'sc.commons.directives.modal', 'sc.commons.directives.scStopClick', 'sc.commons.factories.toggle', 'sc.commons.service.scAlert', 'sc.commons.scTopMessages', 'sc.commons.filters.nl2br' ])
+
+.config(function($routeProvider, $locationProvider, $controllerProvider, $compileProvider, $filterProvider, $provide){
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false,
+  });
+
+  function carregarCssJs(obj) {
+   	return {
+	   	load: [ '$q', '$rootScope', function($q, $rootScope) {
+        var head = document.getElementsByTagName('head')[0];
+        var deferred = $q.defer()
+
+        createElementsBy = function(moduleList, tagName, moduleType, fun){
+          if (!moduleList || moduleList.length == 0){ return }
+
+          $('head '+tagName+'[id="'+moduleType+'"]').remove();//remove dentro do head o que tiver com link/script (tagname) e id="moduleType"(css ou js)
+          moduleList.forEach(function(path){
+            var el = document.createElement(tagName);
+
+            el.id = moduleType; //js/css
+
+            switch(tagName){
+              case 'link':
+                el.rel = "stylesheet";
+                el.href = path; //css/produto.css
+              case 'script':
+                el.src = path; // /js/produto.js
+            }
+
+            head.insertBefore(el, head.lastChild);
+          });
+        };
+
+        if (obj.js && obj.js.length > 0)   { createElementsBy(obj.js,  'script',  'js'); }
+        if (obj.css && obj.css.length > 0) { createElementsBy(obj.css,   'link', 'css'); }
+
+
+        setTimeout(() => {
+          $rootScope.$apply(function(){ deferred.resolve(); })
+        }, 500)
+
+        return deferred.promise;
+	   	}]
+   	}
+  }
+
+  objDefault = {
+    templateUrl: "<%= asset_path('passagem_servicos/index.html') %>",
+    resolve : carregarCssJs({
+      js: [
+        "<%= asset_path('templates.js') %>", // Não, Jamais, nunca tire do primeiro item!!!
+        "<%= asset_path('passagem_servicos/resources/passagem_servico.js') %>",
+/*        "<%= asset_path('perfis/resources/perfil.js') %>",
+        "<%= asset_path('categorias/resources/categoria.js') %>",
+        "<%= asset_path('passagem_servicos/controllers/index.js') %>",
+        "<%= asset_path('passagem_servicos/controllers/form.js') %>",*/
+      ],
+    })
+  }
+
+  $routeProvider
+  .when('/', objDefault)
+  .otherwise(objDefault);
+
+  app.lazy = {
+    controller: $controllerProvider.register,
+    directive: $compileProvider.register,
+    filter: $filterProvider.register,
+    factory: $provide.factory,
+    service: $provide.service
+  };
+})
+
+.run(function($rootScope, scAlert, scTopMessages) {
+  $rootScope.scAlert = scAlert
+  $rootScope.scTopMessages = scTopMessages
+
+	window.onresize = function(){
+    screenWidth = window.innerWidth
+
+    $rootScope.$apply(function(){
+      $rootScope.screen = {
+        isXs: screenWidth < 479,
+        isSm: screenWidth > 479 && screenWidth <= 768,
+        isMd: screenWidth > 768 && screenWidth <= 1024,
+        isLg: screenWidth > 1024,
+      }
+    })
+  };
+  window.onresize() // iniciando 'screen'
+});

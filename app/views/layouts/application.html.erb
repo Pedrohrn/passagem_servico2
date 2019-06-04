@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="scApp">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title> Passagem de serviço </title>
+
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body >
+
+    <div ng-view=""></div>
+
+    <div id="diretivas">
+      <!-- scAlert -->
+      <div ng-cloak class="sc-alert ng-cloak" ng-show="scAlert.toggler.opened" ng-class="{'active': scAlert.toggler.opened, 'sc-alert-danger': scAlert.danger, 'sc-alert-warning': scAlert.warning}">
+        <div class="sc-alert-box sc-box-shadow-z3">
+          <div class="sc-alert-close"><i ng-click="scAlert.close()" class="sc-badge-hover-red sc-icon-fechar-1 sc-cursor-pointer"></i></div>
+          <h2 class="sc-alert-title" ng-bind-html="scAlert.title | nl2br"></h2>
+          <div class="sc-alert-messages align-{{scAlert.messagesAlign}}" ng-show="scAlert.messages.length">
+            <p ng-repeat="msg in scAlert.messages track by $index" ng-bind-html-unsafe="msg | nl2br">{{msg.msg}}</p>
+          </div>
+          <div class="sc-alert-inputs" ng-class="{'sc-p-t-xl sc-p-b-sm': scAlert.inputs.length}">
+            <div ng-repeat="input in scAlert.inputs track by $index" style="display: inline">
+              <label>
+                <div class="sc-label">{{input.label}}</div>
+                <input ng-if="input.type != 'date'" ng-required="input.required" type="{{input.type || 'text'}}" ng-model="input.value" class="sc-input-default">
+                <input ng-if="input.type == 'date'" ng-required="input.required" sc-date-input ng-model="input.value" class="sc-input-default">
+              </label>
+            </div>
+          </div>
+          <div class="sc-alert-buttons">
+            <div ng-repeat="btn in scAlert.buttons" style="display: inline">
+              <button ng-if="!(btn.url || btn.href)"
+                sc-tooltip="{{btn.tooltip}}"
+                type="button"
+                class="sc-btn sc-btn-{{btn.color}} sc-btn-block-only-xs sc-alert-button-focus sc-tooltip-lg"
+                ng-click="scAlert.btnAction(btn)">{{btn.label || commonsLocale.labels.ok}}</button>
+
+              <a ng-if="btn.url || btn.href"
+                ng-click="scAlert.btnAction(btn)"
+                tabindex="0"
+                class="sc-btn sc-btn-{{btn.color}} sc-btn-block-only-xs sc-alert-button-focus"
+                ng-href="{{btn.url || btn.href}}"
+                ng-attr-target="{{btn.target}}">{{btn.label}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- scTopMessages -->
+      <div class="sc-top-messages ng-cloak ng-animation-slider" ng-class="scTopMessages.theme" ng-click="scTopMessages.close()" ng-cloak="" ng-if="scTopMessages.toggler.opened"><div class="sc-text-white align-center sc-text-shadow-dark flex align-items-center"><div class="sc-top-messages-msgs sc-cursor-default"><p ng-repeat="msg in scTopMessages.messages track by $index">{{msg}}</p></div><div class="sc-top-messages-close-button"><i class="sc-icon-fechar-1 sc-cursor-pointer"></i></div></div></div>
+    </div>
+  </body>
+
+  <%= javascript_include_tag 'application' %>
+</html>
+
+
