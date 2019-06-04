@@ -1,7 +1,7 @@
 angular.module('scApp').lazy
 .controller 'PassagemServico::IndexCtrl', [
-	'Templates', '$scModal', 'scToggle',
-	(Templates, $scModal, scToggle)->
+	'$scModal', 'scAlert', 'scToggle', 'scTopMessages', 'Templates', 'PassagemServico'
+	(scModal, scAlert, scToggle, scTopMessages, Templates, PassagemServico)->
 		vm = this
 
 		vm

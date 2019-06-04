@@ -6,10 +6,10 @@ class PassagemServico < ApplicationRecord
 	def slim_obj
 		{
 			id: id,
-			pessoa_entrou_id: pessoa_obj(pessoa_entrou_id)
-			pessoa_saiu_id: pessoa_obj(pessoa_saiu_id)
-			data_criacao: created_at
-			status: status
+			pessoa_entrou_id: pessoa_obj(pessoa_entrou_id),
+			pessoa_saiu_id: pessoa_obj(pessoa_saiu_id),
+			data_criacao: created_at,
+			status: status,
 		}
 	end
 

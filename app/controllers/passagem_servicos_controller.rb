@@ -16,15 +16,11 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def show
-		respond_to do |format|
-			format.json{
-				st, resp = service.show(get_params)
+		st, resp = service.show(get_params)
 
-				case st
-				when :success then render json: resp, status: :ok
-				when :not_found then render json: resp, status: :not_found
-				end
-			}
+		case st
+		when :success then render json: resp, status: :ok
+		when :not_found then render json: resp, status: :not_found
 		end
 	end
 
