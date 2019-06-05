@@ -1,0 +1,28 @@
+<div class="sc-accordion-body">
+	<div class="sc-fieldset">
+		<div class="col-xs-12">
+			<div class="sc-text-gray">Quem entra: <span class="sc-text-blue">{{passagem.pessoa_entrou.nome}}</span></div>
+			<div class="sc-text-gray">Quem sai: <span class="sc-text-blue">{{passagem.pessoa_saiu.nome}}</span></div>
+			<div class="sc-text-gray">Data de cadastro: <span class="sc-text-blue">{{passagem.data_cadastro || date: "dd/MM/YYYY "}}, às {{passagem.data_cadastro || date: "mediumTime" }}</span></div>
+			<div class="sc-text-gray">
+				<i class="sc-icon-carta-1"></i>
+				<span>Notificações</span>
+				<div class="sc-fieldset">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="sc-fieldset">
+		<div class="sc-text-gray">
+			Eu, <span class="sc-label">{{passagem.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{passagem.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
+		</div>
+		<div class="sc-fieldset" ng-repeat="objeto in passagem.objetos track by $index">
+			<div class="sc-fieldset-head">{{objeto.categoria.label}}</div>
+		</div>
+	</div>
+
+	<div class="sc-fieldset">
+	</div>
+</div>
