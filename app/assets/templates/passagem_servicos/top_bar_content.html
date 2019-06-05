@@ -1,0 +1,30 @@
+<div class="flex-row sc-text-sm-xs">
+	<div class="left">
+		<button class="sc-btn sc-btn-green">
+			<span ng-if="!screen.isXs">Nova Passagem</span>
+			<i ng-if="screen.isXs" class="sc-icon sc-icon-mais-1"></i>
+		</button>
+	</div>
+	<div class="fcol-xs-70 fcol-sm-60 fcol-lg-45 sc-p-h-lg">
+		<div class="sc-input-group">
+			<input class="sc-input-default">
+			<i class="sc-btn sc-btn-blue sc-icon sc-icon-lupa-1" ng-click="indexCtrl.listCtrl.init()"></i>
+			<i class="sc-btn sc-btn-blue sc-icon sc-icon-filtro-2"></i>
+			<i class="sc-btn sc-btn-blue sc-icon sc-icon-impressora"></i>
+		</div>
+	</div>
+	<div class="fcol-xs-auto hidden-xs"></div>
+	<div class="fcol-xs-3m" sc-stop-click>
+		<div class="sc-dropdown sc-btn sc-btn-default">
+			<i class="sc-icon sc-icon-reticiencias-v"></i>
+			<ul ng-if="topToolbarIsOpened" class="sc-dropdown-menu">
+				<li>
+					<span>Perfis de passagem</span>
+				</li>
+				<li>
+					<span>Histórico</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
