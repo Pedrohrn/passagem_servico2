@@ -2,9 +2,9 @@ class PassagemServicosService
 	def self.model() ::PassagemServico; end
 
 	def self.index
-		list = PassagemServico.map(&:to_frontend_obj)
+		list = model.all
 
-		resp = { list: list }
+		resp = { passagem_servicos: list }
 
 		[:success, resp]
 	end

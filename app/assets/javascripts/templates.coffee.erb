@@ -2,6 +2,8 @@ angular.module('scApp').lazy
 .factory 'Templates', ->
 	obj =
 		passagem_servicos:
+			top_bar_content: "<%= asset_path('passagem_servicos/top_bar_content.html') %>"
 			show: "<%= asset_path('passagem_servicos/show.html') %>"
+			edit: "<%= asset_path('passagem_servicos/edit.html') %>"
 
 	obj

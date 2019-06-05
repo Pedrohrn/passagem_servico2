@@ -1,3 +1,96 @@
-<div ng-controller="PassagemServico::IndexCtrl as indexCtrl">
-	eai mundo
+<div ng-controller="PassagemServico::IndexCtrl as indexCtrl" ng-init="indexCtrl.listCtrl.init()">
+	<section id="top-bar">
+		<div id="top-bar-content">
+			<div ng-include="indexCtrl.templates.passagem_servicos.top_bar_content"></div>
+		</div>
+	</section>
+
+	<section id="breadcrumb">
+		<a>Início</a> / Portaria / Passagem de Serviço
+	</section>
+
+	<section id="passagens">
+		<div class="sc-p-t-xl sc-bg-white">
+			<ul multi-check-group class="sc-accordion" sc-scroll="listCtrl.nextPage()">
+				<li class="sc-accordion-head" style="border-bottom: 1px solid #e2e2e2; border-top: none;">
+					<div class="flex-row flex-column align-items-center sc-text-blue" style="min-height: 2.5em;">
+						<div class="fcol-order-0 align-center fcol-sm-3em">
+							<label>
+								<input class="sc-checkbox sc-checkbox-blue" type="checkbox">
+							</label>
+						</div>
+						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">Status</div>
+						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">Saiu</div>
+						<div class="fcol-xs-auto fcol-order-2 sc-p-sm">Entrou</div>
+						<div class="fcol-xs-7em fcol-order-3 align-center sc-p-sm">Data</div>
+						<div class="fcol-xs-3em sc-p-md visible-xs fcol-order-4"></div>
+						<div class="fcol-xs-4em sc-p-md fcol-order-5"></div>
+					</div>
+				</li>
+				<li ng-if="loadingRecords || indexCtrl.listCtrl.list.lenght == 0" class="sc-accordion-head sc-bg-gray-lighter sc-p-lg">
+					<div class="sc-text-gray align-center">
+						<div ng-if="loadingRecords">
+							<i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>
+							<span>Carregando</span>
+						</div>
+						<div ng-if="indexCtrl.listCtrl.list.lenght == 0">
+							<i class="sc-icon sc-icon-exclamacao-2"></i>
+							<span>Nenhuma passagem de serviço encontrada!</span>
+						</div>
+					</div>
+				</li>
+				<li ng-init="indexCtrl.listCtrl.init(passagem)" ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head">
+					<div class="flex-row flex-column sc-accordion-head sc-text-gray">
+						<div class="fcol-xs-3em align-center fcol-order-0">
+							<input type="checkbox" class="sc-input-default sc-checkbox-gray">
+						</div>
+						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">
+							<span class="sc-border-radius sc-bg-{{passagem.status.color}}">{{passagem.status.label}}</span>
+						</div>
+						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">
+							<i class="sc-icon sc-icon-seta-8-baixo sc-text-red hidden-xs sc-p-r-md"></i>
+							{{passagem.pessoa_saiu.nome}}
+						</div>
+						<div class="fcol-xs-auto fcol-order-2 sc-p-sm">
+							<i class="sc-icon sc-icon-seta-8-cima sc-text-green hidden-xs sc-p-r-md"></i>
+							{{passagem.pessoa_entrou.nome}}
+						</div>
+						<div class="fcol-xs-7em fcol-order-3 sc-p-sm">{{passagem.data_cadastro}}</div>
+						<div class="fcol-xs-7em fcol-order-4 sc-p-sm"></div>
+						<div class="fcol-xs-3m align-center sc-p-sm fcol-order-5" sc-stop-click>
+							<div class="sc-dropdown">
+								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray"></i>
+								<ul class="sc-dropdown-menu">
+									<li ng-click="indexCtrl.">
+										<span>Passar Serviço</span>
+									</li>
+									<li>
+										<span>Editar</span>
+									</li>
+									<li>
+										<span>Duplicar</span>
+									</li>
+									<li>
+										<span>Desativar</span>
+									</li>
+									<li>
+										<span>Excluir</span>
+									</li>
+									<li>
+										<span>Histórico</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div ng-if="passagem.acc.opened && !passagem.edit.opened">
+						<div ng-include="indexCtrl.templates.passagem_servicos.show"></div>
+					</div>
+					<div ng-if="passagem.edit.opened && !passagem.acc.opened">
+						<div ng-include="indexCtrl.templates.passagem_servicos.edit" ng-controller="PassagemServico::FormCtrl as formCtrl"></div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</section>
 </div>

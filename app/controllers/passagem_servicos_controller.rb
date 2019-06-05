@@ -9,7 +9,7 @@ class PassagemServicosController < ApplicationController
 
 				case st
 				when :success then render json: resp, status: :ok
-				when :error then render json: resp, status: :ok
+				when :error then render json: resp, status: :error
 				end
 			}
 		end
