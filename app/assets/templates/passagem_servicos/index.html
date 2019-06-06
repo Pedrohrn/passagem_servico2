@@ -1,4 +1,4 @@
-<div ng-controller="PassagemServico::IndexCtrl as indexCtrl" ng-init="indexCtrl.listCtrl.init()">
+<div ng-controller="PassagemServico::IndexCtrl as indexCtrl" ng-init="indexCtrl.init()">
 	<section id="top-bar">
 		<div id="top-bar-content">
 			<div ng-include="indexCtrl.templates.passagem_servicos.top_bar_content"></div>
@@ -13,18 +13,16 @@
 		<div class="sc-p-t-xl sc-bg-white">
 			<ul multi-check-group class="sc-accordion" sc-scroll="listCtrl.nextPage()">
 				<li class="sc-accordion-head" style="border-bottom: 1px solid #e2e2e2; border-top: none;">
-					<div class="flex-row flex-column align-items-center sc-text-blue" style="min-height: 2.5em;">
+					<div class="flex-row flex-column align-items-center sc-text-gray" style="min-height: 2.5em;">
 						<div class="fcol-order-0 align-center fcol-sm-3em">
-							<label>
-								<input class="sc-checkbox sc-checkbox-blue" type="checkbox">
-							</label>
+							<input class="sc-checkbox sc-checkbox-blue" type="checkbox">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">Status</div>
 						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">Saiu</div>
 						<div class="fcol-xs-auto fcol-order-2 sc-p-sm">Entrou</div>
 						<div class="fcol-xs-7em fcol-order-3 align-center sc-p-sm">Data</div>
-						<div class="fcol-xs-3em sc-p-md visible-xs fcol-order-4"></div>
-						<div class="fcol-xs-4em sc-p-md fcol-order-5"></div>
+						<div class="fcol-xs-7em sc-p-md visible-xs fcol-order-4"></div>
+						<div class="fcol-xs-3em sc-p-md fcol-order-5"></div>
 					</div>
 				</li>
 				<li ng-if="loadingRecords || indexCtrl.listCtrl.list.lenght == 0" class="sc-accordion-head sc-bg-gray-lighter sc-p-lg">
@@ -42,7 +40,7 @@
 				<li ng-init="indexCtrl.listCtrl.init(passagem)" ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head">
 					<div class="flex-row flex-column sc-accordion-head sc-text-gray">
 						<div class="fcol-xs-3em align-center fcol-order-0">
-							<input type="checkbox" class="sc-input-default sc-checkbox-gray">
+							<input type="checkbox" class="sc-checkbox sc-checkbox-blue">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">
 							<span class="sc-border-radius sc-bg-{{passagem.status.color}}">{{passagem.status.label}}</span>
@@ -56,12 +54,12 @@
 							{{passagem.pessoa_entrou.nome}}
 						</div>
 						<div class="fcol-xs-7em fcol-order-3 sc-p-sm">{{passagem.data_cadastro}}</div>
-						<div class="fcol-xs-7em fcol-order-4 sc-p-sm"></div>
-						<div class="fcol-xs-3m align-center sc-p-sm fcol-order-5" sc-stop-click>
+						<div class="fcol-xs-7em fcol-order-4 visible-xs sc-p-sm"></div>
+						<div class="fcol-xs-3em align-center sc-p-sm fcol-order-5" sc-stop-click>
 							<div class="sc-dropdown">
 								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray"></i>
-								<ul class="sc-dropdown-menu">
-									<li ng-click="indexCtrl.">
+								<ul class="sc-dropdown-menu pull-right" ng-if="passagem.menu.opened">
+									<li ng-click="indexCtrl.itemCtrl.passarServico()">
 										<span>Passar Serviço</span>
 									</li>
 									<li>
@@ -83,13 +81,19 @@
 							</div>
 						</div>
 					</div>
-					<div ng-if="passagem.acc.opened && !passagem.edit.opened">
+					<div ng-if="passagem.acc.opened && !passagem.edit.opened" class="sc-accordion-body">
 						<div ng-include="indexCtrl.templates.passagem_servicos.show"></div>
 					</div>
-					<div ng-if="passagem.edit.opened && !passagem.acc.opened">
-						<div ng-include="indexCtrl.templates.passagem_servicos.edit" ng-controller="PassagemServico::FormCtrl as formCtrl"></div>
+					<div ng-if="passagem.edit.opened && !passagem.acc.opened" class="sc-accordion-body">
+						<div ng-include="indexCtrl.templates.passagem_servicos.edit"></div>
 					</div>
 				</li>
+				<div class="sc-accordion">
+					<div class="sc-accordion-head"></div>
+					<div class="sc-accordion-body sc-m-md">
+						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
+					</div>
+				</div>
 			</ul>
 		</div>
 	</section>

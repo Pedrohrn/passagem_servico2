@@ -1,2 +1,85 @@
-<div ng-controller="PassagemServico::FormCtrl as formCtrl">
+<div class="sc-accordion-body" ng-controller="PassagemServico::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
+	<form ng-submit="formCtrl.submit()">
+		<div class="sc-fieldset flex-row">
+			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
+				<div class="sc-label">Quem sai:</div>
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.pessoas.list track by pessoa.id" ng-model="params.pessoa_saiu">
+					<option label="Selecione quem sai" ng-value="empty"></option>
+				</select>
+			</div>
+			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
+				<div class="sc-label">Senha:</div>
+				<input class="sc-input-default sc-input-block" type="password">
+			</div>
+			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
+				<div class="sc-label">Quem entra:</div>
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.pessoas.list track by pessoa.id" ng-model="params.pessoa_entrou">
+					<option label="Selecione quem entra" ng-value="empty"></option>
+				</select>
+			</div>
+			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
+				<div class="sc-label">Senha:</div>
+				<input class="sc-input-default sc-input-block" type="password">
+			</div>
+			<div class="clear sc-p-o"></div>
+			<div class="fcol-xs-100">
+				<div class="sc-text-black sc-text-md">
+					Eu,
+					<span class="sc-label sc-text-bold"> {{params.pessoa_saiu.nome}}</span>
+					 , passo o posto de serviço para o(a)
+					<span class="sc-label sc-text-bold"> {{params.pessoa_entrou.nome}}</span>, conforme as informações abaixo:
+				</div>
+			</div>
+			<div class="fcol-xs-100">
+				<div class="sc-label">Perfil de passagem:</div>
+				<div class="flex-row">
+					<select class="sc-input-default fcol-xs-100 col-sm-50 fcol-md-40 fcol-lg-20" ng-options="perfil as perfil.nome for value in indexCtrl.perfilCtrl.list track by perfil.id" ng-model="formCtrl.formCtrl.current_perfil">
+						<option label="Selecione um perfil" ng-value="empty"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="sc-fieldset flex-row">
+			<div class="sc-fieldset-head fcol-xs-100">
+				<div class="flex-row">
+					<div class="sc-label sc-text-lg">Objetos</div>
+					<button class="sc-btn sc-btn-green sc-btn-sm sc-btn-thin sc-m-h-xl">
+						<span class="hidden-xs">Adicionar objetos</span>
+						<i ng-if="screen.isXs" class="sc-icon sc-icon-mais-1"></i>
+					</button>
+					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin">
+						<span class="hidden-xs">Limpar formulário</span>
+						<i ng-if="screen.isXs" class="sc-icon sc-icon-lixeira-1"></i>
+					</button>
+				</div>
+			</div>
+			<div class="sc-fieldset flex-row" ng-repeat="objeto in params.objetos track by $index">
+				<div class="sc-fieldset-head fcol-xs-100">
+					<select class="sc-input-default sc-input-block" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id">
+						<option value="Selecione ou cadastre">Selecione ou cadastre</option>
+					</select>
+					<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green"></i>
+					<i class="sc-icon sc-icon-lixeira-1 sc-badge-red"></i>
+				</div>
+				<div class="fcol-xs-100">
+					<ul>
+						<li class="fcol-xs-100">
+							<div class="sc-label col-xs-10">Qtd</div>
+							<div class="sc-label col-xs-90">Item</div>
+						</li>
+						<li class="fcol-xs-100" ng-repeat="item in objeto.itens track by $index">
+							<input class="fcol-xs-10 sc-input-default sc-input-block" type="text">
+							<input sc-stop-scroll class="fcol-xs-90 sc-input-default sc-input-block sc-stop-scroll" type="number" max="999" min="0" step="1">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="sc-fieldset flex-row">
+			<div class="sc-label sc-p-b-xs">Observações:</div>
+			<textarea class="sc-input-default sc-m-md sc-m-t-o" rows="5" col="30"></textarea>
+		</div>
+	</form>
 </div>
