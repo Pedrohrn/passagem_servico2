@@ -1,0 +1,17 @@
+<div sc-modal="indexCtrl.perfilCtrl.modal" ng-init="indexCtrl.perfilCtrl.listInit()">
+	<div class="sc-modal-header col-xs-12" style="min-height: 3.1em;">
+		<div class="sc-text-black">{{list.nome}}</div>
+		<i class="sc-icon sc-icon-fechar-1 sc-modal-close" ng-click="indexCtrl.perfilCtrl.modal.close()"></i>
+	</div>
+
+	<div class="sc-modal-body col-xs-12">
+		<div class="sc-input-group">
+			<button ng-repeat="tipo in indexCtrl.perfil" class="sc-btn sc-btn-default" ng-click="indexCtrl.perfilCtrl.loadList(tipo.key)">
+	</div>
+
+	<div class="sc-modal-footer">
+		<div class="align-right">
+			<button class="sc-btn sc-btn-gray" ng-click="indexCtrl.perfilCtrl.modal.close()">Fechar</button>
+		</div>
+	</div>
+</div>
