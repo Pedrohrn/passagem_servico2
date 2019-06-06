@@ -12,6 +12,17 @@
 	<section id="passagens">
 		<div class="sc-p-t-xl sc-bg-white">
 			<ul multi-check-group class="sc-accordion" sc-scroll="listCtrl.nextPage()">
+				<li ng-if="indexCtrl.novaPassagemCtrl.newRecord" class="sc-acc-blue">
+					<div class="sc-accordion-head flex-row">
+						<div class="fcol-xs-2em">
+							<i class="sc-icon sc-icon-mais-1 sc-text-white"></i>
+						</div>
+						<span class="sc-text-white sc-text-bold">Nova Passagem</span>
+					</div>
+					<div class="sc-accordion-body">
+						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
+					</div>
+				</li>
 				<li class="sc-accordion-head" style="border-bottom: 1px solid #e2e2e2; border-top: none;">
 					<div class="flex-row flex-column align-items-center sc-text-gray" style="min-height: 2.5em;">
 						<div class="fcol-order-0 align-center fcol-sm-3em">
@@ -88,13 +99,10 @@
 						<div ng-include="indexCtrl.templates.passagem_servicos.edit"></div>
 					</div>
 				</li>
-				<div class="sc-accordion">
-					<div class="sc-accordion-head"></div>
-					<div class="sc-accordion-body sc-m-md">
-						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
-					</div>
-				</div>
 			</ul>
 		</div>
 	</section>
+
+	<div ng-if="indexCtrl.logCtrl.modal.active" ng-include="indexCtrl.templates.passagem_servicos.log_passagens"></div>
+	<div ng-if="indexCtrl.perfilCtrl.modal.active" ng-include="indexCtrl.templates.passagem_servicos.perfil_modal"></div>
 </div>

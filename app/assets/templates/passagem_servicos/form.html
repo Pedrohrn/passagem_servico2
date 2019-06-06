@@ -1,5 +1,5 @@
-<div class="sc-accordion-body" ng-controller="PassagemServico::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
-	<form ng-submit="formCtrl.submit()">
+<div ng-controller="PassagemServico::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
+	<form ng-submit="formCtrl.submit()" class="sc-m-h-md sc-p-t-sm">
 		<div class="sc-fieldset flex-row">
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
 				<div class="sc-label">Quem sai:</div>
@@ -44,11 +44,11 @@
 			<div class="sc-fieldset-head fcol-xs-100">
 				<div class="flex-row">
 					<div class="sc-label sc-text-lg">Objetos</div>
-					<button class="sc-btn sc-btn-green sc-btn-sm sc-btn-thin sc-m-h-xl">
+					<button class="sc-btn sc-btn-green sc-btn-sm sc-btn-thin sc-m-h-xl" type="button">
 						<span class="hidden-xs">Adicionar objetos</span>
 						<i ng-if="screen.isXs" class="sc-icon sc-icon-mais-1"></i>
 					</button>
-					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin">
+					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin" type="button">
 						<span class="hidden-xs">Limpar formulário</span>
 						<i ng-if="screen.isXs" class="sc-icon sc-icon-lixeira-1"></i>
 					</button>
@@ -80,6 +80,12 @@
 		<div class="sc-fieldset flex-row">
 			<div class="sc-label sc-p-b-xs">Observações:</div>
 			<textarea class="sc-input-default sc-m-md sc-m-t-o" rows="5" col="30"></textarea>
+		</div>
+
+		<div class="align-right">
+			<button class="sc-btn sc-btn-green sc-btn-block-only-xs" type="button">Salvar e passar</button>
+			<button class="sc-btn sc-btn-blue sc-btn-block-only-xs sc-m-h-lg" type="button">Salvar</button>
+			<button class="sc-btn sc-btn-red sc-btn-block-only-xs" type="button">Cancelar</button>
 		</div>
 	</form>
 </div>
