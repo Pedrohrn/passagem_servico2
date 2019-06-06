@@ -1,6 +1,6 @@
 // templates
 app = angular.module('scApp', ['ngRoute', 'ngResource', 'sc.commons.directives.modal', 'sc.commons.directives.scStopClick', 'sc.commons.factories.toggle', 'sc.commons.service.scAlert', 'sc.commons.scTopMessages', 'sc.commons.filters.nl2br' ])
-
+// e8e9eb #f7f7f9
 .config(function($routeProvider, $locationProvider, $controllerProvider, $compileProvider, $filterProvider, $provide){
   $locationProvider.html5Mode({
     enabled: true,
@@ -54,6 +54,7 @@ app = angular.module('scApp', ['ngRoute', 'ngResource', 'sc.commons.directives.m
         "<%= asset_path('templates.js') %>", // Não, Jamais, nunca tire do primeiro item!!!
         "<%= asset_path('passagem_servicos/resources/passagem_servico.js') %>",
         "<%= asset_path('passagem_servicos/controllers/index.js') %>",
+        "<%= asset_path('passagem_servicos/controllers/form.js') %>",
 
       ],
     })
