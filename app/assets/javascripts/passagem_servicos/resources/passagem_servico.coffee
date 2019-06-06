@@ -1,4 +1,3 @@
-console.log('factory')
 angular.module('scApp').lazy
 .factory 'PassagemServico', [
 	'$resource'

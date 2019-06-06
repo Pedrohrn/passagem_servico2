@@ -5,7 +5,7 @@ class PassagemServicosController < ApplicationController
 		respond_to do |format|
 			format.html { layout_erp }
 			format.json{
-				st, resp = service.index(get_params)
+				st, resp = service.index({}, get_params)
 
 				case st
 				when :success then render json: resp, status: :ok
@@ -16,7 +16,7 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def show
-		st, resp = service.show(get_params)
+		st, resp = service.show({}, get_params)
 
 		case st
 		when :success then render json: resp, status: :ok
