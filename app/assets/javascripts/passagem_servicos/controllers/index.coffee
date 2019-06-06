@@ -5,12 +5,39 @@ angular.module('scApp').lazy
 		vm = this
 		vm.templates = Templates
 
-		vm.listCtrl = ->
+		vm.init = ->
+			vm.filtro.exec()
+
+		vm.listCtrl =
 			list: []
 
-			init: ->
-				console.log('oi')
-				PassagemServico.index()
+			loadList: ->
+				# @pagination.clear()
+				@list = []
+				@exec()
+
+			exec: (obj={})->
+
+				params = angular.copy obj
+				params.filtro = vm.filtro.params
+				# params.pagination = @pagination.new()
+
+				PassagemServico.list params,
+					(data)=>
+						@list.addOrExtend item for item in data.passagem_servicos
+
+		vm.filtro =
+			params: {}
+
+			exec: ->
+				vm.listCtrl.loadList()
+
+		vm.itemCtrl =
+			init: (passagem)->
+				passagem.acc = new scToggle()
+				passagem.edit = new scToggle()
+				passagem.passarServico = new scModal()
+				passagem.log = new scModal()
 
 		vm
 ]
