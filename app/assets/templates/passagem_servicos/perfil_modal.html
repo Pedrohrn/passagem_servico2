@@ -1,17 +1,89 @@
-<div sc-modal="indexCtrl.perfilCtrl.modal" ng-init="indexCtrl.perfilCtrl.listInit()">
-	<div class="sc-modal-header col-xs-12" style="min-height: 3.1em;">
-		<div class="sc-text-black">{{list.nome}}</div>
-		<i class="sc-icon sc-icon-fechar-1 sc-modal-close" ng-click="indexCtrl.perfilCtrl.modal.close()"></i>
+<div sc-modal="indexCtrl.modalPerfilCtrl.modal" ng-init="indexCtrl.modalPerfilCtrl.listInit(tipo)">
+	<div class="sc-modal-header sc-text-sm" style="min-height: 3.1em;">
+		<span class="sc-m-l-lg sc-text-lg">{{indexCtrl.modalPerfilCtrl.current_list.key.capitalize()}}</span>
+		<i class="sc-icon sc-icon-fechar-1 sc-badge-hover-red sc-modal-close" ng-click="indexCtrl.modalPerfilCtrl.modal.close()"></i>
+		<button class="sc-btn sc-btn-green sc-btn-thin sc-btn-sm sc-m-h-xxl" ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.new()" ng-hide="indexCtrl.modalPerfilCtrl.current_list.key === 'permissões'">
+			<i class="sc-icon sc-icon-mais-1 sc-text-sm"></i>
+			Cadastrar {{indexCtrl.modalPerfilCtrl.current_list.key.capitalize()}}
+		</button>
 	</div>
 
 	<div class="sc-modal-body col-xs-12">
-		<div class="sc-input-group">
-			<button ng-repeat="tipo in indexCtrl.perfil" class="sc-btn sc-btn-default" ng-click="indexCtrl.perfilCtrl.loadList(tipo.key)">
+		<div class="sc-btn-group sc-m-l-xl" style="z-index: 1;">
+			<button ng-repeat="tipo in indexCtrl.modalPerfilCtrl.list" class="sc-btn sc-btn-default"  ng-class="{'sc-btn-blue': tipo.active}" ng-click="indexCtrl.modalPerfilCtrl.loadList(tipo)">{{tipo.key.capitalize()}}</button>
+		</div>
+		<div class="sc-fieldset" style="position: relative; top: -0.6em; z-index: 100;">
+			<ul ng-class="{'sc-accordion': !indexCtrl.modalPerfilCtrl.current_list.ctrl.list.length == 0}">
+				<li ng-if="indexCtrl.modalPerfilCtrl.current_list.ctrl.newRecord">
+					<div class="sc-accordion-head flex-row">
+						<div class="sc-input-group">
+							<input class="sc-input-default" ng-model="indexCtrl.categoriasCtrl.newCategoria">
+							<button class="sc-btn sc-btn-green"><i class="sc-icon sc-icon-visto-1"></i></button>
+							<button class="sc-btn sc-btn-red" ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.cancelar(item)"><i class="sc-icon sc-icon-fechar-1"></i></button>
+						</div>
+					</div>
+				</li>
+				<li ng-if="indexCtrl.modalPerfilCtrl.current_list.ctrl.list.length == 0">
+					<div class="sc-accordion-head align-center">
+						<span class="sc-text-blue-dark">
+							<i class="sc-icon sc-icon-exclamacao-1"></i>
+							{{indexCtrl.modalPerfilCtrl.current_list.empty_message}}
+						</span>
+					</div>
+				</li>
+				<li ng-repeat="item in indexCtrl.modalPerfilCtrl.current_list.ctrl.list track by $index" ng-init="indexCtrl.modalPerfilCtrl.init(item)">
+					<div class="sc-accordion-head flex-row">
+						<div ng-if="!item.edit.opened" class="sc-text-black">{{item.nome}}</div>
+						<div ng-if="item.edit.opened && indexCtrl.modalPerfilCtrl.current_list.key == 'categoria'" class="sc-input-group fcol-xs-45">
+							<input class="sc-input-default" ng-model="indexCtrl.categoriasCtrl.newCategoria">
+							<button class="sc-btn sc-btn-green"><i class="sc-icon sc-icon-visto-1"></i></button>
+							<button class="sc-btn sc-btn-red" ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.cancelar(item)"><i class="sc-icon sc-icon-fechar-1"></i></button>
+						</div>
+						<div ng-if="item.is_disabled">
+							<span class="sc-border-radius sc-text-sm sc-p-v-sm sc-text-white sc-p-h-lg sc-bg-yellow">Desativado!</span>
+						</div>
+						<div class="fcol-xs-auto"></div>
+						<div class="fcol-xs-3em right" ng-if="indexCtrl.modalPerfilCtrl.current_list.key != 'permissões'">
+							<div class="sc-dropdown" ng-click="item.toolbar.toggle()">
+								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray" ng-class="{'sc-badge-active': item.toolbar.opened}"></i>
+								<div class="sc-dropdown-menu pull-right" ng-if="item.toolbar.opened" style="display: block;">
+									<ul>
+										<li ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.edit(item)">
+											<span>Editar</span>
+										</li>
+										<li ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.rmv(item)">
+											<span>Excluir</span>
+										</li>
+										<li ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.disable(item)">
+											<span>Desativar</span>
+										</li>
+										<li ng-if="indexCtrl.modalPerfilCtrl.current_list.key == 'perfil'" ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.duplicate(item)">
+											<span>Duplicar</span>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="right" ng-if="indexCtrl.modalPerfilCtrl.current_list.key == 'permissões'">
+							<label>
+								<span class="sc-toggle">
+									<input type="checkbox" ng-value="item.value"/>
+									<span label-true="Sim" label-false="Não"></span>
+								</span>
+							</label>
+						</div>
+					</div>
+					<div ng-if="item.perfil_form.active">
+						<div ng-include="indexCtrl.templates.passagem_servicos.perfil_form"></div>
+					</div>
+				</li>
+			</ul>
+		</div>
 	</div>
 
 	<div class="sc-modal-footer">
 		<div class="align-right">
-			<button class="sc-btn sc-btn-gray" ng-click="indexCtrl.perfilCtrl.modal.close()">Fechar</button>
+			<button class="sc-btn sc-btn-gray" ng-click="indexCtrl.modalPerfilCtrl.modal.close()">Fechar</button>
 		</div>
 	</div>
 </div>

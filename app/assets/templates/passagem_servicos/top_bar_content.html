@@ -18,7 +18,7 @@
 		<div class="sc-dropdown sc-btn sc-btn-default" ng-click="indexCtrl.topToolbar.toggle()">
 			<i class="sc-icon sc-icon-reticiencias-v"></i>
 			<ul ng-if="indexCtrl.topToolbar.is_visible" class="sc-dropdown-menu pull-right">
-				<li ng-click="indexCtrl.perfilCtrl.modal.open()">
+				<li ng-click="indexCtrl.modalPerfilCtrl.modal.open()">
 					<span class="align-left"><i class="sc-icon sc-icon-engrenagem"></i>Perfis de passagem</span>
 				</li>
 				<li ng-click="indexCtrl.logCtrl.modal.open()">
@@ -52,7 +52,7 @@
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Status</div>
-			<select class="sc-input-default sc-input-block" ng-options="status as status.label for status in indexCtrl.itemCtrl.status track by status.id" ng-model="params.status"></select>
+			<select class="sc-input-default sc-input-block" ng-options="status as status.key.capitalize() for status in indexCtrl.filtro.filtroKeys track by status.id" ng-model="params.status"></select>
 		</div>
 		<div class="clear sc-p-o"></div>
 		<hr>

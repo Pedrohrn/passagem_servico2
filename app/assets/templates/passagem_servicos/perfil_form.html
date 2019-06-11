@@ -1,0 +1,79 @@
+<div sc-modal="item.perfil_form" style="z-index: 2;" ng-init="indexCtrl.perfisCtrl.formInit(item)">
+	<div class="sc-modal-header sc-text-sm" style="min-height: 3.1em;">
+		<i class="sc-icon sc-icon-fechar-1 sc-modal-close sc-badge-hover-red" ng-click="item.perfil_form.close()"></i>
+		<span class="sc-m-l-lg sc-text-lg">Perfil de Passagem</span>
+	</div>
+
+	<div class="sc-modal-body">
+		<form>
+			<div class="flex-row">
+				<div class="col-xs-5">
+					<div class="sc-label">Título:</div>
+					<input class="sc-input-default sc-input-block" type="text" ng-model="indexCtrl.perfisCtrl.params.nome">
+				</div>
+				<hr class="clear sc-hr-gray-light"/>
+				<div class="col-xs-12">
+					<div class="flex-row">
+						<span class="sc-label sc-text-xl">Objetos</span>
+						<div class="align-self-center">
+							<button class="sc-btn sc-btn-green sc-btn-sm sc-btn-thin sc-m-h-lg" ng-click="indexCtrl.perfisCtrl.addObjeto()">
+								<span class="hidden-xs">Adicionar objeto</span>
+								<i class="sc-icon sc-icon-mais-1 visible-xs"></i>
+							</button>
+							<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin" ng-click="indexCtrl.perfisCtrl.limparFormulario()" ng-if="indexCtrl.perfisCtrl.params.objetos.length != 0">
+								<span class="hidden-xs">Limpar formulário</span>
+								<i class="sc-icon sc-icon-lixeira-1 visible-xs"></i>
+							</button>
+						</div>
+					</div>
+					<ul class="fcol-xs-100">
+						<li class="sc-fieldset" ng-repeat="objeto in indexCtrl.perfisCtrl.params.objetos track by $index">
+							<div class="sc-fieldset-head flex-row sc-text-sm">
+								<div class="sc-text-sm">
+									<div class="sc-label">Categoria:</div>
+									<div class="">
+										<select class="sc-input-default sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria">
+											<option value="Selecione ou cadastre">Selecione ou cadastre</option>
+										</select>
+									</div>
+								</div>
+								<div class="align-self-flex-end sc-m-h-lg">
+									<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="indexCtrl.perfisCtrl.addItem(objeto)"></i>
+									<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="indexCtrl.perfisCtrl.rmvItem(objeto, item)"></i>
+								</div>
+							</div>
+							<ul ng-if="objeto.itens.length != 0">
+								<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
+									<div class="fcol-xs-5em sc-label">Qtd</div>
+									<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
+									<div class="fcol-xs-auto"></div>
+								</li>
+								<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
+									<div class="fcol-xs-5em">
+										<input class="sc-input-default sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+									</div>
+									<div class="fcol-xs-60 sc-m-l-lg">
+										<input class="sc-input-default sc-input-thin" ng-model="item.item_name" type="text" />
+									</div>
+									<div class="fcol-xs-auto"></div>
+									<div class="fcol-xs-3em">
+										<div class="align-right">
+											<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red fcol-xs-3em" ng-click="indexCtrl.perfisCtrl.rmvItem(objeto, item)"></i>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="sc-modal-footer">
+		<div class="col-xs-12">
+			<button class="sc-btn sc-btn-blue right sc-m-h-lg" ng-click="indexCtrl.perfisCtrl.submit(params)">Salvar</button>
+			<button class="sc-btn sc-btn-gray right" ng-click="indexCtrl.perfisCtrl.cancelar(item)">Cancelar</button>
+		</div>
+	</div>
+</div>
