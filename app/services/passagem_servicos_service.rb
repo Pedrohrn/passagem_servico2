@@ -3,8 +3,10 @@ class PassagemServicosService
 
 	def self.index(opts, params)
 		list = model.all
+		categorias = Categoria.all
+		perfis = Perfil.all
 
-		resp = { passagem_servicos: list }
+		resp = { passagem_servicos: list, categorias: categorias, perfis: perfis }
 
 		[:success, resp]
 	end
