@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   root 'passagem_servicos#index'
 
   resources :passagem_servicos, only: [:index, :show]
+  resources :perfis, only: [:index, :show]
+  resources :categorias, only: [:index, :show]
 end
