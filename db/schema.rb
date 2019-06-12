@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_04_153559) do
+ActiveRecord::Schema.define(version: 2019_06_12_193552) do
 
   create_table "categorias", force: :cascade do |t|
     t.string "nome", null: false
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2019_06_04_153559) do
 
   create_table "perfis", force: :cascade do |t|
     t.string "nome", null: false
-    t.string "status"
+    t.string "status", null: false
     t.boolean "is_disabled", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

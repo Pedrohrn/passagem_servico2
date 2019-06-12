@@ -1,8 +1,8 @@
 class Pessoa < ApplicationRecord
 	validates_presence_of :nome, message: "Nome não pode ser vazio!"
 
-	has_many :passagem_servicos, foreing_key: 'pessoa_entrou'
-	has_many :passagem_servicos, foreing_key: 'pessoa_saiu'
+	has_many :passagem_servicos, foreign_key: 'pessoa_entrou_id'
+	has_many :passagem_servicos, foreign_key: 'pessoa_saiu_id'
 
 	def slim_obj
 		{
