@@ -24,12 +24,39 @@ class PassagemServicosController < ApplicationController
 		end
 	end
 
+	def create
+		st, resp = service.create(passagem_service_params)
+
+		case st
+		when :success then render json: resp, status: :ok
+		end
+	end
+
+	def update
+		st, resp = service.update(passagem_service_params)
+
+		case st
+		when :success then render json: resp, status: :ok
+		end
+	end
+
+	def destroy
+		st, resp = service.destroy(passagem_service_params)
+
+		case st
+		when :success then render json: resp
+		end
+	end
+
 	private
 
 	def passagem_service_params
 		attrs = [:id, :status, :data_criacao]
+		attrs << {pessoa_saiu: [:id]}
+		attrs << {pessoa_entrou: [:id]}
 
 		resp = params.require(:passagem_servico).permit(attrs).to_h
-		resp.deep.symbolize.keys
+		resp.deep_symbolize_keys
 	end
+
 end

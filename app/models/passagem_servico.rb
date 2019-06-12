@@ -10,10 +10,11 @@ class PassagemServico < ApplicationRecord
 	def slim_obj
 		{
 			id: id,
-			pessoa_entrou_id: pessoa_obj(pessoa_entrou),
-			pessoa_saiu_id: pessoa_obj(pessoa_saiu),
+			pessoa_entrou: pessoa_entrou.to_frontend_obj,
+			pessoa_saiu: pessoa_saiu.to_frontend_obj,
 			data_criacao: created_at,
 			status: status,
+			observacoes: observacoes,
 		}
 	end
 
@@ -22,10 +23,4 @@ class PassagemServico < ApplicationRecord
 		attrs
 	end
 
-	def pessoa_obj
-		{
-			id: id,
-			nome: nome,
-		}
-	end
 end
