@@ -1,4 +1,4 @@
-<div ng-controller="PassagemServico::IndexCtrl as indexCtrl" ng-init="indexCtrl.init()">
+<div ng-controller="PassagemServicos::IndexCtrl as indexCtrl" ng-init="indexCtrl.init()">
 	<section id="top-bar">
 		<div id="top-bar-content">
 			<div ng-include="indexCtrl.templates.passagem_servicos.top_bar_content"></div>
@@ -49,12 +49,12 @@
 					</div>
 				</li>
 				<li ng-init="indexCtrl.itemCtrl.init(passagem)" ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }">
-					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)">
+					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)" ng-class="{'sc-opac-80': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && passagem.edit.opened}">
 						<div class="fcol-xs-3em align-center fcol-order-0" sc-stop-click>
 							<input type="checkbox" class="sc-checkbox sc-checkbox-blue">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">
-							<span class="sc-border-radius sc-bg-{{passagem.status.color}}">{{passagem.status.label}}</span>
+							<span class="sc-border-radius sc-bg-{{passagem.status.color}} sc-text-white sc-p-v-xs sc-p-h-lg sc-text-sm">{{passagem.status.label}}</span>
 						</div>
 						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">
 							<i class="sc-icon sc-icon-seta-8-baixo sc-text-red hidden-xs sc-p-r-md" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }"></i>
@@ -64,7 +64,7 @@
 							<i class="sc-icon sc-icon-seta-8-cima sc-text-green hidden-xs sc-p-r-md" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }"></i>
 							{{passagem.pessoa_entrou.nome}}
 						</div>
-						<div class="fcol-xs-7em fcol-order-3 sc-p-sm" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }">{{passagem.data_cadastro}}</div>
+						<div class="fcol-xs-7em fcol-order-3 sc-p-sm" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }">{{passagem.data_criacao | date: "dd/MM/yyyy"}}</div>
 						<div class="fcol-xs-7em fcol-order-4 visible-xs sc-p-sm"></div>
 						<div class="fcol-xs-3em align-center sc-p-sm fcol-order-5" sc-stop-click>
 							<div class="sc-dropdown">

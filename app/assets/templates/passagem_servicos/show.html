@@ -3,7 +3,7 @@
 		<div class="fcol-xs-100 sc-p-b-o">
 			<div class="sc-text-gray sc-p-b-sm">Quem entra: <span class="sc-text-blue">{{passagem.pessoa_entrou.nome}}</span></div>
 			<div class="sc-text-gray sc-p-b-sm">Quem sai: <span class="sc-text-blue">{{passagem.pessoa_saiu.nome}}</span></div>
-			<div class="sc-text-gray sc-p-b-sm">Data de cadastro: <span class="sc-text-blue">{{passagem.data_cadastro | date: "dd/MM/yyyy"}}, às {{passagem.data_cadastro | date: "mediumTime" }}</span></div>
+			<div class="sc-text-gray sc-p-b-sm">Data de cadastro: <span class="sc-text-blue">{{passagem.data_criacao | date: "dd/MM/yyyy"}}, às {{passagem.data_criacao | date: "mediumTime" }}</span></div>
 			<div class="col-xs-12 sc-p-o sc-text-gray" ng-if="passagem.notificacoes > 0">
 				<i class="sc-icon-carta-1"></i>
 				<span>Notificações</span>

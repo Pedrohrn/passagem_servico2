@@ -1,9 +1,9 @@
-<div ng-controller="PassagemServico::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
+<div ng-controller="PassagemServicos::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
 	<form ng-submit="formCtrl.submit()" class="sc-m-h-md sc-p-t-sm">
 		<div class="sc-fieldset flex-row">
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
 				<div class="sc-label">Quem sai:</div>
-				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.pessoas.list track by pessoa.id" ng-model="params.pessoa_saiu">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="formCtrl.params.pessoa_saiu">
 					<option label="Selecione quem sai" ng-value="empty"></option>
 				</select>
 			</div>
@@ -13,7 +13,7 @@
 			</div>
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
 				<div class="sc-label">Quem entra:</div>
-				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.pessoas.list track by pessoa.id" ng-model="params.pessoa_entrou">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="formCtrl.params.pessoa_entrou">
 					<option label="Selecione quem entra" ng-value="empty"></option>
 				</select>
 			</div>
@@ -25,15 +25,15 @@
 			<div class="fcol-xs-100">
 				<div class="sc-text-black sc-text-md">
 					Eu,
-					<span class="sc-label sc-text-bold"> {{params.pessoa_saiu.nome}}</span>
+					<span class="sc-label sc-text-bold"> {{formCtrl.params.pessoa_saiu.nome}}</span>
 					 , passo o posto de serviço para o(a)
-					<span class="sc-label sc-text-bold"> {{params.pessoa_entrou.nome}}</span>, conforme as informações abaixo:
+					<span class="sc-label sc-text-bold"> {{formCtrl.params.pessoa_entrou.nome}}</span>, conforme as informações abaixo:
 				</div>
 			</div>
 			<div class="fcol-xs-100">
 				<div class="sc-label">Perfil de passagem:</div>
 				<div class="flex-row">
-					<select class="sc-input-default col-xs-12 col-sm-5 col-lg-4" ng-options="perfil as perfil.nome for value in indexCtrl.perfilCtrl.list track by perfil.id" ng-model="formCtrl.formCtrl.current_perfil">
+					<select class="sc-input-default col-xs-12 col-sm-5 col-lg-4" ng-options="perfil as perfil.nome for perfil in indexCtrl.perfisCtrl.list track by perfil.id" ng-model="formCtrl.formCtrl.current_perfil" ng-change="formCtrl.formCtrl.set_perfil()">
 						<option label="Selecione um perfil" ng-value="empty"></option>
 					</select>
 				</div>
@@ -44,42 +44,60 @@
 			<div class="sc-fieldset-head fcol-xs-100">
 				<div class="flex-row">
 					<div class="sc-label sc-text-lg">Objetos</div>
-					<button class="sc-btn sc-btn-green sc-btn-sm sc-btn-thin sc-m-h-xl" type="button">
+					<button class="sc-btn sc-btn-green sc-btn-sm sc-btn-thin sc-m-h-xl" type="button" ng-click="formCtrl.formCtrl.addObjeto()">
 						<span class="hidden-xs">Adicionar objetos</span>
 						<i ng-if="screen.isXs" class="sc-icon sc-icon-mais-1"></i>
 					</button>
-					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin" type="button">
+					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin" type="button" ng-click="formCtrl.formCtrl.limparFormulario()">
 						<span class="hidden-xs">Limpar formulário</span>
 						<i ng-if="screen.isXs" class="sc-icon sc-icon-lixeira-1"></i>
 					</button>
 				</div>
 			</div>
-			<div class="sc-fieldset flex-row" ng-repeat="objeto in params.objetos track by $index">
-				<div class="sc-fieldset-head fcol-xs-100">
-					<select class="sc-input-default sc-input-block" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id">
-						<option value="Selecione ou cadastre">Selecione ou cadastre</option>
-					</select>
-					<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green"></i>
-					<i class="sc-icon sc-icon-lixeira-1 sc-badge-red"></i>
-				</div>
-				<div class="fcol-xs-100">
-					<ul>
-						<li class="fcol-xs-100">
-							<div class="sc-label col-xs-10">Qtd</div>
-							<div class="sc-label col-xs-90">Item</div>
+			<ul class="fcol-xs-100">
+				<li class="sc-fieldset" ng-repeat="objeto in formCtrl.params.objetos track by $index">
+					<div class="sc-fieldset-head flex-row sc-text-sm">
+						<div class="col-xs-8 col-sm-3 col-md-4 sc-text-sm sc-p-h-o">
+							<div class="sc-label">Categoria:</div>
+							<div class="">
+								<select class="col-xs-12 sc-input-default sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="formCtrl.formCtrl.set_categoria(objeto)">
+									<option value="Selecione ou cadastre">Selecione ou cadastre</option>
+								</select>
+							</div>
+						</div>
+						<div class="align-self-flex-end sc-m-h-lg">
+							<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="formCtrl.formCtrl.addItem(objeto)"></i>
+							<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="formCtrl.formCtrl.rmvObjeto(objeto, item)"></i>
+						</div>
+					</div>
+					<ul ng-if="objeto.itens.length != 0">
+						<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
+							<div class="fcol-xs-5em sc-label">Qtd</div>
+							<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
+							<div class="fcol-xs-auto"></div>
 						</li>
-						<li class="fcol-xs-100" ng-repeat="item in objeto.itens track by $index">
-							<input class="fcol-xs-10 sc-input-default sc-input-block" type="text">
-							<input sc-stop-scroll class="fcol-xs-90 sc-input-default sc-input-block sc-stop-scroll" type="number" max="999" min="0" step="1">
+						<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
+							<div class="fcol-xs-5em">
+								<input class="sc-input-default sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+							</div>
+							<div class="fcol-xs-60 sc-m-l-lg">
+								<input class="sc-input-default sc-input-thin" ng-model="item.item_name" type="text" />
+							</div>
+							<div class="fcol-xs-auto"></div>
+							<div class="fcol-xs-3em">
+								<div class="align-right">
+									<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red fcol-xs-3em" ng-click="formCtrl.formCtrl.rmvItem(objeto, item)"></i>
+								</div>
+							</div>
 						</li>
 					</ul>
-				</div>
-			</div>
+				</li>
+					</ul>
 		</div>
 
 		<div class="sc-fieldset flex-row">
 			<div class="sc-label sc-p-b-xs">Observações:</div>
-			<textarea class="sc-input-default sc-m-md sc-m-t-o" rows="5" col="30"></textarea>
+			<textarea class="sc-input-default sc-m-md sc-m-t-o" rows="5" col="30" ng-model="formCtrl.params.observacoes"></textarea>
 		</div>
 
 		<div class="align-right">
