@@ -1,5 +1,5 @@
 angular.module('scApp').lazy
-.controller 'PassagemServico::IndexCtrl', [
+.controller 'PassagemServicos::IndexCtrl', [
 	'$scModal', 'scAlert', 'scToggle', 'scTopMessages', 'Templates', 'PassagemServico', 'Categoria', 'Perfil'
 	(scModal, scAlert, scToggle, scTopMessages, Templates, PassagemServico, Categoria, Perfil)->
 		vm = this
@@ -36,6 +36,10 @@ angular.module('scApp').lazy
 						@list.addOrExtend item for item in data.passagem_servicos
 						vm.categoriasCtrl.list.addOrExtend item for item in data.categorias
 						vm.perfisCtrl.list.addOrExtend item for item in data.perfis
+						vm.porteirosCtrl.list.addOrExtend item for item in data.pessoas
+
+		vm.porteirosCtrl =
+			list: []
 
 		vm.novaPassagemCtrl =
 			newRecord: false
@@ -83,8 +87,8 @@ angular.module('scApp').lazy
 				return @loadList(tipo)
 
 			loadList: (tipo) ->
-				for i in [0..@tipoList.length-1]
-					@tipoList[i].active = false
+				for item in @tipoList
+					item.active = false
 
 				tipo.active = true
 				@current_list = tipo
@@ -92,19 +96,10 @@ angular.module('scApp').lazy
 				return unless @current_list.key != 'permissões'
 				@current_list.ctrl.init()
 
-			set_init: (item)-> #a ideia era executar esse init a cada pressionamento do botao loadList,
-				if @current_list.key == 'perfil' # para carregar a lista e o init
-					console.log('perfil')
-					vm.perfisCtrl.init(item)
-				else if @current_list.key == 'categoria'
-					console.log('categoria')
-					vm.categoriasCtrl.init(item)
-
 		vm.perfisCtrl =
 			newRecord: false
 			list: []
 			params: {}
-			##toggle do new não está funcionando
 
 			new: ->
 				@newRecord = !@newRecord
@@ -121,7 +116,7 @@ angular.module('scApp').lazy
 					@params.objetos = []
 				else if item.perfil_form.active
 					@params = angular.copy(item) || {}
-					@params.objetos = [] #TIRAR ISSO AQUI quando estiver estruturado e funcionando
+					@params.objetos = angular.copy(item.objetos) || []
 
 			toggleMenu: (item)->
 				item.toolbar.opened = !item.toolbar.opened
@@ -255,6 +250,7 @@ angular.module('scApp').lazy
 				passagem.menu = new scToggle()
 				passagem.passar_servico_modal = new scModal()
 				passagem.log = new scModal()
+				passagem.status = if passagem.status == "pendente" then { label: 'Pendente', color: 'yellow' } else if passagem.status == 'realizada' then { label: 'Realizada', color: 'green'} else { label: 'Desativada', color: 'red' }
 
 			edit: (passagem)->
 				if passagem.edit.opened
