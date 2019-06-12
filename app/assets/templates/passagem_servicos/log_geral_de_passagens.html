@@ -1,0 +1,60 @@
+<div sc-modal="indexCtrl.logCtrl.modal">
+	<div class="sc-modal-header">
+		<i ng-click="indexCtrl.logCtrl.modal.close()" class="sc-modal-close sc-badge-hover-red sc-icon sc-icon-fechar-1 sc-cursor-pointer"></i>
+		Histórico de passagens
+
+		<hr class="sc-hr-gray-light sc-m-b-md sc-m-t-lg"/>
+
+		<form ng-submit="indexCtrl.logCtrl.buscar()" class="row sc-text-sm">
+			<div class="col-xs-12 col-sm-6 col-md-3 sc-m-v-xs">
+				<label>
+					<div class="sc-label">Início</div>
+					<input ng-model="indexCtrl.logCtrl.params.data_inicio" date-input class="sc-input-default sc-input-block" max="3000-12-31" type="date">
+				</label>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-3 sc-m-v-xs">
+				<label>
+					<div class="sc-label">Fim</div>
+					<input ng-model="indexCtrl.logCtrl.params.data_fim" date-input class="sc-input-default sc-input-block" max="3000-12-31" type="date">
+				</label>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-3 sc-m-v-xs">
+				<label>
+					<div class="sc-label">Ação</div>
+					<select class="sc-input-default sc-input-block" ng-options="acao as acao.key.capitalize() for acao in indexCtrl.logCtrl.statusList track by acao.id" value="acao.key" ng-model="indexCtrl.logCtrl.params.acao"></select>
+				</label>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-3 sc-m-v-xs sc-m-v-xxxl sc-p-t-sm">
+				<button class="sc-btn sc-btn-blue" type="submit">Buscar</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="sc-modal-body">
+		<ul>
+			<li ng-if="indexCtrl.logCtrl.loading || indexCtrl.logCtrl.list.length == 0" class="sc-text-cian-darker sc-bg-cian-lighter sc-p-lg sc-border-radius">
+				<div class="align-center">
+					<span ng-if="indexCtrl.logCtrl.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Carregando!</span>
+					<span ng-if="indexCtrl.logCtrl.list.length == 0 && !indexCtrl.logCtrl.loading"><i class="sc-icon sc-icon-exclamacao-1"></i> Nenhum histórico de passagens!</span>
+				</div>
+			</li>
+			<li ng-repeat="item in indexCtrl.logCtrl.list track by $index" ng-init="indexCtrl.logCtrl.init(item)" class="sc-text-cian-darker sc-bg-{{item.acao.color}}-lighter sc-p-lg sc-m-b-sm sc-border-radius">
+				<div class="sc-cursor-pointer" ng-click="item.acc.toggle()">
+					<span class="sc-text">Fulano - {{item.acao.key.capitalize()}} {{item.data_inicio | date: "dd/MM/yyyy" }} às {{item.data_inicio | date: 'mediumTime' }}</span>
+					<i class="sc-icon right" ng-class="{'sc-icon-menos-1': item.acc.opened , 'sc-icon-mais-1': !item.acc.opened}"></i>
+				</div>
+				<div class="angular-slider" ng-if="item.acc.opened">
+					<div class="sc-m-t-md">
+						<span>Quais informações aqui?</span>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="sc-modal-footer">
+		<div class="col-xs-12">
+			<button class="sc-btn sc-btn-default" ng-click="indexCtrl.logCtrl.modal.close()">Fechar</button>
+		</div>
+	</div>
+</div>
