@@ -1,0 +1,35 @@
+<div sc-modal="passagem.log">
+	<div class="sc-modal-header">
+		<i class="sc-icon sc-icon-fechar-1 sc-badge-hover-red sc-modal-close" ng-click="passagem.log.close()"></i>
+		Histórico da passagem
+	</div>
+
+	<div class="sc-modal-body">
+		<ul>
+			<li class="sc-text-cian-darker sc-bg-cian-lighter sc-border-radius sc-p-lg">
+				<div class="align-center">
+					<span><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Carregando!</span>
+					<span><i class="sc-icon sc-icon-exclacamao-1"></i>Nenhum histórico encontrado!</span>
+				</div>
+			</li>
+			<li ng-repeat="item in passagem.logs track by $index" class="sc-text-cian-darker sc-bg-green-lighter sc-border-radius sc-p-lg sc-m-t-sm">
+				<div class="sc-cursor-pointer" ng-click="item.acc.toggle()">
+					<span class="sc-text">User - {{item.acao.key.capitalize()}} {{item.data_inicio | date: "dd/MM/yyyy" }} às {{item.data_inicio | date: "mediumTime" }}</span>
+					<i class="sc-icon right" ng-class="{'sc-icon-menos-1': item.acc.opened , 'sc-icon-mais-1': !item.acc.opened}"></i>
+				</div>
+				<div class="angular-slider" ng-if="item.acc.opened">
+					<div class="sc-m-t-md">
+						<span>passagem.registros?</span>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+	<div class="sc-modal-footer">
+		<div class="align-rigth">
+			<button class="sc-btn sc-btn-gray" ng-click="passagem.log.close()">Fechar
+			</button>
+		</div>
+	</div>
+</div>
