@@ -43,6 +43,14 @@ angular.module('scApp').lazy
 			novaPassagem: ->
 				@newRecord = !@newRecord
 
+			cancelar: ->
+				scAlert.open
+					title: 'Deseja mesmo cancelar a edição? Dados não salvos serão perdidos.'
+					buttons: [
+						{ label: 'Sim', color: 'yellow', action: -> vm.novaPassagemCtrl.newRecord = false },
+						{ label: 'Não', color: 'gray' }
+					]
+
 		vm.filtro =
 			filtro_avancado: false
 			list: []
@@ -61,34 +69,36 @@ angular.module('scApp').lazy
 
 		vm.modalPerfilCtrl =
 			modal: new scModal()
-			list: [
-				{ id: 1, key: 'perfil', 		active: true,		ctrl: {}, empty_message: "Nenhum perfil cadastrado!" },
-				{ id: 2, key: 'categoria',  active: false,	ctrl: {}, empty_message: "Nenhuma categoria cadastrada!" },
-				{ id: 3, key: 'permissões', active: false,	ctrl: {}, empty_message: '' },
+
+			tipoList: [
+				{ key: 'perfil', 		active: true,		ctrl: {}, empty_message: "Nenhum perfil cadastrado!" },
+				{ key: 'categoria',  active: false,	ctrl: {}, empty_message: "Nenhuma categoria cadastrada!" },
+				{ key: 'permissões', active: false,	ctrl: {}, empty_message: '' },
 			]
 			current_list: {}
 
-			init: (item)->
-				if @current_list.key == 'perfil'
+			listInit: (tipo) ->
+				tipo = @tipoList[0]
+				@current_list = tipo
+				return @loadList(tipo)
+
+			loadList: (tipo) ->
+				for i in [0..@tipoList.length-1]
+					@tipoList[i].active = false
+
+				tipo.active = true
+				@current_list = tipo
+				@current_list.ctrl = if @current_list.key == 'perfil' then vm.perfisCtrl else if @current_list.key == 'categoria' then vm.categoriasCtrl else vm.permissoesCtrl
+				return unless @current_list.key != 'permissões'
+				@current_list.ctrl.init()
+
+			set_init: (item)-> #a ideia era executar esse init a cada pressionamento do botao loadList,
+				if @current_list.key == 'perfil' # para carregar a lista e o init
 					console.log('perfil')
 					vm.perfisCtrl.init(item)
 				else if @current_list.key == 'categoria'
 					console.log('categoria')
 					vm.categoriasCtrl.init(item)
-
-			listInit: (tipo) ->
-				tipo = @list[0]
-				@current_list = tipo
-				return @loadList(tipo)
-
-			loadList: (tipo) ->
-				for i in [0..@list.length-1]
-					@list[i].active = false
-
-				tipo.active = true
-				@current_list = tipo
-				@current_list.ctrl = if @current_list.key == 'perfil' then vm.perfisCtrl else if @current_list.key == 'categoria' then vm.categoriasCtrl else vm.permissoesCtrl
-				@init()
 
 		vm.perfisCtrl =
 			newRecord: false
@@ -99,9 +109,11 @@ angular.module('scApp').lazy
 			new: ->
 				@newRecord = !@newRecord
 
-			init: (item) ->
-				item.toolbar = new scToggle();
-				item.perfil_form = new scModal();
+			init: ->
+				for item in @list
+					item.toolbar = new scToggle();
+					item.perfil_form = new scModal();
+					console.log item
 
 			formInit: (item) ->
 				if @newRecord == true
@@ -167,10 +179,11 @@ angular.module('scApp').lazy
 			list: []
 			newCategoria: ''
 
-			init: (item) ->
-				console.log(item)
-				item.toolbar = new scToggle();
-				item.edit = new scToggle();
+			init: ->
+				for item in @list
+					item.toolbar = new scToggle();
+					item.edit = new scToggle();
+					console.log item
 
 			rmv: (item) ->
 
@@ -220,6 +233,8 @@ angular.module('scApp').lazy
 		vm.logCtrl =
 			list: []
 			modal: new scModal()
+			loading: false
+
 			logKeys: [
 				{ id: 1, label: 'Criada em', 			key: 'criou', 		filtro: true, 	color: 'cian' },
 				{ id: 2, label: 'Passada em', 		key: 'passou',		filtro: true,		color: 'green'  },
@@ -228,12 +243,54 @@ angular.module('scApp').lazy
 				{ id: 5, label: 'Desativada em',	key: 'desativou', filtro: false, 	color: 'yellow' },
 			]
 
+		vm.formCtrl =
+			params: {}
+
 		vm.itemCtrl =
-			init: (passagem)->
+			duplicata: false
+
+			init: (passagem) ->
 				passagem.acc = new scToggle()
 				passagem.edit = new scToggle()
-				passagem.passarServico = new scModal()
+				passagem.menu = new scToggle()
+				passagem.passar_servico_modal = new scModal()
 				passagem.log = new scModal()
+
+			edit: (passagem)->
+				if passagem.edit.opened
+					return
+				else
+					passagem.edit.opened = !passagem.edit.opened
+
+			passarServico: (passagem)->
+				passagem.passar_servico_modal.active = !passagem.passar_servico_modal.active
+
+			rmv: (passagem)->
+				PassagemServico.destroy(params)
+
+			duplicar: (passagem)->
+				@duplicata = true
+				vm.formCtrl.params = angular.copy(passagem)
+
+			disable: (passagem)->
+				PassagemServico.update(params)
+
+			open_log: (passagem)->
+				console.log(passagem.log)
+				passagem.log.active = !passagem.log.active
+
+			accToggle: (passagem)->
+				if passagem.edit.opened
+					@cancelar(passagem)
+				else
+					passagem.acc.opened = !passagem.acc.opened
+
+			cancelar: (passagem)->
+				scAlert.open
+					title: 'Deseja mesmo fechar o formulário? Dados não salvos serão perdidos.'
+					buttons: [
+						{ label: 'Sim', color: 'yellow', action: -> passagem.edit.opened = !passagem.edit.opened}
+					]
 
 		vm
 ]

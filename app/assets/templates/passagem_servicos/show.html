@@ -4,15 +4,15 @@
 			<div class="sc-text-gray sc-p-b-sm">Quem entra: <span class="sc-text-blue">{{passagem.pessoa_entrou.nome}}</span></div>
 			<div class="sc-text-gray sc-p-b-sm">Quem sai: <span class="sc-text-blue">{{passagem.pessoa_saiu.nome}}</span></div>
 			<div class="sc-text-gray sc-p-b-sm">Data de cadastro: <span class="sc-text-blue">{{passagem.data_cadastro | date: "dd/MM/yyyy"}}, às {{passagem.data_cadastro | date: "mediumTime" }}</span></div>
-			<div class="col-xs-12 sc-p-o sc-text-gray" ng-if="passagem.notificacoes != 0">
+			<div class="col-xs-12 sc-p-o sc-text-gray" ng-if="passagem.notificacoes > 0">
 				<i class="sc-icon-carta-1"></i>
 				<span>Notificações</span>
 			</div>
-			<div class="sc-text-gray col-xs-12 sc-p-o" ng-if="passagem.notificacoes != 0">
+			<div class="sc-text-gray col-xs-12 sc-p-o" ng-if="passagem.notificacoes > 0">
 				<div class="sc-fieldset">
 					<ul>
-						<li ng-repeat="notificacoes in passagem.notificacoes" class="sc-text-{{notificacao.color}}">
-							Notificação {{passagem.key}} para Fulano de Tal - fulano@fulano.com.br, em {{notificacao.data | date: "dd/MM/yyyy" }} às {{notificacao.data | date: "mediumTime "}}.
+						<li ng-repeat="notificacao in passagem.notificacoes" class="sc-text-{{notificacao.color}}">
+							Notificação {{notificacao.key}} para Fulano de Tal - fulano@fulano.com.br, em {{notificacao.data | date: "dd/MM/yyyy" }} às {{notificacao.data | date: "mediumTime "}}.
 						</li>
 					</ul>
 				</div>
@@ -21,7 +21,7 @@
 	</div>
 
 	<div class="sc-fieldset flex-row">
-		<div class="sc-text-gray">
+		<div class="sc-text-gray-dark">
 			Eu, <span class="sc-label">{{passagem.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{passagem.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
 		</div>
 		<table ng-repeat="objeto in passagem.objetos track by $index" class="sc-table sc-fieldset">
@@ -46,7 +46,7 @@
 	</div>
 
 	<div class="sc-fieldset flex-row">
-		<div class="sc-label">Observações</div>
-		<div class="sc-text-black">{{passagem.observacoes}}</div>
+		<div class="sc-label col-xs-12 sc-p-b-xs">Observações</div>
+		<div class="sc-text-black col-xs-12 sc-p-t-xs">{{passagem.observacoes}}</div>
 	</div>
 </div>

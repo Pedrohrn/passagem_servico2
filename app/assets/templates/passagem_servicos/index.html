@@ -13,7 +13,7 @@
 		<div class="sc-p-t-xl sc-bg-white">
 			<ul multi-check-group class="sc-accordion" sc-scroll="listCtrl.nextPage()">
 				<li ng-if="indexCtrl.novaPassagemCtrl.newRecord" class="sc-acc-blue">
-					<div class="sc-accordion-head flex-row">
+					<div class="sc-accordion-head flex-row" ng-click="indexCtrl.novaPassagemCtrl.cancelar()">
 						<div class="fcol-xs-2em">
 							<i class="sc-icon sc-icon-mais-1 sc-text-white"></i>
 						</div>
@@ -48,44 +48,44 @@
 						</div>
 					</div>
 				</li>
-				<li ng-init="indexCtrl.listCtrl.init(passagem)" ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head">
-					<div class="flex-row flex-column sc-accordion-head sc-text-gray">
-						<div class="fcol-xs-3em align-center fcol-order-0">
+				<li ng-init="indexCtrl.itemCtrl.init(passagem)" ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }">
+					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)">
+						<div class="fcol-xs-3em align-center fcol-order-0" sc-stop-click>
 							<input type="checkbox" class="sc-checkbox sc-checkbox-blue">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">
 							<span class="sc-border-radius sc-bg-{{passagem.status.color}}">{{passagem.status.label}}</span>
 						</div>
 						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">
-							<i class="sc-icon sc-icon-seta-8-baixo sc-text-red hidden-xs sc-p-r-md"></i>
+							<i class="sc-icon sc-icon-seta-8-baixo sc-text-red hidden-xs sc-p-r-md" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }"></i>
 							{{passagem.pessoa_saiu.nome}}
 						</div>
 						<div class="fcol-xs-auto fcol-order-2 sc-p-sm">
-							<i class="sc-icon sc-icon-seta-8-cima sc-text-green hidden-xs sc-p-r-md"></i>
+							<i class="sc-icon sc-icon-seta-8-cima sc-text-green hidden-xs sc-p-r-md" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }"></i>
 							{{passagem.pessoa_entrou.nome}}
 						</div>
-						<div class="fcol-xs-7em fcol-order-3 sc-p-sm">{{passagem.data_cadastro}}</div>
+						<div class="fcol-xs-7em fcol-order-3 sc-p-sm" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }">{{passagem.data_cadastro}}</div>
 						<div class="fcol-xs-7em fcol-order-4 visible-xs sc-p-sm"></div>
 						<div class="fcol-xs-3em align-center sc-p-sm fcol-order-5" sc-stop-click>
 							<div class="sc-dropdown">
-								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray"></i>
+								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray" ng-class="{'sc-text-white sc-badge-hover-white': passagem.edit.opened || passagem.acc.opened }" ng-click="passagem.menu.toggle()"></i>
 								<ul class="sc-dropdown-menu pull-right" ng-if="passagem.menu.opened">
-									<li ng-click="indexCtrl.itemCtrl.passarServico()">
+									<li ng-click="indexCtrl.itemCtrl.passarServico(passagem)">
 										<span>Passar Serviço</span>
 									</li>
-									<li>
+									<li ng-click="indexCtrl.itemCtrl.edit(passagem)">
 										<span>Editar</span>
 									</li>
-									<li>
+									<li ng-click="indexCtrl.itemCtrl.duplicar(passagem)">
 										<span>Duplicar</span>
 									</li>
-									<li>
+									<li ng-click="indexCtrl.itemCtrl.disable(passagem)">
 										<span>Desativar</span>
 									</li>
-									<li>
+									<li ng-click="indexCtrl.itemCtrl.rmv(passagem)">
 										<span>Excluir</span>
 									</li>
-									<li>
+									<li ng-click="indexCtrl.itemCtrl.open_log(passagem)">
 										<span>Histórico</span>
 									</li>
 								</ul>
@@ -96,7 +96,13 @@
 						<div ng-include="indexCtrl.templates.passagem_servicos.show"></div>
 					</div>
 					<div ng-if="passagem.edit.opened && !passagem.acc.opened" class="sc-accordion-body">
-						<div ng-include="indexCtrl.templates.passagem_servicos.edit"></div>
+						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
+					</div>
+					<div ng-if="passagem.log.active">
+						<div ng-include="indexCtrl.templates.passagem_servicos.log_passagem"></div>
+					</div>
+					<div ng-if="passagem.passar_servico_modal.active">
+						<div ng-include="indexCtrl.templates.passagem_servicos.passar_servico_modal"></div>
 					</div>
 				</li>
 			</ul>

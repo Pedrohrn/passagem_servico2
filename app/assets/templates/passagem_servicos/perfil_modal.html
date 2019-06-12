@@ -10,7 +10,7 @@
 
 	<div class="sc-modal-body col-xs-12">
 		<div class="sc-btn-group sc-m-l-xl" style="z-index: 1;">
-			<button ng-repeat="tipo in indexCtrl.modalPerfilCtrl.list" class="sc-btn sc-btn-default"  ng-class="{'sc-btn-blue': tipo.active}" ng-click="indexCtrl.modalPerfilCtrl.loadList(tipo)">{{tipo.key.capitalize()}}</button>
+			<button ng-repeat="tipo in indexCtrl.modalPerfilCtrl.tipoList" class="sc-btn sc-btn-default"  ng-class="{'sc-btn-blue': tipo.active}" ng-click="indexCtrl.modalPerfilCtrl.loadList(tipo)">{{tipo.key.capitalize()}}</button>
 		</div>
 		<div class="sc-fieldset" style="position: relative; top: -0.6em; z-index: 100;">
 			<ul ng-class="{'sc-accordion': !indexCtrl.modalPerfilCtrl.current_list.ctrl.list.length == 0}">
@@ -31,8 +31,8 @@
 						</span>
 					</div>
 				</li>
-				<li ng-repeat="item in indexCtrl.modalPerfilCtrl.current_list.ctrl.list track by $index" ng-init="indexCtrl.modalPerfilCtrl.init(item)">
-					<div class="sc-accordion-head flex-row">
+				<li ng-repeat="item in indexCtrl.modalPerfilCtrl.current_list.ctrl.list track by $index" ng-init="indexCtrl.modalPerfilCtrl.current_list.ctrl.init()" style="border-top: none !important;">
+					<div class="sc-accordion-head flex-row" style="border-bottom: none !important;">
 						<div ng-if="!item.edit.opened" class="sc-text-black">{{item.nome}}</div>
 						<div ng-if="item.edit.opened && indexCtrl.modalPerfilCtrl.current_list.key == 'categoria'" class="sc-input-group fcol-xs-45">
 							<input class="sc-input-default" ng-model="indexCtrl.categoriasCtrl.newCategoria">
