@@ -2,11 +2,23 @@ angular.module('scApp').lazy
 .factory 'PassagemServico', [
 	'$resource'
 	($resource)->
+			encapsulateDate = (data)-> JSON.stringify { passagem_servico: data }
 
-		$resource 'http://localhost:3000/passagem_servicos/:id.json', { id: '@id' },
-			list:
-				method: 'GET'
+			$resource 'http://localhost:3000/passagem_servicos/:id.json', { id: '@id' },
+				list:
+					method: 'GET'
 
-			show:
-				method: 'GET'
+				show:
+					method: 'GET'
+
+				create:
+					method: 'POST'
+					transformRequest: encapsulateDate
+
+				update:
+					method: 'PUT'
+					transformRequest: encapsulateDate
+
+				destroy:
+					method: 'DELETE'
 ]
