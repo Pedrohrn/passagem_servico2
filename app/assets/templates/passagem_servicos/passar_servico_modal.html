@@ -1,0 +1,65 @@
+<div sc-modal="passagem.passar_servico_modal">
+	<div class="sc-modal-header">
+		<i class="sc-icon sc-icon-fechar-1 sc-badge-hover-red sc-modal-close" ng-click="passagem.passar_servico_modal.close()"></i>
+		Passar Serviço
+	</div>
+
+	<div class="sc-modal-body">
+		<div class="flex-row">
+			<div class="col-xs-5 sc-m-b-md">
+				<div class="sc-label">Quem entra:</div>
+				<select class="sc-input-default sc-input-block" ng-options="porteiro as porteiro.nome for porteiro in indexCtrl.porteirosCtrl.list track by porteiro.id" ng-model="params.pessoa_entrou">
+					<option value="Selecione quem entra">Selecione quem entra</option>
+				</select>
+			</div>
+			<div class="col-xs-4 sc-m-b-md">
+				<div class="sc-label">Senha:</div>
+				<input class="sc-input-default" type="password"/>
+			</div>
+			<div class="clear sc-p-o"></div>
+			<div class="col-xs-5 sc-m-b-md">
+				<div class="sc-label">Quem sai:</div>
+				<select class="sc-input-default sc-input-block" ng-options="porteiro as porteiro.nome for porteiro in indexCtrl.porteirosCtrl.list track by porteiro.id" ng-model="params.pessoa_saiu">
+					<option value="Selecione quem sai">Selecione quem sai</option>
+				</select>
+			</div>
+			<div class="col-xs-4 sc-m-b-md">
+				<div class="sc-label">Senha:</div>
+				<input class="sc-input-default" type="password"/>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<hr class="sc-hr-gray-light"/>
+		<div class="flex-row sc-p-t-md">
+			<div class="sc-text-gray">
+				Eu, <span class="sc-label">{{passagem.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{passagem.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
+			</div>
+			<table ng-repeat="objeto in passagem.objetos track by $index" class="sc-table sc-fieldset">
+				<thead>
+					<tr>
+						<th>
+							<div class="sc-text-blue sc-text-bold">{{objeto.categoria.label}}</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="sc-text-bold sc-text-gray">Item</td>
+						<td class="sc-text-bold sc-text-gray align-right">Qtd</td>
+					</tr>
+					<tr ng-repeat="item in objeto.itens track by $index">
+						<td class="sc-text-black">{{item.nome}}</td>
+						<td class="sc-text-black align-right">{{item.qtd}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="sc-modal-footer">
+		<div class="align-rigth">
+			<button class="sc-btn sc-btn-gray" ng-click="passagem.passar_servico_modal.close()">Cancelar</button>
+			<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.itemCtrl.passarServico(params)">Passar Serviço</button>
+		</div>
+	</div>
+</div>
