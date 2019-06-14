@@ -1,4 +1,3 @@
-console.log('formCtrl')
 angular.module('scApp').lazy
 .controller 'PassagemServicos::FormCtrl', [
 	'$scModal', 'scAlert', 'scToggle', 'PassagemServico'
@@ -14,6 +13,8 @@ angular.module('scApp').lazy
 			vm.params.objetos = angular.copy vm.passagem.objetos || []
 
 		vm.formCtrl =
+			loading: false
+			current_perfil: {}
 
 			set_perfil: ->
 				scAlert.open
@@ -27,9 +28,24 @@ angular.module('scApp').lazy
 						{ label: 'Cancelar', color: 'gray' },
 					]
 
-			mesclarObjetos:  ->
+			mesclarObjetos: ->
+				aux = []
+				for objeto in vm.params.objetos
+					if Object.blank(objeto.categoria)
+						aux.push(objeto)
+
+				vm.params.objetos.remove(item) for item in aux
+
+				vm.params.perfil = angular.copy vm.formCtrl.current_perfil
+				for objetoPerfil in vm.params.perfil.objetos
+					for objeto in vm.params.objetos
+						if objetoPerfil.categoria.id == objeto.categoria.id
+							objeto.itens = objeto.itens.concat(objetoPerfil.itens)
+						else
+							vm.params.objetos.push(objetoPerfil)
 
 			sobreescreverObjetos: ->
+				vm.params.objetos = angular.copy vm.params.current_perfil.objetos
 
 			addObjeto: ->
 				vm.params.objetos.unshift({ categoria: undefined, itens: [] })
@@ -64,16 +80,24 @@ angular.module('scApp').lazy
 						{ label: 'Não', color: 'gray' }
 					]
 
-			salvar: ->
-				vm.params.status = "pendente"
-				return vm.submit
+			salvar: (passagem)->
+				return unless !@loading
+				vm.params.status = if vm.params.status.label == 'Realizada' then 'realizada' else 'pendente'
+				return vm.submit(passagem)
 
-			salvar_e_passar: ->
+			salvar_e_passar: (passagem)->
+				return unless !@loading
 				vm.params.status = "realizada"
-				return vm.submit
+				return vm.submit(passagem)
 
-		vm.submit = ->
-			PassagemServico.create(vm.params)
+		vm.submit = (passagem) ->
+			if passagem.edit && passagem.edit.opened
+				PassagemServico.update(vm.params)
+			else
+				PassagemServico.create(vm.params)
+			#PassagemServico.list()
+			passagem.edit.opened = false
+			passagem.acc.opened = true
 
 		vm
 ]

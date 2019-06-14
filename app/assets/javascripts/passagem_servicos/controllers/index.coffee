@@ -20,6 +20,9 @@ angular.module('scApp').lazy
 		vm.listCtrl =
 			list: []
 
+			init: ->
+				@exec()
+
 			loadList: ->
 				# @pagination.clear()
 				@list = []
@@ -45,6 +48,7 @@ angular.module('scApp').lazy
 			newRecord: false
 
 			novaPassagem: ->
+				return unless !@newRecord
 				@newRecord = !@newRecord
 
 			cancelar: ->
@@ -58,8 +62,8 @@ angular.module('scApp').lazy
 		vm.filtro =
 			filtro_avancado: false
 			list: []
-			params: {}
-			filtroKeys: [
+			params: { lista_de_periodos: []}
+			filtroKeys: [ #listagem de status
 				{ id: 1, key: 'pendente',   color: 'yellow'},
 				{ id: 2, key: 'realizada',  color: 'green'},
 				{ id: 3, key: 'desativada', color: 'red'},
@@ -71,13 +75,23 @@ angular.module('scApp').lazy
 			buscaAvancada: ->
 				@filtro_avancado = !@filtro_avancado
 
+			addPeriodo: ->
+				@params.lista_de_periodos.push({ tipoData: undefined, data_inicio: undefined, data_fim: undefined })
+				console.log @params.lista_de_periodos
+
+			limparBusca: ->
+				@params = {}
+
+			rmvPeriodo: (data)->
+				@params.lista_de_periodos.remove(data)
+
 		vm.modalPerfilCtrl =
 			modal: new scModal()
 
 			tipoList: [
-				{ key: 'perfil', 		active: true,		ctrl: {}, empty_message: "Nenhum perfil cadastrado!" },
-				{ key: 'categoria',  active: false,	ctrl: {}, empty_message: "Nenhuma categoria cadastrada!" },
-				{ key: 'permissões', active: false,	ctrl: {}, empty_message: '' },
+				{ key: 'perfil', 			active: true,		ctrl: {}, empty_message: "Nenhum perfil cadastrado!" },
+				{ key: 'categoria',  	active: false,	ctrl: {}, empty_message: "Nenhuma categoria cadastrada!" },
+				{ key: 'permissões', 	active: false,	ctrl: {}, empty_message: '' },
 			]
 			current_list: {}
 
@@ -98,23 +112,25 @@ angular.module('scApp').lazy
 
 		vm.perfisCtrl =
 			newRecord: false
+			form_modal: new scModal()
 			list: []
 			params: {}
 
 			new: ->
+				console.log(@form_modal)
 				@newRecord = !@newRecord
+				@form_modal.open()
 
 			init: ->
 				for item in @list
 					item.toolbar = new scToggle();
-					item.perfil_form = new scModal();
-					console.log item
+					item.perfil_form = new scToggle();
 
 			formInit: (item) ->
 				if @newRecord == true
 					@params = {}
 					@params.objetos = []
-				else if item.perfil_form.active
+				else if item.perfil_form.opened
 					@params = angular.copy(item) || {}
 					@params.objetos = angular.copy(item.objetos) || []
 
@@ -125,15 +141,19 @@ angular.module('scApp').lazy
 				Perfil.destroy(params)
 
 			edit: (item)->
-				item.perfil_form.open()
+				item.perfil_form.toggle()
+				console.log(item.perfil_form.opened)
+				@form_modal.open()
 
 			disable: (item)->
-				Perfil.update(params)
+				@params = angular.copy item
+				@params.is_disabled = if @params.is_disabled  then false else true
+				Perfil.update(@params)
 
 			addObjeto: ->
 				@params.objetos.unshift({ categoria: undefined, itens: [] })
 
-			rvm: (objeto)->
+			rmvObjeto: (objeto)->
 				@params.objetos.remove(objeto)
 
 			limparFormulario: ->
@@ -150,46 +170,52 @@ angular.module('scApp').lazy
 			rmvItem: (objeto, item)->
 				objeto.itens.remove(item)
 
+			toggleForm: (item)->
+				item.perfil_form.opened = !item.perfil_form.opened
+
 			cancelar: (item)->
 				if @newRecord
 					scAlert.open
 						title: 'Deseja mesmo cancelar a edição?',
 						buttons: [
-							{ label: 'Sim', color: 'yellow', action: -> @newRecord = false}
+							{ label: 'Sim', color: 'yellow', action: -> vm.perfisCtrl.newRecord = false; vm.perfisCtrl.form_modal.close() }
 						]
-				else if item.perfil_form && item.perfil_form.active
+				else
 					scAlert.open
 						title: 'Deseja mesmo cancelar a edição?'
 						messages: [ { msg: 'Dados não salvos serão perdidos.' } ]
 						buttons: [
-							{ label: 'Sim', color: 'yellow', action: -> item.perfil_form.toggle() },
+							{ label: 'Sim', color: 'yellow', action: -> vm.perfisCtrl.toggleForm(item); vm.perfisCtrl.form_modal.close() },
 							{ label: 'Não', color: 'gray'}
 						]
 
-			submit: (params) ->
-				Perfil.create(params)
+			submit: ->
+				Perfil.create(@params)
 
 		vm.categoriasCtrl =
 			newRecord: false
 			list: []
-			newCategoria: ''
+			newCategoria: {}
 
 			init: ->
 				for item in @list
 					item.toolbar = new scToggle();
 					item.edit = new scToggle();
-					console.log item
 
 			rmv: (item) ->
+				Categoria.destroy(item)
 
 			edit: (item) ->
 				item.edit.toggle()
-				@newCategoria = angular.copy item.nome
+				@newCategoria = angular.copy item
 
 			toggleMenu: (item)->
 				item.toolbar.opened = !item.toolbar.opened
 
 			disable: (item) ->
+				item.is_disabled = !item.is_disabled
+				@newCategoria = angular.copy item
+				Categoria.update(@newCategoria)
 
 			new: ->
 				if @newRecord
@@ -198,9 +224,10 @@ angular.module('scApp').lazy
 						buttons: [ { label: 'OK', color: 'gray' } ]
 				else
 					@newRecord = true
+					@newCategoria = { nome: '' }
 
-			submit: ->
-				Categoria.create(params)
+			submit:  ->
+				Categoria.create(@newCategoria)
 
 			cancelar: (item)->
 				if @newRecord
@@ -238,11 +265,9 @@ angular.module('scApp').lazy
 				{ id: 5, label: 'Desativada em',	key: 'desativou', filtro: false, 	color: 'yellow' },
 			]
 
-		vm.formCtrl =
-			params: {}
-
 		vm.itemCtrl =
 			duplicata: false
+			dupParams: {}
 
 			init: (passagem) ->
 				passagem.acc = new scToggle()
@@ -265,14 +290,15 @@ angular.module('scApp').lazy
 				PassagemServico.destroy(params)
 
 			duplicar: (passagem)->
+				vm.novaPassagemCtrl.novaPassagem()
 				@duplicata = true
-				vm.formCtrl.params = angular.copy(passagem)
+				@dupParams = angular.copy(passagem)
+				passagem = angular.copy @dupParams
 
 			disable: (passagem)->
 				PassagemServico.update(params)
 
 			open_log: (passagem)->
-				console.log(passagem.log)
 				passagem.log.active = !passagem.log.active
 
 			accToggle: (passagem)->
@@ -285,8 +311,20 @@ angular.module('scApp').lazy
 				scAlert.open
 					title: 'Deseja mesmo fechar o formulário? Dados não salvos serão perdidos.'
 					buttons: [
-						{ label: 'Sim', color: 'yellow', action: -> passagem.edit.opened = !passagem.edit.opened}
+						{ label: 'Sim', color: 'yellow', action: -> if vm.novaPassagemCtrl.newRecord then vm.novaPassagemCtrl.newRecord = false else if passagem.edit && passagem.edit.opened then passagem.edit.opened = false; passagem.acc.opened = true },
+						{ label: 'Não', color: 'gray' }
 					]
+
+		vm.passarServicoModal =
+			params: {}
+			loading: false
+
+			init: (passagem)->
+				@params = angular.copy passagem
+
+			passarServico: ->
+				@params.status = 'realizada'
+				PassagemServico.update(@params)
 
 		vm
 ]
