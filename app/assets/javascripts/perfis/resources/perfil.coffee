@@ -10,5 +10,14 @@ angular.module('scApp').lazy
 			show:
 				method: 'GET'
 
+			destroy:
+				method: 'DELETE'
+
+			update:
+				method: 'PUT'
+
+			create:
+				method: 'POST'
+
 
 ]
