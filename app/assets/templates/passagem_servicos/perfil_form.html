@@ -1,4 +1,4 @@
-<div sc-modal="item.perfil_form" style="z-index: 2;" ng-init="indexCtrl.perfisCtrl.formInit(item)">
+<div sc-modal="indexCtrl.perfisCtrl.form_modal" style="z-index: 2;" ng-init="indexCtrl.perfisCtrl.formInit(item)">
 	<div class="sc-modal-header sc-text-sm" style="min-height: 3.1em;">
 		<i class="sc-icon sc-icon-fechar-1 sc-modal-close sc-badge-hover-red" ng-click="item.perfil_form.close()"></i>
 		<span class="sc-m-l-lg sc-text-lg">Perfil de Passagem</span>
@@ -39,7 +39,7 @@
 								</div>
 								<div class="align-self-flex-end sc-m-h-lg">
 									<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="indexCtrl.perfisCtrl.addItem(objeto)"></i>
-									<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="indexCtrl.perfisCtrl.rmvObjeto(objeto, item)"></i>
+									<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="indexCtrl.perfisCtrl.rmvObjeto(objeto)"></i>
 								</div>
 							</div>
 							<ul ng-if="objeto.itens.length != 0">
@@ -72,7 +72,7 @@
 
 	<div class="sc-modal-footer">
 		<div class="col-xs-12">
-			<button class="sc-btn sc-btn-blue right sc-m-h-lg" ng-click="indexCtrl.perfisCtrl.submit(params)">Salvar</button>
+			<button class="sc-btn sc-btn-blue right sc-m-h-lg" ng-click="indexCtrl.perfisCtrl.submit()">Salvar</button>
 			<button class="sc-btn sc-btn-gray right" ng-click="indexCtrl.perfisCtrl.cancelar(item)">Cancelar</button>
 		</div>
 	</div>

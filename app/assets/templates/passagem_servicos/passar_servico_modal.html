@@ -1,4 +1,4 @@
-<div sc-modal="passagem.passar_servico_modal">
+<div sc-modal="passagem.passar_servico_modal" ng-init="indexCtrl.passarServicoModal.init(passagem)">
 	<div class="sc-modal-header">
 		<i class="sc-icon sc-icon-fechar-1 sc-badge-hover-red sc-modal-close" ng-click="passagem.passar_servico_modal.close()"></i>
 		Passar Serviço
@@ -8,7 +8,7 @@
 		<div class="flex-row">
 			<div class="col-xs-5 sc-m-b-md">
 				<div class="sc-label">Quem entra:</div>
-				<select class="sc-input-default sc-input-block" ng-options="porteiro as porteiro.nome for porteiro in indexCtrl.porteirosCtrl.list track by porteiro.id" ng-model="params.pessoa_entrou">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="indexCtrl.passarServicoModal.params.pessoa_entrou">
 					<option value="Selecione quem entra">Selecione quem entra</option>
 				</select>
 			</div>
@@ -19,7 +19,7 @@
 			<div class="clear sc-p-o"></div>
 			<div class="col-xs-5 sc-m-b-md">
 				<div class="sc-label">Quem sai:</div>
-				<select class="sc-input-default sc-input-block" ng-options="porteiro as porteiro.nome for porteiro in indexCtrl.porteirosCtrl.list track by porteiro.id" ng-model="params.pessoa_saiu">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="indexCtrl.passarServicoModal.params.pessoa_saiu">
 					<option value="Selecione quem sai">Selecione quem sai</option>
 				</select>
 			</div>
@@ -32,9 +32,9 @@
 		<hr class="sc-hr-gray-light"/>
 		<div class="flex-row sc-p-t-md">
 			<div class="sc-text-gray">
-				Eu, <span class="sc-label">{{passagem.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{passagem.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
+				Eu, <span class="sc-label">{{indexCtrl.passarServicoModal.params.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{indexCtrl.passarServicoModal.params.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
 			</div>
-			<table ng-repeat="objeto in passagem.objetos track by $index" class="sc-table sc-fieldset">
+			<table ng-repeat="objeto in indexCtrl.passarServicoModal.params.objetos track by $index" class="sc-table sc-fieldset">
 				<thead>
 					<tr>
 						<th>
@@ -54,12 +54,19 @@
 				</tbody>
 			</table>
 		</div>
+		<div class="flex-row sc-m-t-xl">
+			<div class="sc-label fcol-xs-100">Observações:</div>
+			<textarea class="sc-input-default" type="text" rows="5" cols="80" ng-model="indexCtrl.passarServicoModal.params.observacoes"></textarea>
+		</div>
 	</div>
 
 	<div class="sc-modal-footer">
 		<div class="align-rigth">
 			<button class="sc-btn sc-btn-gray" ng-click="passagem.passar_servico_modal.close()">Cancelar</button>
-			<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.itemCtrl.passarServico(params)">Passar Serviço</button>
+			<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.passarServicoModal.passarServico(params)">
+				<span ng-if="!indexCtrl.passarServicoModal.loading">Passar Serviço</span>
+				<span ng-if="indexCtrl.passarServicoModal.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Salvando</span>
+			</button>
 		</div>
 	</div>
 </div>

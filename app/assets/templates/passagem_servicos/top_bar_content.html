@@ -9,8 +9,8 @@
 		<div class="sc-input-group">
 			<input class="sc-input-default">
 			<i class="sc-btn sc-btn-blue sc-icon sc-icon-lupa-1" ng-click="indexCtrl.listCtrl.init()"></i>
-			<i class="sc-btn sc-btn-blue sc-icon sc-icon-filtro-2" ng-click="indexCtrl.filtro.buscaAvancada()" ng-class="{'sc-btn-gray': indexCtrl.filtro.filtro_avancado}"></i>
-			<i class="sc-btn sc-btn-blue sc-icon sc-icon-impressora"></i>
+			<i class="sc-btn sc-btn-default sc-icon sc-icon-filtro-2" ng-click="indexCtrl.filtro.buscaAvancada()" ng-class="{'sc-btn-gray': indexCtrl.filtro.filtro_avancado}"></i>
+			<i class="sc-btn sc-btn-default sc-icon sc-icon-impressora"></i>
 		</div>
 	</div>
 	<div class="fcol-xs-auto hidden-xs"></div>
@@ -40,15 +40,15 @@
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Início</div>
-			<input class="sc-input-default sc-input-block" max="3000-12-31" min="2001-01-01" ng-model="params.data_inicio" sc-date-input/>
+			<input class="sc-input-default sc-input-block" type="date" max="3000-12-31" min="2001-01-01" ng-model="params.data_inicio" sc-date-input/>
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Fim</div>
-			<input class="sc-input-default sc-input-block" max="3000-12-31" min="2001-01-01" ng-model="params.data_fim" sc-date-input/>
+			<input class="sc-input-default sc-input-block" type="date" max="3000-12-31" min="2001-01-01" ng-model="params.data_fim" sc-date-input/>
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Tipo de data</div>
-			<select class="sc-input-default sc-input-block" ng-options="tipoData as tipoData.label disable when tipoData.log for tipoData in indexCtrl.filtro.list track by tipoData.id" ng-model="params.tipoData" ng-model="params.tipo_data"></select>
+			<select class="sc-input-default sc-input-block" ng-options="tipoData as tipoData.label disable when tipoData.log for tipoData in indexCtrl.filtro.list track by tipoData.id" ng-model="params.tipoData"></select>
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Status</div>
@@ -56,13 +56,33 @@
 		</div>
 		<div class="clear sc-p-o"></div>
 		<hr>
+		<div class="flex-row-with-padding" ng-repeat="data in indexCtrl.filtro.params.lista_de_periodos track by $index">
+			<div class="fcol-xs-30">
+				<div class="sc-label">Início:</div>
+				<input class="sc-input-default sc-input-block" type="date" max="3000-12-31" min="2001-01-01" ng-model="data.data_inicio" sc-date-input/>
+			</div>
+			<div class="fcol-xs-30">
+				<div class="sc-label">Fim:</div>
+				<input class="sc-input-default sc-input-block" type="date" max="3000-12-31" min="2001-01-01" ng-model="data.data_fim" sc-date-input/>
+			</div>
+			<div class="fcol-xs-30">
+				<div class="sc-label">Tipo de data:</div>
+				<select class="sc-input-default sc-input-block" ng-options="tipoData as tipoData.label disable when tipoData.log for tipoData in indexCtrl.filtro.list track by tipoData.id" ng-model="data.tipoData"></select>
+			</div>
+			<div class="fcol-xs-3em sc-m-t-xxxl">
+				<div class="align-self-center">
+					<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="indexCtrl.filtro.rmvPeriodo(data)"></i>
+				</div>
+			</div>
+		</div>
+		<hr ng-if="indexCtrl.filtro.params.lista_de_periodos.length > 0">
 
 		<div class="left sc-m-l-md">
-			<button class="sc-btn sc-btn-blue sc-btn-awesomeness" type="button" ng-click="indexCtrl.filtro.buscar(params)">
+			<button class="sc-btn sc-btn-blue sc-btn-awesomeness" type="button" ng-click="indexCtrl.filtro.buscar()">
 				<div class="sc-btn-icon"><i class="sc-icon sc-icon-visto-1"></i></div>
 				<div class="sc-btn-text">Aplicar</div>
 			</button>
-			<button class="sc-m-h-lg sc-btn sc-btn-green sc-btn-awesomeness" type="button" ng-click="indexCtrl.filtro.addPeriod()">
+			<button class="sc-m-h-lg sc-btn sc-btn-green sc-btn-awesomeness" type="button" ng-click="indexCtrl.filtro.addPeriodo()">
 				<div class="sc-btn-icon"><i class="sc-icon sc-icon-mais-1"></i></div>
 				<div class="sc-btn-text">Adicionar período</div>
 			</button>

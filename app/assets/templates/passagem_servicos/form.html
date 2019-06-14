@@ -1,5 +1,5 @@
 <div ng-controller="PassagemServicos::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
-	<form ng-submit="formCtrl.submit()" class="sc-m-h-md sc-p-t-sm">
+	<form class="sc-m-h-md sc-p-t-sm">
 		<div class="sc-fieldset flex-row">
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
 				<div class="sc-label">Quem sai:</div>
@@ -101,9 +101,15 @@
 		</div>
 
 		<div class="align-right">
-			<button class="sc-btn sc-btn-green sc-btn-block-only-xs" type="button">Salvar e passar</button>
-			<button class="sc-btn sc-btn-blue sc-btn-block-only-xs sc-m-h-lg" type="button">Salvar</button>
-			<button class="sc-btn sc-btn-red sc-btn-block-only-xs" type="button">Cancelar</button>
+			<button class="sc-btn sc-btn-green sc-btn-block-only-xs" type="button" ng-click="formCtrl.formCtrl.salvar_e_passar(passagem)">
+				<span ng-if="!formCtrl.formCtrl.loading">Salvar e passar</span>
+				<span ng-if="formCtrl.formCtrl.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Salvando</span>
+			</button>
+			<button class="sc-btn sc-btn-blue sc-btn-block-only-xs sc-m-h-lg" type="button" ng-click="formCtrl.formCtrl.salvar(passagem)">
+				<span ng-if="!formCtrl.formCtrl.loading">Salvar</span>
+				<span ng-if="formCtrl.formCtrl.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Salvando</span>
+			</button>
+			<button class="sc-btn sc-btn-red sc-btn-block-only-xs" type="button" ng-click="indexCtrl.itemCtrl.cancelar(passagem)">Cancelar</button>
 		</div>
 	</form>
 </div>

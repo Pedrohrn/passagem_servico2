@@ -1,9 +1,19 @@
 <div class="sc-m-h-md sc-p-t-sm">
 	<div class="sc-fieldset flex-row sc-p-h-xs">
 		<div class="fcol-xs-100 sc-p-b-o">
-			<div class="sc-text-gray sc-p-b-sm">Quem entra: <span class="sc-text-blue">{{passagem.pessoa_entrou.nome}}</span></div>
-			<div class="sc-text-gray sc-p-b-sm">Quem sai: <span class="sc-text-blue">{{passagem.pessoa_saiu.nome}}</span></div>
-			<div class="sc-text-gray sc-p-b-sm">Data de cadastro: <span class="sc-text-blue">{{passagem.data_criacao | date: "dd/MM/yyyy"}}, às {{passagem.data_criacao | date: "mediumTime" }}</span></div>
+			<div class="sc-text-gray sc-p-b-sm">Quem entra:
+				<span class="sc-text-blue"> {{passagem.pessoa_entrou.nome}}</span>
+			</div>
+			<div class="sc-text-gray sc-p-b-sm">Quem sai:
+				<span class="sc-text-blue"> {{passagem.pessoa_saiu.nome}}</span>
+			</div>
+			<div class="sc-text-gray sc-p-b-sm">Data de cadastro:
+				<span class="sc-text-blue"> {{passagem.data_criacao | date: "dd/MM/yyyy"}}, às {{passagem.data_criacao | date: "mediumTime" }}
+				</span>
+			</div>
+			<div ng-if="passagem.status.label != 'Pendente'" class="sc-text-gray sc-p-b-sm">Data da passagem:
+				<span class="sc-text-blue">{{passagem.passada_em | date: "dd/MM/yyyy"}}, às {{passagem.passada_em | date: "mediumTime" }}</span>
+			</div>
 			<div class="col-xs-12 sc-p-o sc-text-gray" ng-if="passagem.notificacoes > 0">
 				<i class="sc-icon-carta-1"></i>
 				<span>Notificações</span>
