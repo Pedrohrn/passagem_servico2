@@ -15,6 +15,7 @@ class PassagemServico < ApplicationRecord
 			data_criacao: created_at,
 			status: status,
 			observacoes: observacoes,
+			passada_em: updated_at,
 		}
 	end
 

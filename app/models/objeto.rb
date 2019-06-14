@@ -6,6 +6,8 @@ class Objeto < ApplicationRecord
 			id: id,
 			categoria_id: categoria_id,
 			itens: itens,
+			perfil_id: perfil_id,
+			passagem_servico_id: passagem_servico_id,
 		}
 	end
 

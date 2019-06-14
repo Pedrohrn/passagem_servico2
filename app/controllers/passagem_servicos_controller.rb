@@ -25,7 +25,7 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def create
-		st, resp = service.create(passagem_service_params)
+		st, resp = service.submit({}, passagem_service_params)
 
 		case st
 		when :success then render json: resp, status: :ok
@@ -33,7 +33,7 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def update
-		st, resp = service.update(passagem_service_params)
+		st, resp = service.update({}, passagem_service_params)
 
 		case st
 		when :success then render json: resp, status: :ok
@@ -41,7 +41,7 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def destroy
-		st, resp = service.destroy(passagem_service_params)
+		st, resp = service.destroy({}, passagem_service_params)
 
 		case st
 		when :success then render json: resp
@@ -51,7 +51,7 @@ class PassagemServicosController < ApplicationController
 	private
 
 	def passagem_service_params
-		attrs = [:id, :status, :data_criacao]
+		attrs = [:id, :status, :data_criacao, :observacoes]
 		attrs << {pessoa_saiu: [:id]}
 		attrs << {pessoa_entrou: [:id]}
 

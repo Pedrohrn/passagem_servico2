@@ -18,12 +18,17 @@ class PassagemServicosService
 		[:success, passagem.to_frontend_obj]
 	end
 
+	def self.update(opts, params)
+		self.submit(opts, params)
+	end
+
 	def self.submit(opts, params)
 		pessoa_saiu = params.delete(:pessoa_saiu) || {}
 		pessoa_entrou = params.delete(:pessoa_entrou) || {}
 
 		params[:pessoa_saiu_id] = pessoa_saiu[:id]
 		params[:pessoa_entrou_id] = pessoa_entrou[:id]
+		params.delete(:data_criacao)
 
 		passagem = model.find_by(id: params[:id]) || model.new(params)
 		passagem.assign_attributes(params)
@@ -35,6 +40,9 @@ class PassagemServicosService
 	def self.destroy(opts, params)
 		passagem = model.find_by(id: params[:id])
 		passagem.destroy
+
+		return [:success, {}] if passagem.destroy
+		[:error, passagem.errors]
 	end
 
 end

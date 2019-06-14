@@ -1,11 +1,35 @@
 class CategoriasService
 	def self.model() ::Categoria; end
 
-	def self.index
+	def self.index(opts, params)
 		list = model.all
 
 		resp = { categorias: list }
 
 		[:success, resp]
+	end
+
+	def self.create(opts, params)
+		self.submit(opts, params)
+	end
+
+	def self.update(opts, params)
+		self.submit(opts, params)
+	end
+
+	def self.submit(opts, params)
+		categoria = model.find_by(id: params[:id]) || model.new
+		categoria.assign_attributes(params)
+
+		return [:success, {categoria: categoria}] if categoria.save
+		[:error, categoria.errors.full_messages]
+	end
+
+	def self.destroy(opts, params)
+		categoria = model.find_by(id: params[:id])
+		categoria.destroy
+
+		return [:success, {}] if categoria.save
+		[:error, {}]
 	end
 end
