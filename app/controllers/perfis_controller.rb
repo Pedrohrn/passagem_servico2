@@ -39,6 +39,12 @@ class PerfisController < ApplicationController
 
 	def perfis_params
 		attrs = [:id, :nome, :is_disabled]
+		attrs << {
+			objetos: [
+				categoria: [:id],
+				itens: [ :item_name, :item_qtd ]
+			],
+		}
 
 		resp = params.require(:perfil).permit(attrs).to_h
 		resp.deep_symbolize_keys

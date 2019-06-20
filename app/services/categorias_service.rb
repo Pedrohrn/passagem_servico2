@@ -21,7 +21,7 @@ class CategoriasService
 		categoria = model.find_by(id: params[:id]) || model.new
 		categoria.assign_attributes(params)
 
-		return [:success, {categoria: categoria}] if categoria.save
+		return [:success, { categoria: categoria.to_frontend_obj }] if categoria.save
 		[:error, categoria.errors.full_messages]
 	end
 
@@ -29,7 +29,7 @@ class CategoriasService
 		categoria = model.find_by(id: params[:id])
 		categoria.destroy
 
-		return [:success, {}] if categoria.save
+		return [:success, { message: 'Registro excluído com sucesso!'}] if categoria.destroy
 		[:error, {}]
 	end
 end
