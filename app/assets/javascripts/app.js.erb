@@ -40,7 +40,7 @@ app = angular.module('scApp', ['ngRoute', 'ngResource', 'sc.commons.directives.m
 
         setTimeout(() => {
           $rootScope.$apply(function(){ deferred.resolve(); })
-        }, 500)
+        }, 600)
 
         return deferred.promise;
 	   	}]
