@@ -29,16 +29,15 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="sc-fieldset flex-row">
-		<div class="sc-text-gray-dark">
+	<div class="sc-fieldset flex-row sc-p-xl">
+		<div class="sc-text-gray-dark fcol-xs-100">
 			Eu, <span class="sc-label">{{passagem.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{passagem.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
 		</div>
-		<table ng-repeat="objeto in passagem.objetos track by $index" class="sc-table sc-fieldset">
+		<table ng-repeat="objeto in passagem.objetos track by $index" class="sc-table sc-fieldset fcol-xs-100">
 			<thead>
 				<tr>
 					<th>
-						<div class="sc-text-blue sc-text-bold">{{objeto.categoria.label}}</div>
+						<div class="sc-text-blue sc-text-bold">{{objeto.categoria.nome}}</div>
 					</th>
 				</tr>
 			</thead>
@@ -48,8 +47,8 @@
 					<td class="sc-text-bold sc-text-gray align-right">Qtd</td>
 				</tr>
 				<tr ng-repeat="item in objeto.itens track by $index">
-					<td class="sc-text-black">{{item.nome}}</td>
-					<td class="sc-text-black align-right">{{item.qtd}}</td>
+					<td class="sc-text-black">{{item.item_name}}</td>
+					<td class="sc-text-black align-right">{{item.item_qtd}}</td>
 				</tr>
 			</tbody>
 		</table>

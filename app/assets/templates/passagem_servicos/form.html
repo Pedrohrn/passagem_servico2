@@ -3,7 +3,7 @@
 		<div class="sc-fieldset flex-row">
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
 				<div class="sc-label">Quem sai:</div>
-				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="formCtrl.params.pessoa_saiu">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome disable when formCtrl.params.pessoa_entrou.nome == pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="formCtrl.params.pessoa_saiu">
 					<option label="Selecione quem sai" ng-value="empty"></option>
 				</select>
 			</div>
@@ -13,7 +13,7 @@
 			</div>
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
 				<div class="sc-label">Quem entra:</div>
-				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="formCtrl.params.pessoa_entrou">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome disable when formCtrl.params.pessoa_saiu.nome == pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="formCtrl.params.pessoa_entrou">
 					<option label="Selecione quem entra" ng-value="empty"></option>
 				</select>
 			</div>
@@ -33,9 +33,11 @@
 			<div class="fcol-xs-100">
 				<div class="sc-label">Perfil de passagem:</div>
 				<div class="flex-row">
-					<select class="sc-input-default col-xs-12 col-sm-5 col-lg-4" ng-options="perfil as perfil.nome for perfil in indexCtrl.perfisCtrl.list track by perfil.id" ng-model="formCtrl.formCtrl.current_perfil" ng-change="formCtrl.formCtrl.set_perfil()">
-						<option label="Selecione um perfil" ng-value="empty"></option>
-					</select>
+					<div class="sc-input-group fcol-xs-100 fcol-sm-50 fcol-lg-35">
+						<select class="sc-input-default" ng-options="perfil as perfil.nome for perfil in indexCtrl.perfisCtrl.list track by perfil.id" ng-change="formCtrl.formCtrl.set_perfil()" ng-model="formCtrl.formCtrl.current_perfil">
+							<option label="Selecione um perfil" ng-value="empty"></option>
+						</select>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -78,10 +80,10 @@
 						</li>
 						<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 							<div class="fcol-xs-5em">
-								<input class="sc-input-default sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+								<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
 							</div>
 							<div class="fcol-xs-60 sc-m-l-lg">
-								<input class="sc-input-default sc-input-thin" ng-model="item.item_name" type="text" />
+								<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
 							</div>
 							<div class="fcol-xs-auto"></div>
 							<div class="fcol-xs-3em">

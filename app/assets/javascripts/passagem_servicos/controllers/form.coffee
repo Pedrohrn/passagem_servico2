@@ -11,10 +11,13 @@ angular.module('scApp').lazy
 			vm.passagem = passagem || {}
 			vm.params = angular.copy vm.passagem
 			vm.params.objetos = angular.copy vm.passagem.objetos || []
+			vm.params.status = 'pendente'
 
 		vm.formCtrl =
 			loading: false
 			current_perfil: {}
+			lixeira_objetos: []
+			lixeira_itens: []
 
 			set_perfil: ->
 				scAlert.open
@@ -25,7 +28,7 @@ angular.module('scApp').lazy
 					buttons: [
 						{ label: 'Mesclar', color: 'blue', tooltip: 'Mescla, por categoria, os objetos abaixo com os objetos do perfil', action: -> vm.formCtrl.mesclarObjetos() },
 						{ label: 'Sobreescrever', color: 'yellow', tooltip: 'Sobreescreve os objetos abaixo pelos objetos do perfil', action: -> vm.formCtrl.sobreescreverObjetos() },
-						{ label: 'Cancelar', color: 'gray' },
+						{ label: 'Cancelar', color: 'gray', action: -> vm.params.current_perfil = undefined },
 					]
 
 			mesclarObjetos: ->
@@ -38,14 +41,14 @@ angular.module('scApp').lazy
 
 				vm.params.perfil = angular.copy vm.formCtrl.current_perfil
 				for objetoPerfil in vm.params.perfil.objetos
-					for objeto in vm.params.objetos
-						if objetoPerfil.categoria.id == objeto.categoria.id
-							objeto.itens = objeto.itens.concat(objetoPerfil.itens)
-						else
-							vm.params.objetos.push(objetoPerfil)
+					paramsObjetos = vm.params.objetos.find (obj)-> obj.categoria.id == objetoPerfil.categoria.id
+					if paramsObjetos
+						paramsObjetos.itens = paramsObjetos.itens.concat(objetoPerfil.itens)
+					else
+						vm.params.objetos.push(objetoPerfil)
 
 			sobreescreverObjetos: ->
-				vm.params.objetos = angular.copy vm.params.current_perfil.objetos
+				vm.params.objetos = angular.copy vm.formCtrl.current_perfil.objetos
 
 			addObjeto: ->
 				vm.params.objetos.unshift({ categoria: undefined, itens: [] })
@@ -56,14 +59,17 @@ angular.module('scApp').lazy
 			addItem: (objeto)->
 				objeto.itens.push({ item_name: '', item_qtd: undefined })
 
-			rvmitem: (objeto, item)->
+			rmvItem: (objeto, item)->
 				objeto.itens.remove(item)
 
 			set_categoria: (objeto) ->
 				count = 0
 				for item in vm.params.objetos
-					if objeto.categoria.nome == item.categoria.nome
+					if objeto.categoria.id == item.categoria.id
+						objeto.error = true
 						count++;
+					else if objeto.categoria == undefined
+						return
 				if count > 1
 					scAlert.open
 						title: 'Essa categoria já existe na lista! Escolha outra!'
@@ -83,21 +89,65 @@ angular.module('scApp').lazy
 			salvar: (passagem)->
 				return unless !@loading
 				vm.params.status = if vm.params.status.label == 'Realizada' then 'realizada' else 'pendente'
-				return vm.submit(passagem)
+				return @verifica_objetos(passagem)
 
 			salvar_e_passar: (passagem)->
 				return unless !@loading
 				vm.params.status = "realizada"
-				return vm.submit(passagem)
+				return @verifica_objetos(passagem)
+
+			verifica_objetos: (passagem) ->
+				console.log 'oiv'
+
+				for objeto in vm.params.objetos
+					if objeto.itens.length == 0
+						@lixeira_objetos.push(objeto)
+
+				for objeto in vm.params.objetos
+					for item in objeto.itens
+						if item.item_name == ''
+							@lixeira_itens.push(item)
+
+				for objeto in vm.params.objetos
+					if objeto.categoria == undefined
+						objeto.error = true
+						scAlert.open
+							title: 'Atenção!'
+							messages: [
+								{ msg: 'Existem objetos sem categoria definida!' },
+								{	msg: 'É necessário selecionar uma categoria para salvar o objeto!' },
+							]
+							buttons: [
+								{ label: 'Ok', color: 'gray' },
+							]
+						return
+
+				console.log 'passou do return'
+
+				for objeto in @lixeira_objetos
+					vm.params.objetos.remove(objeto)
+
+				for objeto in vm.params.objetos
+					for item in @lixeira_itens
+						objeto.itens.remove(item)
+
+				@lixeira_itens.length = 0
+
+				if @lixeira_itens.length == 0
+					console.log 'submit'
+					vm.submit(passagem)
+				else
+					console.log 'return'
+
 
 		vm.submit = (passagem) ->
-			if passagem.edit && passagem.edit.opened
+			if vm.passagem.edit && vm.passagem.edit.opened
 				PassagemServico.update(vm.params)
 			else
 				PassagemServico.create(vm.params)
 			#PassagemServico.list()
-			passagem.edit.opened = false
-			passagem.acc.opened = true
+			vm.passagem.edit.opened = false
+			vm.passagem.acc.opened = true
 
 		vm
 ]

@@ -36,19 +36,19 @@
 						<div class="fcol-xs-3em sc-p-md fcol-order-5"></div>
 					</div>
 				</li>
-				<li ng-if="loadingRecords || indexCtrl.listCtrl.list.lenght == 0" class="sc-accordion-head sc-bg-gray-lighter sc-p-lg">
+				<li ng-if="indexCtrl.listCtrl.list.length == 0 || loadingRecords" class="sc-accordion-head sc-bg-gray-lighter sc-p-lg">
 					<div class="sc-text-gray align-center">
 						<div ng-if="loadingRecords">
 							<i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>
 							<span>Carregando</span>
 						</div>
-						<div ng-if="indexCtrl.listCtrl.list.lenght == 0">
+						<div ng-if="indexCtrl.listCtrl.list.length == 0">
 							<i class="sc-icon sc-icon-exclamacao-2"></i>
 							<span>Nenhuma passagem de serviço encontrada!</span>
 						</div>
 					</div>
 				</li>
-				<li ng-init="indexCtrl.itemCtrl.init(passagem)" ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }">
+				<li ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }" ng-init="indexCtrl.itemCtrl.init(passagem)">
 					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)" ng-class="{'sc-opac-80': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && passagem.edit.opened}">
 						<div class="fcol-xs-3em align-center fcol-order-0" sc-stop-click>
 							<input type="checkbox" class="sc-checkbox sc-checkbox-blue">

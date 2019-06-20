@@ -29,10 +29,10 @@
 					<ul class="fcol-xs-100">
 						<li class="sc-fieldset" ng-repeat="objeto in indexCtrl.perfisCtrl.params.objetos track by $index">
 							<div class="sc-fieldset-head flex-row sc-text-sm">
-								<div class="sc-text-sm">
+								<div class="sc-text-sm fcol-xs-40">
 									<div class="sc-label">Categoria:</div>
 									<div class="">
-										<select class="sc-input-default sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria">
+										<select class="sc-input-default sc-input-block sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="indexCtrl.perfisCtrl.set_categoria(objeto)" ng-class="{'error': objeto.error}">
 											<option value="Selecione ou cadastre">Selecione ou cadastre</option>
 										</select>
 									</div>
@@ -50,10 +50,10 @@
 								</li>
 								<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 									<div class="fcol-xs-5em">
-										<input class="sc-input-default sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+										<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
 									</div>
 									<div class="fcol-xs-60 sc-m-l-lg">
-										<input class="sc-input-default sc-input-thin" ng-model="item.item_name" type="text" />
+										<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
 									</div>
 									<div class="fcol-xs-auto"></div>
 									<div class="fcol-xs-3em">
@@ -72,7 +72,7 @@
 
 	<div class="sc-modal-footer">
 		<div class="col-xs-12">
-			<button class="sc-btn sc-btn-blue right sc-m-h-lg" ng-click="indexCtrl.perfisCtrl.submit()">Salvar</button>
+			<button class="sc-btn sc-btn-blue right sc-m-h-lg" ng-click="indexCtrl.perfisCtrl.salvar(item)">Salvar</button>
 			<button class="sc-btn sc-btn-gray right" ng-click="indexCtrl.perfisCtrl.cancelar(item)">Cancelar</button>
 		</div>
 	</div>
