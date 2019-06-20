@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2019_06_12_193552) do
   create_table "categorias", force: :cascade do |t|
     t.string "nome", null: false
     t.boolean "is_disabled", default: false
+    t.datetime "desativado_em"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -29,18 +30,21 @@ ActiveRecord::Schema.define(version: 2019_06_12_193552) do
   end
 
   create_table "passagem_servicos", force: :cascade do |t|
-    t.string "status", null: false
+    t.string "status"
     t.integer "pessoa_entrou_id", null: false
     t.integer "pessoa_saiu_id", null: false
     t.string "observacoes"
+    t.datetime "passada_em"
+    t.datetime "desativada_em"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "perfis", force: :cascade do |t|
     t.string "nome", null: false
-    t.string "status", null: false
+    t.string "status"
     t.boolean "is_disabled", default: false
+    t.datetime "desativado_em"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

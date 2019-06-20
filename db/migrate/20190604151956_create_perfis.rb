@@ -5,6 +5,8 @@ class CreatePerfis < ActiveRecord::Migration[5.2]
     	t.string :status
     	t.boolean :is_disabled, default: false
 
+    	t.datetime :desativado_em
+
       t.timestamps
     end
   end
