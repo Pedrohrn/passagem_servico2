@@ -10,6 +10,7 @@ angular.module('scApp').lazy
 
 			show:
 				method: 'GET'
+				transformRequest: encapsulateDate
 
 			create:
 				method: 'POST'
@@ -21,4 +22,8 @@ angular.module('scApp').lazy
 			update:
 				method: 'PUT'
 				transformRequest: encapsulateDate
+
+			micro_update:
+				method: 'PUT'
+				url: 'http://localhost:3000/passagem_servicos/micro_update'
 ]

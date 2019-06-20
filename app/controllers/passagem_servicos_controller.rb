@@ -25,10 +25,11 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def create
-		st, resp = service.submit({}, passagem_service_params)
+		st, resp = service.create({}, passagem_service_params)
 
 		case st
 		when :success then render json: resp, status: :ok
+		when :error then render json: resp, status: :ok
 		end
 	end
 
@@ -37,23 +38,31 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
+		when :error then render json: resp, status: :ok
 		end
 	end
 
 	def destroy
-		st, resp = service.destroy({}, passagem_service_params)
+		st, resp = service.destroy({}, get_params)
 
 		case st
-		when :success then render json: resp
+		when :success then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
 		end
 	end
 
 	private
 
 	def passagem_service_params
-		attrs = [:id, :status, :data_criacao, :observacoes]
-		attrs << {pessoa_saiu: [:id]}
-		attrs << {pessoa_entrou: [:id]}
+		attrs = 	[:id, :status, :data_criacao, :observacoes]
+		attrs << 	{pessoa_saiu: [:id]}
+		attrs << 	{pessoa_entrou: [:id]}
+		attrs << 	{
+			objetos: [
+				categoria: [:id],
+				itens: [ :item_name, :item_qtd ]
+			],
+		}
 
 		resp = params.require(:passagem_servico).permit(attrs).to_h
 		resp.deep_symbolize_keys
