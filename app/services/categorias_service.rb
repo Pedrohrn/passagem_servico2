@@ -30,6 +30,6 @@ class CategoriasService
 		categoria.destroy
 
 		return [:success, { message: 'Registro excluído com sucesso!'}] if categoria.destroy
-		[:error, {}]
+		[:error, { message: 'Registro não encontrado!' }]
 	end
 end

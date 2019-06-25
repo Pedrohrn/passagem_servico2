@@ -15,21 +15,12 @@ class CategoriasController < ApplicationController
 		end
 	end
 
-	def show
-		st, resp = service.show({}, get_params)
-
-		case st
-		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :ok
-		end
-	end
-
 	def create
 		st, resp = service.create({}, categorias_params)
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
 		end
 	end
 
@@ -38,7 +29,16 @@ class CategoriasController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
+		end
+	end
+
+	def destroy
+		st, resp = service.destroy({}, params)
+
+		case st
+		when :success then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
 		end
 	end
 
