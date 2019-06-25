@@ -22,7 +22,7 @@
 				<input class="sc-input-default sc-input-block" type="password">
 			</div>
 			<div class="clear sc-p-o"></div>
-			<div class="fcol-xs-100">
+			<div class="fcol-xs-100" ng-if="formCtrl.params.pessoa_saiu || formCtrl.params.pessoa_entrou">
 				<div class="sc-text-black sc-text-md">
 					Eu,
 					<span class="sc-label sc-text-bold"> {{formCtrl.params.pessoa_saiu.nome}}</span>
@@ -57,42 +57,50 @@
 				</div>
 			</div>
 			<ul class="fcol-xs-100">
-				<li class="sc-fieldset" ng-repeat="objeto in formCtrl.params.objetos track by $index">
-					<div class="sc-fieldset-head flex-row sc-text-sm">
-						<div class="col-xs-8 col-sm-3 col-md-4 sc-text-sm sc-p-h-o">
-							<div class="sc-label">Categoria:</div>
-							<div class="">
-								<select class="col-xs-12 sc-input-default sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="formCtrl.formCtrl.set_categoria(objeto)">
-									<option value="Selecione ou cadastre">Selecione ou cadastre</option>
-								</select>
-							</div>
-						</div>
-						<div class="align-self-flex-end sc-m-h-lg">
-							<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="formCtrl.formCtrl.addItem(objeto)"></i>
-							<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="formCtrl.formCtrl.rmvObjeto(objeto, item)"></i>
-						</div>
-					</div>
-					<ul ng-if="objeto.itens.length != 0">
-						<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
-							<div class="fcol-xs-5em sc-label">Qtd</div>
-							<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
-							<div class="fcol-xs-auto"></div>
-						</li>
-						<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
-							<div class="fcol-xs-5em">
-								<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
-							</div>
-							<div class="fcol-xs-60 sc-m-l-lg">
-								<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
-							</div>
-							<div class="fcol-xs-auto"></div>
-							<div class="fcol-xs-3em">
-								<div class="align-right">
-									<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red fcol-xs-3em" ng-click="formCtrl.formCtrl.rmvItem(objeto, item)"></i>
+				<li class="" ng-repeat="objeto in formCtrl.params.objetos track by $index">
+					<div class="sc-fieldset" ng-class="{'sc-opac-40': objeto._destroy }">
+						<div class="sc-fieldset-head flex-row sc-text-sm">
+							<div class="col-xs-8 col-sm-3 col-md-4 sc-text-sm sc-p-h-o">
+								<div class="sc-label">Categoria:</div>
+								<div class="">
+									<select class="col-xs-12 sc-input-default sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="formCtrl.formCtrl.set_categoria(objeto)">
+										<option value="Selecione ou cadastre">Selecione ou cadastre</option>
+									</select>
 								</div>
 							</div>
-						</li>
-					</ul>
+							<div class="align-self-flex-end sc-m-h-lg">
+								<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="formCtrl.formCtrl.addItem(objeto)"></i>
+								<i class="sc-icon sc-badge-hover-red" ng-class="{'sc-icon-lixeira-1': !objeto._destroy, 'sc-icon-seta-9-esquerda': objeto._destroy}" ng-click="formCtrl.formCtrl.rmvObjeto(objeto, item)"></i>
+							</div>
+						</div>
+						<ul ng-if="objeto.itens.length != 0">
+							<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
+								<div class="fcol-xs-5em sc-label">Qtd</div>
+								<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
+								<div class="fcol-xs-auto"></div>
+							</li>
+							<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
+								<div class="fcol-xs-5em">
+									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+								</div>
+								<div class="fcol-xs-60 sc-m-l-lg">
+									<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
+								</div>
+								<div class="fcol-xs-auto"></div>
+								<div class="fcol-xs-3em">
+									<div class="align-right">
+										<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red fcol-xs-3em" ng-click="formCtrl.formCtrl.rmvItem(objeto, item)"></i>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="col-xs-12 angular-slider sc-text-red" ng-if="objeto._destroy">
+						<span>
+							<i class="sc-icon sc-icon-exclamacao-2"></i>
+							Esse objeto será removido quando a passagem for salva
+						</span>
+					</div>
 				</li>
 					</ul>
 		</div>
@@ -103,7 +111,7 @@
 		</div>
 
 		<div class="align-right">
-			<button class="sc-btn sc-btn-green sc-btn-block-only-xs" type="button" ng-click="formCtrl.formCtrl.salvar_e_passar(passagem)">
+			<button class="sc-btn sc-btn-green sc-btn-block-only-xs" type="button" ng-click="formCtrl.formCtrl.salvar_e_passar(passagem)" ng-if="passagem.status.label != 'Realizada'">
 				<span ng-if="!formCtrl.formCtrl.loading">Salvar e passar</span>
 				<span ng-if="formCtrl.formCtrl.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Salvando</span>
 			</button>

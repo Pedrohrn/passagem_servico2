@@ -129,14 +129,11 @@ angular.module('scApp').lazy
 
 			formInit: (item) ->
 				if @newRecord && !@duplicata
-					console.log '1'
 					@params = {}
 					@params.objetos = []
 				else if @newRecord && @duplicata
-					console.log '2'
 					@params = angular.copy item
 				else if item.perfil_form.opened
-					console.log '3'
 					@params = angular.copy(item) || {}
 					@params.objetos = angular.copy(item.objetos) || []
 
@@ -144,8 +141,15 @@ angular.module('scApp').lazy
 				item.toolbar.opened = !item.toolbar.opened
 
 			rmv: (item)->
-				Perfil.destroy(item)
-				vm.listCtrl.init()
+				scAlert.open
+					title: 'Deseja mesmo excluir o perfil selecionado?'
+					messages: [
+						{ msg: 'O registro não poderá ser recuperado!' }
+					],
+					buttons: [
+						{ label: 'Excluir', color: 'red', action: -> Perfil.destroy(item); vm.listCtrl.init() },
+						{ label: 'Cancelar', color: 'gray' }
+					]
 
 			edit: (item)->
 				item.perfil_form.toggle()
@@ -153,6 +157,7 @@ angular.module('scApp').lazy
 
 			duplicar: (item) ->
 				@params = angular.copy(item)
+				@params.id = null
 				duplicata = true
 				@form_modal.open()
 
@@ -264,8 +269,9 @@ angular.module('scApp').lazy
 			submit: (item) ->
 				@params.status = 'ativo'
 				Perfil.create(@params)
+				console.log @params
+				@params.perfil_form.opened = false
 				vm.listCtrl.init()
-				item.perfil_form.opened = false
 
 		vm.categoriasCtrl =
 			newRecord: false
@@ -278,8 +284,12 @@ angular.module('scApp').lazy
 					item.edit = new scToggle();
 
 			rmv: (item) ->
-				Categoria.destroy(item)
-				vm.listCtrl.init()
+				scAlert.open
+					title: 'Tem certeza que deseja excluir a categoria?'
+					buttons: [
+						{ label: 'Excluir', color: 'red', action: -> Categoria.destroy(item); vm.listCtrl.init() },
+						{ label: 'Cancelar', color: 'gray' }
+					]
 
 			edit: (item) ->
 				item.edit.toggle()
@@ -383,7 +393,27 @@ angular.module('scApp').lazy
 				passagem = angular.copy @dupParams
 
 			disable: (passagem)->
-				PassagemServico.update(params)
+				if passagem.status.label == 'Desativada'
+					button = 'Reativar'
+					label = 'reativar'
+				else
+					button = 'Desativar'
+					label = 'desativar'
+				scAlert.open
+					title: "Deseja mesmo " + label + " essa passagem?"
+					buttons: [
+						{ label: button, color: 'yellow', action: -> vm.itemCtrl.desativar(passagem) },
+						{ label: 'Cancelar', color: 'gray' }
+					]
+
+			desativar: (passagem) ->
+				if passagem.status.label == 'Desativada'
+					passagem.passada_em = null
+					passagem.desativada_em = null
+				else
+					passagem.passada_em = null
+					passagem.desativada_em = new Date()
+				PassagemServico.micro_update(passagem)
 
 			open_log: (passagem)->
 				passagem.log.active = !passagem.log.active
@@ -394,7 +424,6 @@ angular.module('scApp').lazy
 				else
 					passagem.acc.opened = !passagem.acc.opened
 					PassagemServico.show(passagem)
-					console.log passagem
 
 			cancelar: (passagem)->
 				scAlert.open
@@ -411,9 +440,11 @@ angular.module('scApp').lazy
 			init: (passagem)->
 				@params = angular.copy passagem
 
-			passarServico: ->
+			passarServico: (passagem)->
 				@params.status = 'realizada'
+				@params.passada_em = new Date()
 				PassagemServico.micro_update(@params)
+				#passagem.passar_servico_modal.close()
 
 		vm
 ]

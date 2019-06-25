@@ -48,13 +48,16 @@ angular.module('scApp').lazy
 						vm.params.objetos.push(objetoPerfil)
 
 			sobreescreverObjetos: ->
-				vm.params.objetos = angular.copy vm.formCtrl.current_perfil.objetos
+				vm.params.objetos = angular.copy @current_perfil.objetos
 
 			addObjeto: ->
 				vm.params.objetos.unshift({ categoria: undefined, itens: [] })
 
 			rmvObjeto: (objeto) ->
-				vm.params.objetos.remove(objeto)
+				if objeto.id
+					objeto._destroy = !objeto._destroy
+				else
+					vm.params.objetos.remove(objeto)
 
 			addItem: (objeto)->
 				objeto.itens.push({ item_name: '', item_qtd: undefined })
@@ -97,7 +100,6 @@ angular.module('scApp').lazy
 				return @verifica_objetos(passagem)
 
 			verifica_objetos: (passagem) ->
-				console.log 'oiv'
 
 				for objeto in vm.params.objetos
 					if objeto.itens.length == 0
@@ -122,8 +124,6 @@ angular.module('scApp').lazy
 							]
 						return
 
-				console.log 'passou do return'
-
 				for objeto in @lixeira_objetos
 					vm.params.objetos.remove(objeto)
 
@@ -134,13 +134,11 @@ angular.module('scApp').lazy
 				@lixeira_itens.length = 0
 
 				if @lixeira_itens.length == 0
-					console.log 'submit'
 					vm.submit(passagem)
-				else
-					console.log 'return'
 
 
 		vm.submit = (passagem) ->
+			console.log vm.params
 			if vm.passagem.edit && vm.passagem.edit.opened
 				PassagemServico.update(vm.params)
 			else
