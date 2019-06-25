@@ -1,13 +1,13 @@
 class PassagemServico < ApplicationRecord
 	validates_presence_of :status, message: "Status não definido!"
-	validates_presence_of :pessoa_entrou_id, message: "Selecione a pessoa que está entrando!"
-	validates_presence_of :pessoa_saiu_id, message: "Selecione a pessoa que está saindo!"
+	validates_presence_of :pessoa_entrou, message: "Selecione a pessoa que está entrando!"
+	validates_presence_of :pessoa_saiu, message: "Selecione a pessoa que está saindo!"
 
 	has_many 		:objetos, dependent: :destroy
 	belongs_to 	:pessoa_entrou, class_name: 'Pessoa'
 	belongs_to 	:pessoa_saiu, class_name: 'Pessoa'
 
-	accepts_nested_attributes_for :objetos, update_only: true
+	accepts_nested_attributes_for :objetos, allow_destroy: true
 
 	# callbacks
 	before_validation :update_status
@@ -25,6 +25,8 @@ class PassagemServico < ApplicationRecord
 			pessoa_saiu: pessoa_saiu.to_frontend_obj,
 			data_criacao: created_at,
 			status: status_obj,
+			passada_em: passada_em,
+			desativada_em: desativada_em,
 		}
 	end
 
@@ -32,7 +34,6 @@ class PassagemServico < ApplicationRecord
 		attrs = slim_obj
 		attrs[:objetos] = set_objetos
 		attrs[:observacoes] = observacoes
-		attrs[:passada_em] = updated_at
 		attrs
 	end
 

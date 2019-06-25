@@ -8,7 +8,7 @@ class Perfil < ApplicationRecord
 
 	has_many :objetos, dependent: :destroy
 
-	accepts_nested_attributes_for :objetos, allow_destroy: true, update_only: true
+	accepts_nested_attributes_for :objetos, allow_destroy: true
 
 	def slim_obj
 		{

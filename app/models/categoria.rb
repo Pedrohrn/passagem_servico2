@@ -8,12 +8,12 @@ class Categoria < ApplicationRecord
 		{
 			id: id,
 			nome: nome,
-			is_disabled: is_disabled
 		}
 	end
 
 	def to_frontend_obj
 		attrs = slim_obj
+		attrs[:is_disabled] = is_disabled
 		attrs
 	end
 end
