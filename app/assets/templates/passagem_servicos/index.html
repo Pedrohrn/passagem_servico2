@@ -80,7 +80,8 @@
 										<span><i class="sc-icon sc-icon"></i>Duplicar</span>
 									</li>
 									<li ng-click="indexCtrl.itemCtrl.disable(passagem)">
-										<span><i class="sc-icon sc-icon-banir"></i>Desativar</span>
+										<span ng-if="passagem.status.label != 'Desativada'"><i class="sc-icon sc-icon-banir"></i>Desativar</span>
+										<span ng-if="passagem.status.label == 'Desativada'"><i class="sc-icon sc-icon-seta-9-esquerda"></i>Reativar</span>
 									</li>
 									<li ng-click="indexCtrl.itemCtrl.rmv(passagem)">
 										<span><i class="sc-icon sc-icon-lixeira-1"></i>Excluir</span>
