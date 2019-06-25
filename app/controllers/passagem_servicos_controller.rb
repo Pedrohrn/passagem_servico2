@@ -51,18 +51,38 @@ class PassagemServicosController < ApplicationController
 		end
 	end
 
+	def micro_update
+		st, resp = service.micro_update({}, micro_update_params)
+
+		case st
+		when :success then render json: resp, status: :ok
+		when :error then render json: resp, status: :ok
+		end
+	end
+
 	private
 
 	def passagem_service_params
-		attrs = 	[:id, :status, :data_criacao, :observacoes]
+		attrs = 	[:id, :status, :data_criacao, :observacoes, :passada_em, :desativada_em]
 		attrs << 	{pessoa_saiu: [:id]}
 		attrs << 	{pessoa_entrou: [:id]}
 		attrs << 	{
 			objetos: [
+				:id,
+				:_destroy,
 				categoria: [:id],
-				itens: [ :item_name, :item_qtd ]
+				itens: [ :item_name, :item_qtd ],
 			],
 		}
+
+		resp = params.require(:passagem_servico).permit(attrs).to_h
+		resp.deep_symbolize_keys
+	end
+
+	def micro_update_params
+		attrs = [:id, :status, :observacoes, :passada_em, :desativada_em]
+		attrs << {pessoa_saiu: [:id]}
+		attrs << {pessoa_entrou: [:id]}
 
 		resp = params.require(:passagem_servico).permit(attrs).to_h
 		resp.deep_symbolize_keys

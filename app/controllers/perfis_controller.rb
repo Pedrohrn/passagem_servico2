@@ -41,6 +41,8 @@ class PerfisController < ApplicationController
 		attrs = [:id, :nome, :is_disabled]
 		attrs << {
 			objetos: [
+				:id,
+				:_destroy,
 				categoria: [:id],
 				itens: [ :item_name, :item_qtd ]
 			],

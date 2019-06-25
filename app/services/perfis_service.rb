@@ -36,17 +36,6 @@ class PerfisService
 
 	def self.set_objetos(params)
 		objetos = params.delete(:objetos) || []
-		#aux = params
-
-		#aux[:objetos_attributes] = objetos.map do |objeto|
-		#	objeto[:categoria_id] = objeto.delete(:categoria)[:id]
-		#	objeto
-		#end
-
-		#new_objetos = aux.delete(:objetos_attributes) || []
-
-		#puts new_objetos
-		#puts 'new_objetos'
 
 		params[:objetos_attributes] = objetos.map do |objeto|
 			objeto[:categoria_id] = objeto.delete(:categoria)[:id]
@@ -55,16 +44,5 @@ class PerfisService
 
 		params
 	end
-
-	#def self.update_objetos(params)
-		#objetos = params.delete(:objetos) || []
-
-		#objetos.map do |objeto|
-			##o = Objeto.find_by(id: objeto[:id]) || Objeto.new
-			##o.assign_attributes(objeto)
-		#end
-
-		#params
-	#end
 
 end
