@@ -8,7 +8,7 @@
 		<div class="flex-row">
 			<div class="col-xs-5 sc-m-b-md">
 				<div class="sc-label">Quem entra:</div>
-				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="indexCtrl.passarServicoModal.params.pessoa_entrou">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome disable when indexCtrl.passarServicoModal.params.pessoa_saiu.id == pessoa.id for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="indexCtrl.passarServicoModal.params.pessoa_entrou">
 					<option value="Selecione quem entra">Selecione quem entra</option>
 				</select>
 			</div>
@@ -19,7 +19,7 @@
 			<div class="clear sc-p-o"></div>
 			<div class="col-xs-5 sc-m-b-md">
 				<div class="sc-label">Quem sai:</div>
-				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="indexCtrl.passarServicoModal.params.pessoa_saiu">
+				<select class="sc-input-default sc-input-block" ng-options="pessoa as pessoa.nome disable when indexCtrl.passarServicoModal.params.pessoa_entrou.id == pessoa.id for pessoa in indexCtrl.porteirosCtrl.list track by pessoa.id" ng-model="indexCtrl.passarServicoModal.params.pessoa_saiu">
 					<option value="Selecione quem sai">Selecione quem sai</option>
 				</select>
 			</div>
@@ -34,11 +34,11 @@
 			<div class="sc-text-gray">
 				Eu, <span class="sc-label">{{indexCtrl.passarServicoModal.params.pessoa_saiu.nome}}</span>, passo o posto de serviço para o(a) <span class="sc-label">{{indexCtrl.passarServicoModal.params.pessoa_entrou.nome}}</span>, de acordo com as informações abaixo:
 			</div>
-			<table ng-repeat="objeto in indexCtrl.passarServicoModal.params.objetos track by $index" class="sc-table sc-fieldset">
+			<table ng-repeat="objeto in indexCtrl.passarServicoModal.params.objetos track by $index" class="sc-table sc-fieldset fcol-xs-100">
 				<thead>
 					<tr>
 						<th>
-							<div class="sc-text-blue sc-text-bold">{{objeto.categoria.label}}</div>
+							<div class="sc-text-blue sc-text-bold">{{objeto.categoria.nome}}</div>
 						</th>
 					</tr>
 				</thead>
@@ -48,8 +48,8 @@
 						<td class="sc-text-bold sc-text-gray align-right">Qtd</td>
 					</tr>
 					<tr ng-repeat="item in objeto.itens track by $index">
-						<td class="sc-text-black">{{item.nome}}</td>
-						<td class="sc-text-black align-right">{{item.qtd}}</td>
+						<td class="sc-text-black">{{item.item_name}}</td>
+						<td class="sc-text-black align-right">{{item.item_qtd}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -63,7 +63,7 @@
 	<div class="sc-modal-footer">
 		<div class="align-rigth">
 			<button class="sc-btn sc-btn-gray" ng-click="passagem.passar_servico_modal.close()">Cancelar</button>
-			<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.passarServicoModal.passarServico(params)">
+			<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.passarServicoModal.passarServico(passagem)">
 				<span ng-if="!indexCtrl.passarServicoModal.loading">Passar Serviço</span>
 				<span ng-if="indexCtrl.passarServicoModal.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Salvando</span>
 			</button>
