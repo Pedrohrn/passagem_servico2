@@ -124,8 +124,8 @@ angular.module('scApp').lazy
 
 			init: ->
 				for item in @list
-					item.toolbar = new scToggle();
-					item.perfil_form = new scToggle();
+					item.toolbar = new scToggle()
+					item.perfil_form = new scToggle()
 
 			formInit: (item) ->
 				if @newRecord && !@duplicata
@@ -136,9 +136,7 @@ angular.module('scApp').lazy
 				else if item.perfil_form.opened
 					@params = angular.copy(item) || {}
 					@params.objetos = angular.copy(item.objetos) || []
-
-			toggleMenu: (item)->
-				item.toolbar.opened = !item.toolbar.opened
+				return
 
 			rmv: (item)->
 				scAlert.open
@@ -154,6 +152,7 @@ angular.module('scApp').lazy
 			edit: (item)->
 				item.perfil_form.toggle()
 				@form_modal.open()
+				@formInit(item)
 
 			duplicar: (item) ->
 				@params = angular.copy(item)
@@ -167,10 +166,13 @@ angular.module('scApp').lazy
 				Perfil.update(@params)
 
 			addObjeto: ->
-				@params.objetos.unshift({ categoria: undefined, itens: [] })
+				@params.objetos.unshift({ categoria: undefined, itens: [ { item_name: '', item_qtd: undefined } ] })
 
 			rmvObjeto: (objeto)->
-				@params.objetos.remove(objeto)
+				if objeto.id
+					objeto._destroy = !objeto._destroy
+				else
+					@params.objetos.remove(objeto)
 
 			limparFormulario: ->
 				scAlert.open
@@ -260,16 +262,10 @@ angular.module('scApp').lazy
 
 				if @lixeira_itens.length == 0
 					vm.perfisCtrl.submit(item)
-				else
-					vm.perfisCtrl.limpar_objetos()
-
-			limpar_objetos: ->
-				console.log 'deu ruim'
 
 			submit: (item) ->
 				@params.status = 'ativo'
 				Perfil.create(@params)
-				console.log @params
 				@params.perfil_form.opened = false
 				vm.listCtrl.init()
 
@@ -299,9 +295,17 @@ angular.module('scApp').lazy
 				item.toolbar.opened = !item.toolbar.opened
 
 			disable: (item) ->
+				label = if item.is_disabled then 'reativar' else 'desativar'
+				scAlert.open
+					title: "Deseja mesmo " + label + " a categoria?"
+					buttons: [
+						{ label: label.capitalize(), color: 'yellow', action: -> vm.categoriasCtrl.desativar(item) },
+						{ label: 'Cancelar',  color: 'gray'}
+					]
+
+			desativar: (item)->
 				item.is_disabled = !item.is_disabled
-				@newCategoria = angular.copy item
-				Categoria.update(@newCategoria)
+				Categoria.create(item)
 
 			new: ->
 				if @newRecord
@@ -347,6 +351,7 @@ angular.module('scApp').lazy
 			list: []
 			modal: new scModal()
 			loading: false
+			params: {}
 
 			logKeys: [
 				{ id: 1, label: 'Criada em', 			key: 'criou', 		filtro: true, 	color: 'cian' },
@@ -444,7 +449,7 @@ angular.module('scApp').lazy
 				@params.status = 'realizada'
 				@params.passada_em = new Date()
 				PassagemServico.micro_update(@params)
-				#passagem.passar_servico_modal.close()
+				vm.perfisCtrl.form_modal.close()
 
 		vm
 ]

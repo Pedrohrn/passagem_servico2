@@ -51,7 +51,7 @@ angular.module('scApp').lazy
 				vm.params.objetos = angular.copy @current_perfil.objetos
 
 			addObjeto: ->
-				vm.params.objetos.unshift({ categoria: undefined, itens: [] })
+				vm.params.objetos.unshift({ categoria: undefined, itens: [ { item_name: '', item_qtd: undefined } ] })
 
 			rmvObjeto: (objeto) ->
 				if objeto.id
