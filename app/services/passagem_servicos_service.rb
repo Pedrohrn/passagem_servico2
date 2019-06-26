@@ -45,7 +45,7 @@ class PassagemServicosService
 		params.delete(:data_criacao)
 
 		params = set_objetos(params)
-		passagem = model.find_by(id: params[:id])
+		passagem = model.find_by(id: params[:id]) || model.new
 		passagem.assign_attributes(params)
 
 		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
@@ -56,7 +56,7 @@ class PassagemServicosService
 		passagem = model.find_by(id: params[:id])
 		passagem.destroy
 
-		return [:success, {}] if passagem.destroy
+		return [:success, { message: 'Registro excluído com sucesso!'}] if passagem.destroy
 		[:error, passagem.errors]
 	end
 
@@ -70,14 +70,5 @@ class PassagemServicosService
 		puts params
 		params
 	end
-
-	#def self.update_objetos(params)
-	#	objetos = params.delete(:objetos)
-	#	params[:objetos] = objetos.map do |objeto|
-	#		obj = Objeto.find_by(id: objeto[:id]) || Objeto.new(objeto)
-	#		obj.update(obj)
-	#		obj
-	#	end
-	#end
 
 end
