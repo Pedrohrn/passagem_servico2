@@ -32,7 +32,4 @@ class Perfil < ApplicationRecord
 		errors.add(:nome, "Nome não pode ser vazio") if :nome.blank?
 	end
 
-	#def nome_unico
-	#	errors.add(:nome, "Já existe um perfil com esse nome!") if :nome.
-	#end
 end
