@@ -14,8 +14,9 @@ class PassagemServicosService
 
 	def self.show(opts, params)
 		passagem = model.find_by(id: params[:id]) || {}
-		return [:success, passagem.to_frontend_obj] if !passagem.blank?
-		[:error, passagem.errors.full_messages]
+
+		return [:success, { passagem_servico: passagem.to_frontend_obj }] if !passagem.blank?
+		[:error, { message: 'Registro não encontrado!'} ]
 	end
 
 	def self.micro_update(params)
@@ -46,9 +47,10 @@ class PassagemServicosService
 
 		params = set_objetos(params)
 		passagem = model.find_by(id: params[:id]) || model.new
+
 		passagem.assign_attributes(params)
 
-		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
+		return [:success, { passagem_servico: passagem.to_frontend_obj, message: 'Registro salvo com sucesso!' }] if passagem.save
 		[:error, passagem.errors.full_messages]
 	end
 

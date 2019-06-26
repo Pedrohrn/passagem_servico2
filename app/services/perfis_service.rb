@@ -22,7 +22,7 @@ class PerfisService
 		perfil = model.find_by(id: params[:id]) || model.new
 		perfil.assign_attributes(params)
 
-		return [:success, { perfil: perfil.to_frontend_obj }] if perfil.save
+		return [:success, { perfil: perfil.to_frontend_obj, message: 'Registro salvo com sucesso!' }] if perfil.save
 		[:error, perfil.errors.full_messages]
 	end
 

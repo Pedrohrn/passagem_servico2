@@ -29,7 +29,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
 		end
 	end
 
@@ -38,7 +38,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
 		end
 	end
 
@@ -56,7 +56,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :ok
+		when :error then render json: resp, status: :error
 		end
 	end
 
@@ -70,6 +70,8 @@ class PassagemServicosController < ApplicationController
 			objetos: [
 				:id,
 				:_destroy,
+				:perfil_id,
+				:passagem_servico_id,
 				categoria: [:id],
 				itens: [ :item_name, :item_qtd ],
 			],
