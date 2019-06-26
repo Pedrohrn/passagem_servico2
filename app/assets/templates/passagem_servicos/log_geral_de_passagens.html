@@ -21,7 +21,7 @@
 			<div class="col-xs-12 col-sm-6 col-md-3 sc-m-v-xs">
 				<label>
 					<div class="sc-label">Ação</div>
-					<select class="sc-input-default sc-input-block" ng-options="acao as acao.key.capitalize() for acao in indexCtrl.logCtrl.statusList track by acao.id" value="acao.key" ng-model="indexCtrl.logCtrl.params.acao"></select>
+					<select class="sc-input-default sc-input-block" ng-options="acao as acao.key.capitalize() for acao in indexCtrl.logCtrl.logKeys track by acao.id" value="acao.key" ng-model="indexCtrl.logCtrl.params.acao"></select>
 				</label>
 			</div>
 			<div class="col-xs-12 col-sm-6 col-md-3 sc-m-v-xs sc-m-v-xxxl sc-p-t-sm">

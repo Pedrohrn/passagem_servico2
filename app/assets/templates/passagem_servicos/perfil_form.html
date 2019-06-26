@@ -1,4 +1,4 @@
-<div sc-modal="indexCtrl.perfisCtrl.form_modal" style="z-index: 2;" ng-init="indexCtrl.perfisCtrl.formInit(item)">
+<div sc-modal="indexCtrl.perfisCtrl.form_modal" style="z-index: 2;">
 	<div class="sc-modal-header sc-text-sm" style="min-height: 3.1em;">
 		<i class="sc-icon sc-icon-fechar-1 sc-modal-close sc-badge-hover-red" ng-click="item.perfil_form.close()"></i>
 		<span class="sc-m-l-lg sc-text-lg">Perfil de Passagem</span>
@@ -27,42 +27,51 @@
 						</div>
 					</div>
 					<ul class="fcol-xs-100">
-						<li class="sc-fieldset" ng-repeat="objeto in indexCtrl.perfisCtrl.params.objetos track by $index">
-							<div class="sc-fieldset-head flex-row sc-text-sm">
-								<div class="sc-text-sm fcol-xs-40">
-									<div class="sc-label">Categoria:</div>
-									<div class="">
-										<select class="sc-input-default sc-input-block sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="indexCtrl.perfisCtrl.set_categoria(objeto)" ng-class="{'error': objeto.error}">
-											<option value="Selecione ou cadastre">Selecione ou cadastre</option>
-										</select>
-									</div>
-								</div>
-								<div class="align-self-flex-end sc-m-h-lg">
-									<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="indexCtrl.perfisCtrl.addItem(objeto)"></i>
-									<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="indexCtrl.perfisCtrl.rmvObjeto(objeto)"></i>
-								</div>
-							</div>
-							<ul ng-if="objeto.itens.length != 0">
-								<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
-									<div class="fcol-xs-5em sc-label">Qtd</div>
-									<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
-									<div class="fcol-xs-auto"></div>
-								</li>
-								<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
-									<div class="fcol-xs-5em">
-										<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
-									</div>
-									<div class="fcol-xs-60 sc-m-l-lg">
-										<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
-									</div>
-									<div class="fcol-xs-auto"></div>
-									<div class="fcol-xs-3em">
-										<div class="align-right">
-											<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red fcol-xs-3em" ng-click="indexCtrl.perfisCtrl.rmvItem(objeto, item)"></i>
+						<li class="fcol-xs-100" ng-repeat="objeto in indexCtrl.perfisCtrl.params.objetos track by $index">
+							<div class="sc-fieldset" ng-class="{'sc-opac-40': objeto._destroy }">
+								<div class="sc-fieldset-head flex-row sc-text-sm">
+									<div class="sc-text-sm fcol-xs-40">
+										<div class="sc-label">Categoria:</div>
+										<div class="">
+											<select class="sc-input-default sc-input-block sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="indexCtrl.perfisCtrl.set_categoria(objeto)" ng-class="{'error': objeto.error}">
+												<option value="Selecione ou cadastre">Selecione ou cadastre</option>
+											</select>
 										</div>
 									</div>
-								</li>
-							</ul>
+									<div class="align-self-flex-end sc-m-h-lg">
+										<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="indexCtrl.perfisCtrl.addItem(objeto)"></i>
+										<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="indexCtrl.perfisCtrl.rmvObjeto(objeto)"></i>
+									</div>
+								</div>
+								<ul ng-if="objeto.itens.length != 0" class="sc-p-b-xs">
+									<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
+										<div class="fcol-xs-5em sc-label">Qtd</div>
+										<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
+										<div class="fcol-xs-auto"></div>
+									</li>
+									<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
+										<div class="fcol-xs-5em">
+											<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+										</div>
+										<div class="fcol-xs-60 sc-m-l-lg">
+											<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
+										</div>
+										<div class="fcol-xs-auto"></div>
+										<div class="fcol-xs-3em">
+											<div class="align-right">
+												<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red fcol-xs-3em" ng-click="indexCtrl.perfisCtrl.rmvItem(objeto, item)"></i>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="sc-p-b-lg sc-text-red angular-slider" ng-if="objeto._destroy">
+								<span>
+									<i class="sc-icon sc-icon-exclamacao-1"></i>
+									Este objeto será removido quando o perfil for salvo!
+								</span>
+								<i class="sc-icon sc-icon-seta-9-esquerda sc-m-l-xl sc-badge-hover-red sc-text-lg" ng-click="indexCtrl.perfisCtrl.rmvObjeto(objeto)"></i>
+							</div>
 						</li>
 					</ul>
 				</div>

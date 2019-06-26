@@ -70,10 +70,10 @@
 							</div>
 							<div class="align-self-flex-end sc-m-h-lg">
 								<i class="sc-icon sc-icon-mais-1 sc-badge-hover-green" ng-click="formCtrl.formCtrl.addItem(objeto)"></i>
-								<i class="sc-icon sc-badge-hover-red" ng-class="{'sc-icon-lixeira-1': !objeto._destroy, 'sc-icon-seta-9-esquerda': objeto._destroy}" ng-click="formCtrl.formCtrl.rmvObjeto(objeto, item)"></i>
+								<i class="sc-icon sc-icon-lixeira-1 sc-badge-hover-red" ng-click="formCtrl.formCtrl.rmvObjeto(objeto, item)"></i>
 							</div>
 						</div>
-						<ul ng-if="objeto.itens.length != 0">
+						<ul ng-if="objeto.itens.length != 0" class="sc-p-b-xs">
 							<li class="flex-row sc-p-b-sm" ng-if="objeto.itens.length != 0">
 								<div class="fcol-xs-5em sc-label">Qtd</div>
 								<div class="fcol-xs-60 sc-m-l-lg sc-label">Item</div>
@@ -95,11 +95,12 @@
 							</li>
 						</ul>
 					</div>
-					<div class="col-xs-12 angular-slider sc-text-red" ng-if="objeto._destroy">
+					<div class="sc-p-b-lg angular-slider sc-text-red" ng-if="objeto._destroy">
 						<span>
 							<i class="sc-icon sc-icon-exclamacao-2"></i>
 							Esse objeto será removido quando a passagem for salva
 						</span>
+						<i class="sc-icon sc-icon-seta-9-esquerda sc-m-l-xl sc-text-lg sc-badge-hover-red" ng-click="formCtrl.formCtrl.rmvObjeto(objeto)"></i>
 					</div>
 				</li>
 					</ul>
