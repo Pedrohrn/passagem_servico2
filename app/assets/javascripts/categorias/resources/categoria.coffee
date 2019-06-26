@@ -11,12 +11,12 @@ angular.module('scApp').lazy
 	 		show:
 	 			method: 'GET'
 
-	 		destroy:
-	 			method: 'DELETE'
-
 	 		update:
 	 			method: 'PUT'
 	 			transformRequest: encapsulateData
+
+	 		destroy:
+	 			method: 'DELETE'
 
 	 		create:
 	 			method: 'POST'

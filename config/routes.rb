@@ -4,5 +4,5 @@ Rails.application.routes.draw do
 
   resources :passagem_servicos, 	only: [:index, :show, :create, :destroy, :update, :micro_update]
   resources :perfis, 							only: [:index, :show, :create, :destroy, :update, :micro_update]
-  resources :categorias, 					only: [:index, :show, :create, :destroy, :update, :micro_update]
+  resources :categorias, 					only: [:index, :show, :create, :destroy, :update]
 end

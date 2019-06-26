@@ -18,6 +18,7 @@ class CategoriasService
 	end
 
 	def self.submit(opts, params)
+		puts 'oioioi'
 		categoria = model.find_by(id: params[:id]) || model.new
 		categoria.assign_attributes(params)
 
@@ -30,6 +31,6 @@ class CategoriasService
 		categoria.destroy
 
 		return [:success, { message: 'Registro excluído com sucesso!'}] if categoria.destroy
-		[:error, { message: 'Registro não encontrado!' }]
+		[:error, { message: 'Registro não encontrado!' } ]
 	end
 end
