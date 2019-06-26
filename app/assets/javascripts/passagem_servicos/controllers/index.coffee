@@ -44,6 +44,19 @@ angular.module('scApp').lazy
 		vm.porteirosCtrl =
 			list: []
 
+		vm.selections =
+			allSelected: false
+
+			toggleSelectAll: ->
+				if @allSelected
+					for passagem in vm.listCtrl.list
+						passagem.checked = false
+					@allSelected = false
+				else
+					@allSelected = true
+					for passagem in vm.listCtrl.list
+						passagem.checked = true
+
 		vm.novaPassagemCtrl =
 			newRecord: false
 
@@ -185,7 +198,7 @@ angular.module('scApp').lazy
 			set_categoria: (objeto) ->
 				count = 0
 				for item in @params.objetos
-					if item.categoria.id == objeto.categoria.id
+					if objeto.categoria.id == item.categoria.id
 						count++
 						objeto.error = false
 					else if objeto.categoria == undefined
@@ -209,33 +222,40 @@ angular.module('scApp').lazy
 				item.perfil_form.opened = !item.perfil_form.opened
 
 			cancelar: (item)->
-				if @newRecord
-					scAlert.open
-						title: 'Deseja mesmo cancelar a edição?',
-						buttons: [
-							{ label: 'Sim', color: 'yellow', action: -> vm.perfisCtrl.newRecord = false; vm.perfisCtrl.form_modal.close() }
-						]
-				else
-					scAlert.open
-						title: 'Deseja mesmo cancelar a edição?'
-						messages: [ { msg: 'Dados não salvos serão perdidos.' } ]
-						buttons: [
-							{ label: 'Sim', color: 'yellow', action: -> vm.perfisCtrl.toggleForm(item); vm.perfisCtrl.form_modal.close() },
-							{ label: 'Não', color: 'gray'}
-						]
+				scAlert.open
+					title: 'Deseja mesmo cancelar a edição?'
+					messages: [ { msg: 'Dados não salvos serão perdidos.' } ]
+					buttons: [
+						{ label: 'Sim', color: 'yellow', action: -> vm.perfisCtrl.resetForm(item) },
+						{ label: 'Não', color: 'gray'}
+					]
+
+			resetForm: (item) ->
+				@params = { objetos: [] }
+				vm.perfisCtrl.newRecord = false
+				vm.perfisCtrl.toggleForm(item)
+				vm.perfisCtrl.form_modal.close()
+				for objeto in item.objetos
+					if objeto.id == null
+						item.objetos.remove(objeto)
 
 			salvar: (item) ->
 				vm.perfisCtrl.verifica_objetos(item)
 
-			verifica_objetos: ->
+			v_2: (item) ->
+				for objeto in @params.objetos
+					if objeto.itens.length == 0
+						@lixeira_objetos.push(objeto)
+
+			verifica_objetos: (item)->
 				for objeto in @params.objetos
 					if objeto.itens.length == 0
 						@lixeira_objetos.push(objeto)
 
 				for objeto in @params.objetos
-					for item in objeto.itens
-						if item.item_name == ''
-							@lixeira_itens.push(item)
+					for obj_item in objeto.itens
+						if obj_item.item_name == ''
+							@lixeira_itens.push(obj_item)
 
 				for objeto in @params.objetos
 					if objeto.categoria == undefined
@@ -243,7 +263,7 @@ angular.module('scApp').lazy
 						scAlert.open
 							title: 'Atenção!'
 							messages: [
-								{ msg: 'Existem objetos sem categoria definida!' },
+								{ msg: 'Existem objetos no formulário sem categoria definida!' },
 								{	msg: 'É necessário selecionar uma categoria para salvar o objeto!' },
 							]
 							buttons: [
@@ -255,19 +275,20 @@ angular.module('scApp').lazy
 					@params.objetos.remove(objeto)
 
 				for objeto in @params.objetos
-					for item in @lixeira_itens
-						objeto.itens.remove(item)
+					for obj_item in @lixeira_itens
+						objeto.itens.remove(obj_item)
 
 				@lixeira_itens.length = 0
 
 				if @lixeira_itens.length == 0
 					vm.perfisCtrl.submit(item)
+					item.perfil_form.opened = false
 
 			submit: (item) ->
 				@params.status = 'ativo'
 				Perfil.create(@params)
-				@params.perfil_form.opened = false
 				vm.listCtrl.init()
+				vm.perfisCtrl.form_modal.close()
 
 		vm.categoriasCtrl =
 			newRecord: false
@@ -426,9 +447,13 @@ angular.module('scApp').lazy
 			accToggle: (passagem)->
 				if passagem.edit.opened
 					@cancelar(passagem)
-				else
-					passagem.acc.opened = !passagem.acc.opened
+				else if !passagem.acc.opened
+					passagem.acc.opened = true
+					passagem.edit.opened = false
 					PassagemServico.show(passagem)
+				else
+					passagem.acc.opened = false
+					passagem.edit.opened = false
 
 			cancelar: (passagem)->
 				scAlert.open

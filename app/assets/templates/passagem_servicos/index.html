@@ -26,7 +26,7 @@
 				<li class="sc-accordion-head" style="border-bottom: 1px solid #e2e2e2; border-top: none;">
 					<div class="flex-row flex-column align-items-center sc-text-blue" style="min-height: 2.5em;">
 						<div class="fcol-order-0 align-center fcol-sm-3em">
-							<input class="sc-checkbox sc-checkbox-blue" type="checkbox">
+							<input class="sc-checkbox sc-checkbox-blue" ng-checked="indexCtrl.selections.allSelected" ng-click="indexCtrl.selections.toggleSelectAll()" type="checkbox">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">Status</div>
 						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">Saiu</div>
@@ -49,9 +49,9 @@
 					</div>
 				</li>
 				<li ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }" ng-init="indexCtrl.itemCtrl.init(passagem)">
-					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)" ng-class="{'sc-opac-80': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && passagem.edit.opened}">
+					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)" ng-class="{'sc-opac-70': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && passagem.edit.opened , 'sc-acc-selected': passagem.checked }">
 						<div class="fcol-xs-3em align-center fcol-order-0" sc-stop-click>
-							<input type="checkbox" class="sc-checkbox sc-checkbox-blue">
+							<input multi-check type="checkbox" ng-model="passagem.checked" ng-click="selections.toggleItem(passagem, $event)" class="sc-checkbox sc-checkbox-blue">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">
 							<span class="sc-border-radius sc-bg-{{passagem.status.color}} sc-text-white sc-p-v-xs sc-p-h-lg sc-text-sm">{{passagem.status.label}}</span>
