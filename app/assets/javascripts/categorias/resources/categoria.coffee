@@ -22,4 +22,9 @@ angular.module('scApp').lazy
 	 			method: 'POST'
 	 			transformRequest: encapsulateData
 
+	 		micro_update:
+	 			method: 'PUT'
+	 			url: 'http://localhost:3000/categorias/micro_update'
+	 			transformRequest: encapsulateData
+
 ]

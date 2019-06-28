@@ -25,6 +25,6 @@ angular.module('scApp').lazy
 
 			micro_update:
 				method: 'PUT'
-				#url: 'http://localhost:3000/passagem_servicos/micro_update'
+				url: 'http://localhost:3000/passagem_servicos/micro_update'
 				transformRequest: encapsulateDate
 ]

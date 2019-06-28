@@ -24,5 +24,6 @@ angular.module('scApp').lazy
 
 			micro_update:
 				method: 'PUT'
+				url: 'http://localhost:3000/perfis/micro_update'
 				transformRequest: encapsulateData
 ]
