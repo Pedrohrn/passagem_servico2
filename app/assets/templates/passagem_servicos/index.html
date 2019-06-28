@@ -20,7 +20,7 @@
 						<span class="sc-text-white sc-text-bold">Nova Passagem</span>
 					</div>
 					<div class="sc-accordion-body">
-						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
+						<div ng-include="indexCtrl.templates.passagem_servicos.form" ng-init="passagem = indexCtrl.novaPassagemCtrl.params"></div>
 					</div>
 				</li>
 				<li class="sc-accordion-head" style="border-bottom: 1px solid #e2e2e2; border-top: none;">
@@ -38,11 +38,11 @@
 				</li>
 				<li ng-if="indexCtrl.listCtrl.list.length == 0 || loadingRecords" class="sc-accordion-head sc-bg-gray-lighter sc-p-lg">
 					<div class="sc-text-gray align-center">
-						<div ng-if="loadingRecords">
-							<i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>
-							<span>Carregando</span>
+						<div ng-if="indexCtrl.listCtrl.loadingRecords" class="sc-text-blue">
+							<i class="sc-icon sc-icon-carregando-2 sc-icon-spin"></i>
+							<span>Buscando passagens...</span>
 						</div>
-						<div ng-if="indexCtrl.listCtrl.list.length == 0">
+						<div ng-if="indexCtrl.listCtrl.list.length == 0 && !indexCtrl.listCtrl.loadingRecords" class="sc-text-blue">
 							<i class="sc-icon sc-icon-exclamacao-2"></i>
 							<span>Nenhuma passagem de serviço encontrada!</span>
 						</div>
@@ -93,10 +93,18 @@
 							</div>
 						</div>
 					</div>
-					<div ng-if="passagem.acc.opened && !passagem.edit.opened" class="sc-accordion-body">
+					<div ng-if="passagem.loading">
+						<div class="col-xs-12 align-center sc-m-lg sc-text-blue">
+							<span>
+								<i class="sc-icon sc-icon-carregando-2 sc-icon-spin"></i>
+								Carregando
+							</span>
+						</div>
+					</div>
+					<div ng-if="passagem.acc.opened && !passagem.edit.opened && !passagem.loading" class="sc-accordion-body">
 						<div ng-include="indexCtrl.templates.passagem_servicos.show"></div>
 					</div>
-					<div ng-if="passagem.edit.opened && !passagem.acc.opened" class="sc-accordion-body">
+					<div ng-if="passagem.edit.opened && !passagem.acc.opened && !passagem.loading" class="sc-accordion-body">
 						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
 					</div>
 					<div ng-if="passagem.log.active">

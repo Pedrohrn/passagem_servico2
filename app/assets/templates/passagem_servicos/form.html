@@ -50,7 +50,7 @@
 						<span class="hidden-xs">Adicionar objetos</span>
 						<i ng-if="screen.isXs" class="sc-icon sc-icon-mais-1"></i>
 					</button>
-					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin" type="button" ng-click="formCtrl.formCtrl.limparFormulario()">
+					<button class="sc-btn sc-btn-red sc-btn-sm sc-btn-thin" type="button" ng-click="formCtrl.formCtrl.limparFormulario()" ng-if="formCtrl.params.objetos.length > 0">
 						<span class="hidden-xs">Limpar formulário</span>
 						<i ng-if="screen.isXs" class="sc-icon sc-icon-lixeira-1"></i>
 					</button>
@@ -81,10 +81,10 @@
 							</li>
 							<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 								<div class="fcol-xs-5em">
-									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="1" />
 								</div>
 								<div class="fcol-xs-60 sc-m-l-lg">
-									<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
+									<input class="sc-input-default sc-input-block sc-input-thin" placeholder="Descreva o item aqui" ng-model="item.item_name" type="text" />
 								</div>
 								<div class="fcol-xs-auto"></div>
 								<div class="fcol-xs-3em">

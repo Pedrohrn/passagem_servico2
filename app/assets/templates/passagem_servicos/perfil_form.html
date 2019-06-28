@@ -1,6 +1,6 @@
 <div sc-modal="indexCtrl.perfisCtrl.form_modal" style="z-index: 2;">
 	<div class="sc-modal-header sc-text-sm" style="min-height: 3.1em;">
-		<i class="sc-icon sc-icon-fechar-1 sc-modal-close sc-badge-hover-red" ng-click="item.perfil_form.close()"></i>
+		<i class="sc-icon sc-icon-fechar-1 sc-modal-close sc-badge-hover-red" ng-click="indexCtrl.perfisCtrl.cancelar(item)"></i>
 		<span class="sc-m-l-lg sc-text-lg">Perfil de Passagem</span>
 	</div>
 
@@ -9,7 +9,7 @@
 			<div class="flex-row">
 				<div class="col-xs-5">
 					<div class="sc-label">Título:</div>
-					<input class="sc-input-default sc-input-block" type="text" ng-model="indexCtrl.perfisCtrl.params.nome">
+					<input class="sc-input-default sc-input-block" placeholder="Entre com um título" type="text" ng-model="indexCtrl.perfisCtrl.params.nome">
 				</div>
 				<hr class="clear sc-hr-gray-light"/>
 				<div class="col-xs-12">
@@ -51,7 +51,7 @@
 									</li>
 									<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 										<div class="fcol-xs-5em">
-											<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="0" />
+											<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="1" />
 										</div>
 										<div class="fcol-xs-60 sc-m-l-lg">
 											<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
