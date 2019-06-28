@@ -4,7 +4,7 @@ class CreateCategorias < ActiveRecord::Migration[5.2]
     	t.string :nome, null: false
     	t.boolean :is_disabled, default: false
 
-    	t.datetime :desativado_em
+    	t.datetime :desativada_em
 
       t.timestamps
     end
