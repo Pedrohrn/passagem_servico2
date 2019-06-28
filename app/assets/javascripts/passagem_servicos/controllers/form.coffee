@@ -16,8 +16,6 @@ angular.module('scApp').lazy
 		vm.formCtrl =
 			loading: false
 			current_perfil: {}
-			lixeira_objetos: []
-			lixeira_itens: []
 
 			set_perfil: ->
 				scAlert.open
@@ -41,6 +39,7 @@ angular.module('scApp').lazy
 
 				vm.params.perfil = angular.copy vm.formCtrl.current_perfil
 				for objetoPerfil in vm.params.perfil.objetos
+					delete objetoPerfil.id
 					paramsObjetos = vm.params.objetos.find (obj)-> obj.categoria.id == objetoPerfil.categoria.id
 					if paramsObjetos
 						paramsObjetos.itens = paramsObjetos.itens.concat(objetoPerfil.itens)
@@ -51,7 +50,7 @@ angular.module('scApp').lazy
 				vm.params.objetos = angular.copy @current_perfil.objetos
 
 			addObjeto: ->
-				vm.params.objetos.unshift({ categoria: undefined, itens: [ { item_name: '', item_qtd: undefined } ] })
+				vm.params.objetos.unshift({ categoria: undefined, itens: [ { item_name: '', item_qtd: 1 } ] })
 
 			rmvObjeto: (objeto) ->
 				if objeto.id
@@ -92,60 +91,26 @@ angular.module('scApp').lazy
 			salvar: (passagem)->
 				return unless !@loading
 				vm.params.status = if vm.params.status.label == 'Realizada' then 'realizada' else 'pendente'
-				return @verifica_objetos(passagem)
+				return vm.submit(passagem)
 
 			salvar_e_passar: (passagem)->
 				return unless !@loading
 				vm.params.status = "realizada"
-				return @verifica_objetos(passagem)
-
-			verifica_objetos: (passagem) ->
-
-				for objeto in vm.params.objetos
-					if objeto.itens.length == 0
-						@lixeira_objetos.push(objeto)
-
-				for objeto in vm.params.objetos
-					for item in objeto.itens
-						if item.item_name == ''
-							@lixeira_itens.push(item)
-
-				for objeto in vm.params.objetos
-					if objeto.categoria == undefined
-						objeto.error = true
-						scAlert.open
-							title: 'Atenção!'
-							messages: [
-								{ msg: 'Existem objetos sem categoria definida!' },
-								{	msg: 'É necessário selecionar uma categoria para salvar o objeto!' },
-							]
-							buttons: [
-								{ label: 'Ok', color: 'gray' },
-							]
-						return
-
-				for objeto in @lixeira_objetos
-					vm.params.objetos.remove(objeto)
-
-				for objeto in vm.params.objetos
-					for item in @lixeira_itens
-						objeto.itens.remove(item)
-
-				@lixeira_itens.length = 0
-
-				if @lixeira_itens.length == 0
-					vm.submit(passagem)
-
+				return vm.submit(passagem)
 
 		vm.submit = (passagem) ->
-			console.log vm.params
-			if vm.passagem.edit && vm.passagem.edit.opened
-				PassagemServico.update(vm.params)
-			else
-				PassagemServico.create(vm.params)
-			#PassagemServico.list()
-			vm.passagem.edit.opened = false
-			vm.passagem.acc.opened = true
+			return if passagem.carregando
+
+			PassagemServico.create vm.params,
+				(data)=>
+					passagem.carregando = false
+					passagem.salva = true
+					scTopMessages.openSuccess 'Passagem'
+					angular.extend passagem, data.passagem_servico
+				(response)=>
+					passagem.carregando = false
+					errors = response.data?.errors
+					scTopMessages.openDanger errors unless Object.blank(errors)
 
 		vm
 ]

@@ -19,6 +19,7 @@ angular.module('scApp').lazy
 
 		vm.listCtrl =
 			list: []
+			loadingRecords: false
 
 			init: ->
 				@exec()
@@ -28,7 +29,12 @@ angular.module('scApp').lazy
 				@list = []
 				@exec()
 
+			find: (params)->
+				@list.find (el)-> el.id == params.id
+
 			exec: (obj={})->
+				return if @loadingRecords
+				@loadingRecords = true
 
 				params = angular.copy obj
 				params.filtro = vm.filtro.params
@@ -36,10 +42,17 @@ angular.module('scApp').lazy
 
 				PassagemServico.list params,
 					(data)=>
+						@loadingRecords = false
 						@list.addOrExtend item for item in data.passagem_servicos
-						vm.categoriasCtrl.list.addOrExtend item for item in data.categorias
-						vm.perfisCtrl.list.addOrExtend item for item in data.perfis
 						vm.porteirosCtrl.list.addOrExtend item for item in data.pessoas
+
+				Categoria.list params,
+					(data)=>
+						vm.categoriasCtrl.list.addOrExtend item for item in data.categorias
+
+				Perfil.list params,
+					(data)=>
+						vm.perfisCtrl.list.addOrExtend item for item in data.perfis
 
 		vm.porteirosCtrl =
 			list: []
@@ -58,13 +71,18 @@ angular.module('scApp').lazy
 						passagem.checked = true
 
 		vm.novaPassagemCtrl =
+			params: {}
 			newRecord: false
 
-			novaPassagem: ->
+			novaPassagem: (params={})->
+				@params = params
+
 				return unless !@newRecord
 				@newRecord = !@newRecord
 
 			cancelar: ->
+				@params = {}
+
 				scAlert.open
 					title: 'Deseja mesmo cancelar a edição? Dados não salvos serão perdidos.'
 					buttons: [
@@ -127,29 +145,29 @@ angular.module('scApp').lazy
 			form_modal: new scModal()
 			list: []
 			params: {}
-			lixeira_itens: []
-			lixeira_objetos: []
 			duplicata: false
 
 			new: ->
 				@newRecord = !@newRecord
 				@form_modal.open()
+				@formInit(item = {})
 
 			init: ->
 				for item in @list
 					item.toolbar = new scToggle()
 					item.perfil_form = new scToggle()
+					if item.desativado_em != null
+						item.is_disabled = true
 
 			formInit: (item) ->
-				if @newRecord && !@duplicata
-					@params = {}
-					@params.objetos = []
+				if !@duplicata && @newRecord
+					@params = { objetos: [] }
 				else if @newRecord && @duplicata
-					@params = angular.copy item
+					@params.objetos = angular.copy item.objetos
+					for obj in @params.objetos
+						delete obj.id
 				else if item.perfil_form.opened
 					@params = angular.copy(item) || {}
-					@params.objetos = angular.copy(item.objetos) || []
-				return
 
 			rmv: (item)->
 				scAlert.open
@@ -158,28 +176,67 @@ angular.module('scApp').lazy
 						{ msg: 'O registro não poderá ser recuperado!' }
 					],
 					buttons: [
-						{ label: 'Excluir', color: 'red', action: -> Perfil.destroy(item); vm.listCtrl.init() },
+						{ label: 'Excluir', color: 'red', action: -> vm.perfisCtrl.destroy(item) },
 						{ label: 'Cancelar', color: 'gray' }
 					]
+			destroy: (item)->
+				return if @loading
+				Perfil.destroy item,
+					(data)=>
+						@loading = false
+
+						perfil = vm.perfisCtrl.list.find (perf)-> item.id == perf.id
+						vm.perfisCtrl.list.remove(perfil)
+
+						msg = data.message
+						scTopMessages.openSuccess msg
+					(response)=>
+						@loading = false
+
+						errors = response.data?.errors
+						scTopMessages.openDanger errors unless Object.blank(errors)
 
 			edit: (item)->
-				item.perfil_form.toggle()
+				item.perfil_form.opened = true
 				@form_modal.open()
 				@formInit(item)
 
 			duplicar: (item) ->
-				@params = angular.copy(item)
-				@params.id = null
-				duplicata = true
+				@newRecord = true
+				@duplicata = true
+				@formInit(item)
 				@form_modal.open()
 
 			disable: (item)->
 				@params = angular.copy item
-				@params.is_disabled = if @params.is_disabled  then false else true
-				Perfil.update(@params)
+				label = if @params.desativada_em == null then 'reativar' else 'desativar'
+				scAlert.open
+					title: 'Deseja mesmo ' + label + ' o perfil?'
+					buttons: [
+						{ label: label.capitalize(), color: 'yellow', action: -> vm.perfisCtrl.desativar() },
+						{ label: 'Cancelar', color: 'gray' }
+					]
+
+			desativar: ->
+				return if @loading
+				@params.micro_update_type = 'desativar'
+				Perfil.micro_update @params,
+					(data)=>
+						@loading = false
+
+						perfil = vm.perfisCtrl.list.find (perf)-> data.perfil.id == perf.id
+						angular.extend perfil, data.perfil
+
+						msg = data.message
+						scTopMessages.openSuccess msg
+					(response)=>
+						@loading = false
+
+						errors = response.data?.errors
+						scTopMessages.openDanger errors unless Object.blank(errors)
 
 			addObjeto: ->
-				@params.objetos.unshift({ categoria: undefined, itens: [ { item_name: '', item_qtd: undefined } ] })
+				@params.objetos.unshift({ categoria: undefined, itens: [ { item_name: '', item_qtd: 1 } ] })
 
 			rmvObjeto: (objeto)->
 				if objeto.id
@@ -218,9 +275,6 @@ angular.module('scApp').lazy
 			rmvItem: (objeto, item)->
 				objeto.itens.remove(item)
 
-			toggleForm: (item)->
-				item.perfil_form.opened = !item.perfil_form.opened
-
 			cancelar: (item)->
 				scAlert.open
 					title: 'Deseja mesmo cancelar a edição?'
@@ -231,86 +285,80 @@ angular.module('scApp').lazy
 					]
 
 			resetForm: (item) ->
-				@params = { objetos: [] }
-				vm.perfisCtrl.newRecord = false
-				vm.perfisCtrl.toggleForm(item)
-				vm.perfisCtrl.form_modal.close()
-				for objeto in item.objetos
-					if objeto.id == null
-						item.objetos.remove(objeto)
-
-			salvar: (item) ->
-				vm.perfisCtrl.verifica_objetos(item)
-
-			v_2: (item) ->
-				for objeto in @params.objetos
-					if objeto.itens.length == 0
-						@lixeira_objetos.push(objeto)
-
-			verifica_objetos: (item)->
-				for objeto in @params.objetos
-					if objeto.itens.length == 0
-						@lixeira_objetos.push(objeto)
-
-				for objeto in @params.objetos
-					for obj_item in objeto.itens
-						if obj_item.item_name == ''
-							@lixeira_itens.push(obj_item)
-
-				for objeto in @params.objetos
-					if objeto.categoria == undefined
-						objeto.error = true
-						scAlert.open
-							title: 'Atenção!'
-							messages: [
-								{ msg: 'Existem objetos no formulário sem categoria definida!' },
-								{	msg: 'É necessário selecionar uma categoria para salvar o objeto!' },
-							]
-							buttons: [
-								{ label: 'Ok', color: 'gray' },
-							]
-						return
-
-				for objeto in @lixeira_objetos
-					@params.objetos.remove(objeto)
-
-				for objeto in @params.objetos
-					for obj_item in @lixeira_itens
-						objeto.itens.remove(obj_item)
-
-				@lixeira_itens.length = 0
-
-				if @lixeira_itens.length == 0
-					vm.perfisCtrl.submit(item)
+				if @newRecord
+					@newRecord = false
+				else
 					item.perfil_form.opened = false
+				@form_modal.close()
+				@duplicata = false
 
-			submit: (item) ->
-				@params.status = 'ativo'
-				Perfil.create(@params)
-				vm.listCtrl.init()
-				vm.perfisCtrl.form_modal.close()
+			salvar: (item)->
+				@submit(item)
+
+			submit: (item)->
+				@params = angular.copy item
+				return if @loading
+				Perfil.create @params,
+					(data)=>
+						@loading = false
+						if @params.id
+							perfil = vm.perfisCtrl.list.find (obj)-> data.perfil.id == obj.id
+							angular.extend perfil, data.perfil
+						else if @newRecord
+							vm.perfisCtrl.list.push(@params)
+						msg = data.message
+						scTopMessages.openSuccess msg
+						vm.perfisCtrl.form_modal.close()
+
+					(response)=>
+						@loading = false
+
+						errors = response.data?.errors
+						scTopMessages.openDanger errors unless Object.blank(errors)
 
 		vm.categoriasCtrl =
 			newRecord: false
 			list: []
-			newCategoria: {}
+			params: {}
+			loading: false
 
 			init: ->
 				for item in @list
 					item.toolbar = new scToggle();
 					item.edit = new scToggle();
+					if item.desativada_em == null
+						item.is_disabled = false
+					else
+						item.is_disabled = true
+
+			formInit: (item)->
+				@params = if @newRecord then {} else if item.edit.opened then angular.copy item
 
 			rmv: (item) ->
 				scAlert.open
 					title: 'Tem certeza que deseja excluir a categoria?'
 					buttons: [
-						{ label: 'Excluir', color: 'red', action: -> Categoria.destroy(item); vm.listCtrl.init() },
+						{ label: 'Excluir', color: 'red', action: -> vm.categoriasCtrl.destroy(item) },
 						{ label: 'Cancelar', color: 'gray' }
 					]
 
+			destroy: (item)->
+				return if @loading
+				Categoria.destroy item,
+					(data)=>
+						@loading = false
+						msg = data.message
+
+						categoria = vm.categoriasCtrl.list.find (cat)-> item.id == cat.id
+						vm.categoriasCtrl.list.remove(categoria)
+						scTopMessages.openSuccess msg
+					(response)=>
+						@loading = false
+						errors = response.data?.errors
+						scTopMessages.openDanger errors
+
 			edit: (item) ->
 				item.edit.toggle()
-				@newCategoria = angular.copy item
 
 			toggleMenu: (item)->
 				item.toolbar.opened = !item.toolbar.opened
@@ -325,8 +373,22 @@ angular.module('scApp').lazy
 					]
 
 			desativar: (item)->
-				item.is_disabled = !item.is_disabled
-				Categoria.create(item)
+				params = angular.copy item
+				params.micro_update_type = 'desativar'
+
+				return if @loading
+				Categoria.micro_update params,
+					(data)=>
+						@loading = false
+						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
+						angular.extend categoria, data.categoria
+
+						msg = data.message
+						scTopMessages.openSuccess msg
+					(response)=>
+						@loading = false
+						errors = response.data?.errors
+						scTopMessages.openDanger errors unless Object.blank(errors)
 
 			new: ->
 				if @newRecord
@@ -335,15 +397,31 @@ angular.module('scApp').lazy
 						buttons: [ { label: 'OK', color: 'gray' } ]
 				else
 					@newRecord = true
-					@newCategoria = { nome: '' }
+					@params = { nome: '' }
 
 			submit: (item) ->
-				Categoria.create(@newCategoria)
-				if @newRecord
-					@newRecord = false
-				else if item.edit.opened && item.edit.opened
-					item.edit.opened = false
-				vm.listCtrl.init()
+				return if @loading
+				Categoria.create @params,
+					(data)=>
+						@loading = false
+
+						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
+						if !@newRecord
+							angular.extend categoria, data.categoria
+						else
+							vm.categoriasCtrl.list.push(@params)
+						msg = data.message
+						scTopMessages.openSuccess msg
+						if @newRecord
+							@newRecord = false
+						else if item.edit.opened && item.edit.opened
+							item.edit.opened = false
+					(response)=>
+						@loading = false
+
+						errors = response.data?.errors
+						scTopMessages.openDanger errors unless Object.blank(errors)
+
 
 			cancelar: (item)->
 				if @newRecord
@@ -382,6 +460,23 @@ angular.module('scApp').lazy
 				{ id: 5, label: 'Desativada em',	key: 'desativou', filtro: false, 	color: 'yellow' },
 			]
 
+		vm.microUpdateCtrl =
+			submit: (params)->
+				return if @loading
+				@loading = true
+
+				PassagemServico.micro_update params,
+					(data)=>
+						@loading = false
+
+						passagem = vm.listCtrl.list.find(data.passagem_servico)
+						angular.extend passagem, data.passagem_servico
+					(response)=>
+						@loading = false
+
+						errors = response.data?.errors
+						scTopMessages.openDanger errors unless Object.blank(errors)
+
 		vm.itemCtrl =
 			duplicata: false
 			dupParams: {}
@@ -408,38 +503,54 @@ angular.module('scApp').lazy
 				scAlert.open
 					title: 'Deseja mesmo excluir a passagem? Os dados não poderão ser recuperados.'
 					buttons: [
-						{ label: 'Excluir', color: 'red', action: -> PassagemServico.destroy(passagem); vm.listCtrl.init() },
+						{ label: 'Excluir', color: 'red', action: -> vm.itemCtrl.deletePassagem(passagem); vm.listCtrl.init() },
 						{ label: 'Cancelar', color: 'gray' },
 					]
 
+			deletePassagem: (passagem) ->
+				return if passagem.deleting
+				PassagemServico.destroy passagem,
+					(data)=>
+						passagem.deleting = false
+
+						msg = data.message?
+						scTopMessages.openSuccess msg
+					(response)=>
+						passagem.deleting = false
+
+						msg = response.data?.errors
+						scTopMessages.openDanger msg unless Object.blank(errors)
+
+
 			duplicar: (passagem)->
-				vm.novaPassagemCtrl.novaPassagem()
-				@duplicata = true
-				@dupParams = angular.copy(passagem)
-				passagem = angular.copy @dupParams
+				delete passagem.id
+				for objeto in passagem.objetos
+					delete objeto.id
+
+				vm.novaPassagemCtrl.novaPassagem(passagem)
 
 			disable: (passagem)->
-				if passagem.status.label == 'Desativada'
+				if passagem.status.key == 'desativada'
 					button = 'Reativar'
 					label = 'reativar'
 				else
 					button = 'Desativar'
 					label = 'desativar'
+
 				scAlert.open
 					title: "Deseja mesmo " + label + " essa passagem?"
 					buttons: [
-						{ label: button, color: 'yellow', action: -> vm.itemCtrl.desativar(passagem) },
+						{ label: button, color: 'yellow', action: -> vm.itemCtrl.desativar_reativar(passagem) },
 						{ label: 'Cancelar', color: 'gray' }
 					]
 
-			desativar: (passagem) ->
-				if passagem.status.label == 'Desativada'
-					passagem.passada_em = null
-					passagem.desativada_em = null
-				else
-					passagem.passada_em = null
-					passagem.desativada_em = new Date()
-				PassagemServico.micro_update(passagem)
+			desativar_reativar: (passagem) ->
+				params =
+					id: passagem.id
+
+				params.micro_update_type = if passagem.status.key == 'desativada' then 'reativar' else 'desativar'
+
+				vm.microUpdateCtrl.submit(params)
 
 			open_log: (passagem)->
 				passagem.log.active = !passagem.log.active
@@ -450,7 +561,7 @@ angular.module('scApp').lazy
 				else if !passagem.acc.opened
 					passagem.acc.opened = true
 					passagem.edit.opened = false
-					PassagemServico.show(passagem)
+					carregarPassagem(passagem)
 				else
 					passagem.acc.opened = false
 					passagem.edit.opened = false
@@ -463,6 +574,17 @@ angular.module('scApp').lazy
 						{ label: 'Não', color: 'gray' }
 					]
 
+		carregarPassagem = (passagem)->
+			return if passagem.carregada || passagem.carregando
+			passagem.carregando = true
+
+			PassagemServico.show passagem,
+				(data)=>
+					passagem.carregada  = true
+					passagem.carregando = false
+
+					angular.extend passagem, data.passagem_servico
+
 		vm.passarServicoModal =
 			params: {}
 			loading: false
@@ -470,11 +592,15 @@ angular.module('scApp').lazy
 			init: (passagem)->
 				@params = angular.copy passagem
 
-			passarServico: (passagem)->
-				@params.status = 'realizada'
-				@params.passada_em = new Date()
-				PassagemServico.micro_update(@params)
-				vm.perfisCtrl.form_modal.close()
+			passarServico: (passagem) ->
+				params =
+					id: @params.id
+					observacoes: @params.observacoes
+					pessoa_entrou: @params.pessoa_entrou
+					pessoa_saiu: @params.pessoa_saiu
+					micro_update_type: 'passar_servico'
+
+				vm.microUpdateCtrl.submit(@params)
 
 		vm
 ]
