@@ -2,12 +2,10 @@ class PassagemServicosService
 	def self.model() ::PassagemServico; end
 
 	def self.index(opts, params)
-		passagens_servico = model.all.map(&:to_frontend_obj)
-		categorias = Categoria.all.map(&:to_frontend_obj)
-		perfis = Perfil.all.map(&:to_frontend_obj)
+		passagens_servico = model.all.map(&:slim_obj)
 		pessoas = Pessoa.all.limit(15).map(&:slim_obj)
 
-		resp = { passagem_servicos: passagens_servico, categorias: categorias, perfis: perfis, pessoas: pessoas }
+		resp = { passagem_servicos: passagens_servico, pessoas: pessoas }
 
 		[:success, resp]
 	end
@@ -19,13 +17,15 @@ class PassagemServicosService
 		[:error, { message: 'Registro não encontrado!'} ]
 	end
 
-	def self.micro_update(params)
-		passagem = model.find_by(id: params[:id])
-		passagem.passada_em = Time.now
-		passagem.update_attributes(params)
-
-		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
-		[:error, passagem.errors.full_messages]
+	def self.micro_update(opts, params)
+		case params[:micro_update_type].to_s.to_sym
+		when :desativar, :reativar
+			desativar_reativar(params)
+		when :passar_servico
+			passar_servico(params)
+		else
+			[:error, 'Tipo de atualização não permitida']
+		end
 	end
 
 	def self.update(opts, params)
@@ -37,8 +37,8 @@ class PassagemServicosService
 	end
 
 	def self.submit(opts, params)
-		pessoa_saiu = params.delete(:pessoa_saiu)
-		pessoa_entrou = params.delete(:pessoa_entrou)
+		pessoa_saiu = params.delete(:pessoa_saiu) || {}
+		pessoa_entrou = params.delete(:pessoa_entrou) || {}
 
 		params[:pessoa_saiu_id] = pessoa_saiu[:id]
 		params[:pessoa_entrou_id] = pessoa_entrou[:id]
@@ -69,8 +69,27 @@ class PassagemServicosService
 			objeto
 		end
 
-		puts params
 		params
 	end
+
+	private
+
+	def self.desativar_reativar(params)
+		passagem = model.find_by(id: params[:id])
+		passagem.desativada_em =  passagem.desativada? ? nil : Time.now
+		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
+
+		[:error, passagem.errors.full_messages]
+	end
+	private_class_method :desativar_reativar
+
+	def self.passar_servico(params)
+		passagem = model.find_by(id: params[:id])
+		passagem.passada_em = passagem.realizada ? nil : Time.now
+
+		return [:success, {passagem_servico: passagem.to_frontend_obj }] if passagem.save
+		[:error, passagem.errors.full_messages]
+	end
+	private_class_method :passar_servico
 
 end

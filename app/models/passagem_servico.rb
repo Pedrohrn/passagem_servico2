@@ -1,13 +1,16 @@
 class PassagemServico < ApplicationRecord
-	validates_presence_of :status, message: "Status não definido!"
-	validates_presence_of :pessoa_entrou, message: "Selecione a pessoa que está entrando!"
-	validates_presence_of :pessoa_saiu, message: "Selecione a pessoa que está saindo!"
-
 	has_many 		:objetos, dependent: :destroy
 	belongs_to 	:pessoa_entrou, class_name: 'Pessoa'
 	belongs_to 	:pessoa_saiu, class_name: 'Pessoa'
 
 	accepts_nested_attributes_for :objetos, allow_destroy: true
+
+	# Validates
+	VALIDATES_PRESENCES = [
+		{ key: :pessoa_saiu_id,   label: "Pessoa Saiu" },
+		{ key: :pessoa_entrou_id, label: "Pessoa Entrou" },
+	]
+	validate :validar_campos
 
 	# callbacks
 	before_validation :update_status
@@ -58,10 +61,20 @@ class PassagemServico < ApplicationRecord
 		desativada_em.present?
 	end
 
+	# private
+
 	def update_status
 		self.status = STATUS.find{ |st| send("#{st[:key]}?") }[:key]
 
 		nil
 	end
-	# status
+
+	def validar_campos
+		VALIDATES_PRESENCES.each{ |obj|
+			next if send(obj[:key]).present?
+			errors.add(:base, "#{obj[:label]} não pode ser vazio")
+		}
+
+		errors.empty?
+	end
 end

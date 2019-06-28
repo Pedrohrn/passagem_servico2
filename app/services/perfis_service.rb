@@ -1,6 +1,14 @@
 class PerfisService
 	def self.model() ::Perfil; end
 
+	def self.index(opts, params)
+		perfis = model.all.map(&:to_frontend_obj)
+
+		resp = { perfis: perfis }
+
+		[ :success, resp ]
+	end
+
 	def self.show(opts, params)
 		perfil = model.find_by(id: params[:id])
 
@@ -26,6 +34,15 @@ class PerfisService
 		[:error, perfil.errors.full_messages]
 	end
 
+	def self.micro_update(opts, params)
+		case params[:micro_update_type].to_s.to_sym
+		when :desativar, :reativar
+			desativar_reativar(params)
+		else
+			[:error, 'Tipo de operação não permitida']
+		end
+	end
+
 	def self.destroy(opts, params)
 		perfil = model.find_by(id: params[:id])
 		perfil.destroy
@@ -44,5 +61,17 @@ class PerfisService
 
 		params
 	end
+
+	private
+
+	def self.desativar_reativar(params)
+		perfil = model.find_by(id: params[:id])
+		perfil.desativado_em = perfil.desativado? ? nil : Time.now
+
+		return [:success, { perfil: perfil.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if perfil.save
+
+		[:error, perfil.errors.full_messages]
+	end
+	private_class_method :desativar_reativar
 
 end

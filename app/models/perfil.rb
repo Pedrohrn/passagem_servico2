@@ -1,20 +1,18 @@
 class Perfil < ApplicationRecord
-	validates_presence_of :nome, message: "Nome não pode ser vazio!"
-	validates_uniqueness_of :nome, message: "Já existe um perfil com esse nome!"
-	validates_presence_of :objetos, message: "Cadastre ao menos um objeto no perfil!"
-	#validate :nome_presente
-	#validate :nome_unico
-	#validate :has_objetos
-
 	has_many :objetos, dependent: :destroy
 
 	accepts_nested_attributes_for :objetos, allow_destroy: true
+
+	validate 	:validar_campos
+	validate 	:validar_objetos
+	validates :nome, uniqueness: { message: 'Já existe um perfil com esse nome! Escolha outro.' }
 
 	def slim_obj
 		{
 			id: id,
 			nome: nome,
-			is_disabled: is_disabled
+			is_disabled: is_disabled,
+			desativado_em: desativado_em,
 		}
 	end
 
@@ -28,8 +26,20 @@ class Perfil < ApplicationRecord
 		objetos.map(&:to_frontend_obj)
 	end
 
-	def nome_presente
-		errors.add(:nome, "Nome não pode ser vazio") if :nome.blank?
+	def validar_campos
+		errors.add(:base, "Nome não pode ser vazio") if :nome.nil?
+
+		errors.empty?
+	end
+
+	def validar_objetos
+		errors.add(:base, "É necessário adicionar ao menos um objeto para salvar!") if :objetos.nil?
+
+		errors.empty?
+	end
+
+	def desativado?
+		desativado_em.present?
 	end
 
 end

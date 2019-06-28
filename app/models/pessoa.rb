@@ -1,5 +1,5 @@
 class Pessoa < ApplicationRecord
-	validates_presence_of :nome, message: "Nome não pode ser vazio!"
+	validates :nome, presence: { message: "Nome não pode ser vazio!" }
 
 	has_many :passagem_servicos, foreign_key: 'pessoa_entrou_id'
 	has_many :passagem_servicos, foreign_key: 'pessoa_saiu_id'

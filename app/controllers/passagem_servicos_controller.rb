@@ -9,7 +9,7 @@ class PassagemServicosController < ApplicationController
 
 				case st
 				when :success then render json: resp, status: :ok
-				when :error then render json: resp, status: :error
+				when :error then render json: { errors: resp }, status: :error
 				end
 			}
 		end
@@ -20,7 +20,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :not_found then render json: resp, status: :not_found
+		when :not_found then render json: { errors: resp }, status: :not_found
 		end
 	end
 
@@ -29,7 +29,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :error
+		when :error then render json: { errors: resp }, status: :error
 		end
 	end
 
@@ -38,7 +38,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :error
+		when :error then render json: { errors: resp }, status: :error
 		end
 	end
 
@@ -47,7 +47,7 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :error
+		when :error then render json: { errors: resp }, status: :error
 		end
 	end
 
@@ -56,22 +56,20 @@ class PassagemServicosController < ApplicationController
 
 		case st
 		when :success then render json: resp, status: :ok
-		when :error then render json: resp, status: :error
+		when :error then render json: { errors: resp }, status: :error
 		end
 	end
 
 	private
 
 	def passagem_service_params
-		attrs = 	[:id, :status, :data_criacao, :observacoes, :passada_em, :desativada_em]
+		attrs = 	[:id, :status, :observacoes]
 		attrs << 	{pessoa_saiu: [:id]}
 		attrs << 	{pessoa_entrou: [:id]}
 		attrs << 	{
 			objetos: [
 				:id,
 				:_destroy,
-				:perfil_id,
-				:passagem_servico_id,
 				categoria: [:id],
 				itens: [ :item_name, :item_qtd ],
 			],
@@ -82,7 +80,7 @@ class PassagemServicosController < ApplicationController
 	end
 
 	def micro_update_params
-		attrs = [:id, :status, :observacoes, :passada_em, :desativada_em]
+		attrs = [:id, :observacoes, :micro_update_type]
 		attrs << {pessoa_saiu: [:id]}
 		attrs << {pessoa_entrou: [:id]}
 
