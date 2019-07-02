@@ -15,22 +15,25 @@
 		<div class="sc-fieldset" style="position: relative; top: -0.6em; z-index: 100;">
 			<ul ng-class="{'sc-accordion': !indexCtrl.modalPerfilCtrl.current_list.ctrl.list.length == 0}">
 				<li ng-if="indexCtrl.modalPerfilCtrl.current_list.ctrl.newRecord && indexCtrl.modalPerfilCtrl.current_list.key == 'categoria'" ng-init="indexCtrl.categoriasCtrl.formInit()">
-					<div class="sc-accordion-head flex-row">
-						<div class="sc-input-group fcol-xs-40">
-							<input class="sc-input-default" ng-model="indexCtrl.categoriasCtrl.params.nome">
-							<button class="sc-btn" ng-class="{'sc-btn-gray': indexCtrl.categoriasCtrl.loading, 'sc-btn-green': !indexCtrl.categoriasCtrl.loading}" ng-click="indexCtrl.categoriasCtrl.submit(item)">
-								<i class="sc-icon" ng-class="{'sc-icon-visto-1': !indexCtrl.categoriasCtrl.loading, 'sc-icon-carregando-1 sc-icon-spin': indexCtrl.categoriasCtrl.loading}"></i>
-							</button>
-							<button class="sc-btn sc-btn-red" ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.cancelar(item)">
-								<i class="sc-icon sc-icon-fechar-1"></i>
-							</button>
-						</div>
-						<div>
-							<span class="sc-border-radius sc-text-sm sc-p-v-sm sc-text-white sc-p-h-lg sc-bg-gray" ng-if="indexCtrl.categoriasCtrl.loading">
-								<i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>
-								Salvando
-							</span>
-						</div>
+					<div class="sc-accordion-head sc-p-h-o col-xs-6 col-sm-3">
+						<label>
+							<div class="sc-label">Nova categoria:</div>
+							<div class="sc-input-group fcol-xs-40">
+								<input class="sc-input-default" ng-model="indexCtrl.categoriasCtrl.params.nome" placeholder="Nome da nova categoria">
+								<button class="sc-btn" ng-class="{'sc-btn-gray': indexCtrl.categoriasCtrl.loading, 'sc-btn-green': !indexCtrl.categoriasCtrl.loading}" ng-click="indexCtrl.categoriasCtrl.submit(item)">
+									<i class="sc-icon" ng-class="{'sc-icon-visto-1': !indexCtrl.categoriasCtrl.loading, 'sc-icon-carregando-1 sc-icon-spin': indexCtrl.categoriasCtrl.loading}"></i>
+								</button>
+								<button class="sc-btn sc-btn-red" ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.cancelar(item)">
+									<i class="sc-icon sc-icon-fechar-1"></i>
+								</button>
+							</div>
+							<div ng-if="indexCtrl.categoriasCtrl.loading">
+								<span class="sc-border-radius sc-text-sm sc-p-v-sm sc-text-white sc-p-h-lg sc-bg-gray">
+									<i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>
+									Salvando
+								</span>
+							</div>
+						</label>
 					</div>
 				</li>
 				<li ng-if="indexCtrl.modalPerfilCtrl.current_list.ctrl.list.length == 0 && !indexCtrl.modalPerfilCtrl.current_list.ctrl.newRecord">
@@ -60,7 +63,7 @@
 							<div class="sc-dropdown" ng-click="item.toolbar.toggle()">
 								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray" ng-class="{'sc-badge-active': item.toolbar.opened}"></i>
 								<div class="sc-dropdown-menu pull-right" ng-if="item.toolbar.opened" style="display: block;">
-									<ul>
+									<ul class="ng-animation-slider">
 										<li ng-click="indexCtrl.modalPerfilCtrl.current_list.ctrl.edit(item)">
 											<span><i class="sc-icon sc-icon-lapis"></i>Editar</span>
 										</li>
@@ -87,11 +90,11 @@
 							</label>
 						</div>
 					</div>
-					<div ng-if="indexCtrl.perfisCtrl.form_modal.active">
-						<div ng-include="indexCtrl.templates.passagem_servicos.perfil_form"></div>
-					</div>
 				</li>
 			</ul>
+			<div ng-if="indexCtrl.perfisCtrl.form_modal.active">
+				<div ng-include="indexCtrl.templates.passagem_servicos.perfil_form"></div>
+			</div>
 		</div>
 	</div>
 

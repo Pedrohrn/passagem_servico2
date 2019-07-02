@@ -51,7 +51,7 @@
 				<li ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }" ng-init="indexCtrl.itemCtrl.init(passagem)">
 					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)" ng-class="{'sc-opac-70': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && passagem.edit.opened , 'sc-acc-selected': passagem.checked }">
 						<div class="fcol-xs-3em align-center fcol-order-0" sc-stop-click>
-							<input multi-check type="checkbox" ng-model="passagem.checked" ng-click="selections.toggleItem(passagem, $event)" class="sc-checkbox sc-checkbox-blue">
+							<input multi-check type="checkbox" ng-click="indexCtrl.selections.selectPassagem(passagem, $event)" ng-model="passagem.checked" class="sc-checkbox sc-checkbox-blue">
 						</div>
 						<div class="fcol-xs-7em hidden-xs align-center sc-p-sm">
 							<span class="sc-border-radius sc-bg-{{passagem.status.color}} sc-text-white sc-p-v-xs sc-p-h-lg sc-text-sm">{{passagem.status.label}}</span>
@@ -69,7 +69,7 @@
 						<div class="fcol-xs-3em align-center sc-p-sm fcol-order-5" sc-stop-click>
 							<div class="sc-dropdown">
 								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray" ng-class="{'sc-text-white sc-badge-hover-white': passagem.edit.opened || passagem.acc.opened }" ng-click="passagem.menu.toggle()"></i>
-								<ul class="sc-dropdown-menu pull-right" ng-if="passagem.menu.opened">
+								<ul class="sc-dropdown-menu ng-animation-slider pull-right" ng-if="passagem.menu.opened">
 									<li ng-if="passagem.status.label == 'Pendente'" ng-click="indexCtrl.itemCtrl.passarServico(passagem)">
 										<span><i class="sc-icon sc-icon-seta-6-direita-esquerda"></i> Passar Serviço</span>
 									</li>
@@ -101,10 +101,10 @@
 							</span>
 						</div>
 					</div>
-					<div ng-if="passagem.acc.opened && !passagem.edit.opened && !passagem.loading" class="sc-accordion-body">
+					<div ng-if="passagem.acc.opened && !passagem.edit.opened && !passagem.loading" class="sc-accordion-body ng-animation-slider">
 						<div ng-include="indexCtrl.templates.passagem_servicos.show"></div>
 					</div>
-					<div ng-if="passagem.edit.opened && !passagem.acc.opened && !passagem.loading" class="sc-accordion-body">
+					<div ng-if="passagem.edit.opened && !passagem.acc.opened && !passagem.loading" class="sc-accordion-body ng-animation-slider">
 						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
 					</div>
 					<div ng-if="passagem.log.active">
@@ -120,4 +120,5 @@
 
 	<div ng-if="indexCtrl.logCtrl.modal.active" ng-include="indexCtrl.templates.passagem_servicos.log_passagens"></div>
 	<div ng-if="indexCtrl.modalPerfilCtrl.modal.active" ng-include="indexCtrl.templates.passagem_servicos.perfil_modal"></div>
+	<div ng-if="indexCtrl.relatoriosCtrl.modal.active" ng-include="indexCtrl.templates.passagem_servicos.relatorio_modal"></div>
 </div>

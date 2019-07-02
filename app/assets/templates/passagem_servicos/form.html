@@ -32,12 +32,10 @@
 			</div>
 			<div class="fcol-xs-100">
 				<div class="sc-label">Perfil de passagem:</div>
-				<div class="flex-row">
-					<div class="sc-input-group fcol-xs-100 fcol-sm-50 fcol-lg-35">
-						<select class="sc-input-default" ng-options="perfil as perfil.nome for perfil in indexCtrl.perfisCtrl.list track by perfil.id" ng-change="formCtrl.formCtrl.set_perfil()" ng-model="formCtrl.formCtrl.current_perfil">
-							<option label="Selecione um perfil" ng-value="empty"></option>
-						</select>
-					</div>
+					<div class="sc-input-group sc-input-block fcol-xs-100 fcol-sm-50 fcol-lg-35">
+					<select class="sc-input-default" ng-options="perfil as perfil.nome disable when perfil.is_disabled for perfil in indexCtrl.perfisCtrl.list track by perfil.id" ng-change="formCtrl.formCtrl.set_perfil()" ng-model="formCtrl.formCtrl.current_perfil">
+						<option label="Selecione um perfil" ng-value="empty"></option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -63,7 +61,7 @@
 							<div class="col-xs-8 col-sm-3 col-md-4 sc-text-sm sc-p-h-o">
 								<div class="sc-label">Categoria:</div>
 								<div class="">
-									<select class="col-xs-12 sc-input-default sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="formCtrl.formCtrl.set_categoria(objeto)">
+									<select class="col-xs-12 sc-input-default sc-input-thin" ng-options="categoria as categoria.nome disable when categoria.is_disabled for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="formCtrl.formCtrl.set_categoria(objeto)">
 										<option value="Selecione ou cadastre">Selecione ou cadastre</option>
 									</select>
 								</div>
@@ -81,7 +79,7 @@
 							</li>
 							<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 								<div class="fcol-xs-5em">
-									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="1" />
+									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999"/>
 								</div>
 								<div class="fcol-xs-60 sc-m-l-lg">
 									<input class="sc-input-default sc-input-block sc-input-thin" placeholder="Descreva o item aqui" ng-model="item.item_name" type="text" />
@@ -108,7 +106,8 @@
 
 		<div class="sc-fieldset flex-row">
 			<div class="sc-label sc-p-b-xs">Observações:</div>
-			<textarea class="sc-input-default sc-m-md sc-m-t-o" rows="5" col="30" ng-model="formCtrl.params.observacoes"></textarea>
+			<textarea class="sc-input-default sc-m-md sc-m-t-o" rows="5" col="30" ng-model="formCtrl.params.observacoes" maxlength="2500"></textarea>
+			<div ng-if="formCtrl.params.observacoes.length > 0" class="sc-text-sm sc-p-t-o" ng-class="formCtrl.params.observacoes.length >= 2500 ? 'sc-text-red' : 'sc-text-blue'">{{formCtrl.params.observacoes.length}} de {{2500 - formCtrl.params.observacoes.length}} caracteres restantes </div>
 		</div>
 
 		<div class="align-right">

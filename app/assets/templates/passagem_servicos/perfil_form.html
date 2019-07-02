@@ -33,8 +33,8 @@
 									<div class="sc-text-sm fcol-xs-40">
 										<div class="sc-label">Categoria:</div>
 										<div class="">
-											<select class="sc-input-default sc-input-block sc-input-thin" ng-options="categoria as categoria.nome for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="indexCtrl.perfisCtrl.set_categoria(objeto)" ng-class="{'error': objeto.error}">
-												<option value="Selecione ou cadastre">Selecione ou cadastre</option>
+											<select class="sc-input-default sc-input-block sc-input-thin" ng-options="categoria as categoria.nome disable when categoria.is_disabled for categoria in indexCtrl.categoriasCtrl.list track by categoria.id" ng-model="objeto.categoria" ng-change="indexCtrl.perfisCtrl.set_categoria(objeto)" ng-class="{'error': objeto.error}">
+												<option value="Selecione ou cadastre"></option>
 											</select>
 										</div>
 									</div>
@@ -51,7 +51,7 @@
 									</li>
 									<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 										<div class="fcol-xs-5em">
-											<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="1" />
+											<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1"/>
 										</div>
 										<div class="fcol-xs-60 sc-m-l-lg">
 											<input class="sc-input-default sc-input-block sc-input-thin" ng-model="item.item_name" type="text" />
