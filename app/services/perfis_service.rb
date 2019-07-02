@@ -9,13 +9,6 @@ class PerfisService
 		[ :success, resp ]
 	end
 
-	def self.show(opts, params)
-		perfil = model.find_by(id: params[:id])
-
-		return [:success, { perfil: perfil}] if perfil?
-		[:error, perfil.errors.full_messages]
-	end
-
 	def self.create(opts, params)
 		self.submit(opts, params)
 	end
@@ -30,7 +23,14 @@ class PerfisService
 		perfil = model.find_by(id: params[:id]) || model.new
 		perfil.assign_attributes(params)
 
-		return [:success, { perfil: perfil.to_frontend_obj, message: 'Registro salvo com sucesso!' }] if perfil.save
+		message =
+		if perfil.new_record?
+			'Registro cadastrado com sucesso!'
+		else
+			'Registro atualizado com sucesso!'
+		end
+
+		return [:success, { perfil: perfil.to_frontend_obj, message: message }] if perfil.save
 		[:error, perfil.errors.full_messages]
 	end
 

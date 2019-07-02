@@ -50,7 +50,10 @@ class PassagemServicosService
 
 		passagem.assign_attributes(params)
 
-		return [:success, { passagem_servico: passagem.to_frontend_obj, message: 'Registro salvo com sucesso!' }] if passagem.save
+		message = passagem.new_record? ? 'Registro cadastrado com sucesso!' :	'Registro atualizado com sucesso!'
+
+
+		return [:success, { passagem_servico: passagem.to_frontend_obj, message: message }] if passagem.save
 		[:error, passagem.errors.full_messages]
 	end
 
@@ -58,8 +61,8 @@ class PassagemServicosService
 		passagem = model.find_by(id: params[:id])
 		passagem.destroy
 
-		return [:success, { message: 'Registro excluído com sucesso!'}] if passagem.destroy
-		[:error, passagem.errors]
+		return [:success, { message: 'Registro excluído com sucesso!' }] if passagem.destroy
+		[:error, passagem.errors.full_messages]
 	end
 
 	def self.set_objetos(params)
@@ -76,18 +79,28 @@ class PassagemServicosService
 
 	def self.desativar_reativar(params)
 		passagem = model.find_by(id: params[:id])
-		passagem.desativada_em =  passagem.desativada? ? nil : Time.now
-		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
 
+		passagem.desativada_em = passagem.desativada? ? nil : Time.now
+
+		return [:success, { passagem_servico: passagem.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if passagem.save
 		[:error, passagem.errors.full_messages]
 	end
 	private_class_method :desativar_reativar
 
 	def self.passar_servico(params)
-		passagem = model.find_by(id: params[:id])
-		passagem.passada_em = passagem.realizada ? nil : Time.now
+		pessoa_saiu = params.delete(:pessoa_saiu) || {}
+		pessoa_entrou = params.delete(:pessoa_entrou) || {}
 
-		return [:success, {passagem_servico: passagem.to_frontend_obj }] if passagem.save
+		params[:pessoa_saiu_id] = pessoa_saiu[:id]
+		params[:pessoa_entrou_id] = pessoa_entrou[:id]
+
+		passagem = model.find_by(id: params[:id])
+		params.delete(:micro_update_type)
+		passagem.assign_attributes(params)
+
+		passagem.passada_em = passagem.realizada? ? nil : Time.now
+
+		return [:success, { passagem_servico: passagem.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if passagem.save
 		[:error, passagem.errors.full_messages]
 	end
 	private_class_method :passar_servico

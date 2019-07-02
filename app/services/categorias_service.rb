@@ -20,8 +20,14 @@ class CategoriasService
 	def self.submit(opts, params)
 		categoria = model.find_by(id: params[:id]) || model.new
 		categoria.assign_attributes(params)
+		message =
+		if categoria.new_record?
+			'Registro cadastrado com sucesso!'
+		else
+			'Registro atualizado com sucesso!'
+		end
 
-		return [:success, { categoria: categoria.to_frontend_obj, message: 'Registro cadastrado com sucesso!' }] if categoria.save
+		return [:success, { categoria: categoria.to_frontend_obj, message: message }] if categoria.save
 		[:error, categoria.errors.full_messages]
 	end
 
