@@ -10,14 +10,14 @@
 			<input class="sc-input-default">
 			<i class="sc-btn sc-btn-blue sc-icon sc-icon-lupa-1" ng-click="indexCtrl.listCtrl.init()"></i>
 			<i class="sc-btn sc-btn-default sc-icon sc-icon-filtro-2" ng-click="indexCtrl.filtro.buscaAvancada()" ng-class="{'sc-btn-gray': indexCtrl.filtro.filtro_avancado}"></i>
-			<i class="sc-btn sc-btn-default sc-icon sc-icon-impressora"></i>
+			<i class="sc-btn sc-btn-default sc-icon sc-icon-impressora" ng-click="indexCtrl.relatoriosCtrl.toggleModal()"></i>
 		</div>
 	</div>
 	<div class="fcol-xs-auto hidden-xs"></div>
 	<div class="fcol-xs-3m" sc-stop-click>
 		<div class="sc-dropdown sc-btn sc-btn-default" ng-click="indexCtrl.topToolbar.toggle()">
 			<i class="sc-icon sc-icon-reticiencias-v"></i>
-			<ul ng-if="indexCtrl.topToolbar.is_visible" class="sc-dropdown-menu pull-right">
+			<ul ng-if="indexCtrl.topToolbar.is_visible" class="sc-dropdown-menu ng-animation-slider pull-right">
 				<li ng-click="indexCtrl.modalPerfilCtrl.modal.open()">
 					<span class="align-left"><i class="sc-icon sc-icon-engrenagem"></i>Perfis de passagem</span>
 				</li>
@@ -28,7 +28,7 @@
 		</div>
 	</div>
 </div>
-<div ng-if="indexCtrl.filtro.filtro_avancado" class="flex-row sc-p-sm" id="top-bar-filter">
+<div ng-if="indexCtrl.filtro.filtro_avancado" class="flex-row ng-animation-slider sc-p-sm" id="top-bar-filter">
 	<form class="col-xs-12 sc-p-sm" ng-init="indexCtrl.filtro.init()" ng-submit="indexCtrl.filtro.buscar(params)">
 		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Entrou:</div>
