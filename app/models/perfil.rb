@@ -3,9 +3,14 @@ class Perfil < ApplicationRecord
 
 	accepts_nested_attributes_for :objetos, allow_destroy: true
 
-	validate 	:validar_campos
-	validate 	:validar_objetos
+	VALIDATES_PRESENCES = [
+		{ key: :nome, 		msg: "Título não pode ser vazio!" },
+		{ key: :objetos, 	msg: "É necessário adicionar ao menos um objeto para salvar o perfil!" },
+	]
+
 	validates :nome, uniqueness: { message: 'Já existe um perfil com esse nome! Escolha outro.' }
+	validate 	:validar_campos
+	validate :validar_nome
 
 	def slim_obj
 		{
@@ -26,20 +31,25 @@ class Perfil < ApplicationRecord
 		objetos.map(&:to_frontend_obj)
 	end
 
-	def validar_campos
-		errors.add(:base, "Nome não pode ser vazio") if :nome.nil?
-
-		errors.empty?
-	end
-
-	def validar_objetos
-		errors.add(:base, "É necessário adicionar ao menos um objeto para salvar!") if :objetos.nil?
-
-		errors.empty?
-	end
-
 	def desativado?
 		desativado_em.present?
+	end
+
+	def validar_campos
+		VALIDATES_PRESENCES.each{ |obj|
+			next if send(obj[:key]).present?
+			errors.add(:base, "#{obj[:msg]}")
+		}
+
+		errors.empty?
+	end
+
+	def validar_nome
+		if nome.length >= 45
+			errors.add(:base, 'O nome do perfil é muito longo (máximo: 45 caracteres)!')
+		end
+
+		errors.empty?
 	end
 
 end

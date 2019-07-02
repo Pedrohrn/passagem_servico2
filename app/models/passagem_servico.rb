@@ -11,6 +11,7 @@ class PassagemServico < ApplicationRecord
 		{ key: :pessoa_entrou_id, label: "Pessoa Entrou" },
 	]
 	validate :validar_campos
+	validate :validar_obs
 
 	# callbacks
 	before_validation :update_status
@@ -77,4 +78,11 @@ class PassagemServico < ApplicationRecord
 
 		errors.empty?
 	end
+
+	def validar_obs
+		if observacoes.length > 2500
+			errors.add(:base, "O detalhamento é muito longo (máximo permitido: 2500 caracteres)!")
+		end
+	end
+
 end
