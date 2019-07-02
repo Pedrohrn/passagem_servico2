@@ -1,7 +1,7 @@
 angular.module('scApp').lazy
 .controller 'PassagemServicos::FormCtrl', [
-	'$scModal', 'scAlert', 'scToggle', 'PassagemServico'
-	(scModal, scAlert, scToggle, PassagemServico)->
+	'$scModal', 'scAlert', 'scToggle', 'scTopMessages', 'PassagemServico'
+	(scModal, scAlert, scToggle, scTopMessages, PassagemServico)->
 		vm = this
 		vm.params = {}
 		vm.passagem = null
@@ -59,7 +59,7 @@ angular.module('scApp').lazy
 					vm.params.objetos.remove(objeto)
 
 			addItem: (objeto)->
-				objeto.itens.push({ item_name: '', item_qtd: undefined })
+				objeto.itens.push({ item_name: '', item_qtd: 1 })
 
 			rmvItem: (objeto, item)->
 				objeto.itens.remove(item)
@@ -105,7 +105,7 @@ angular.module('scApp').lazy
 				(data)=>
 					passagem.carregando = false
 					passagem.salva = true
-					scTopMessages.openSuccess 'Passagem'
+					scTopMessages.openSuccess data.message
 					angular.extend passagem, data.passagem_servico
 				(response)=>
 					passagem.carregando = false

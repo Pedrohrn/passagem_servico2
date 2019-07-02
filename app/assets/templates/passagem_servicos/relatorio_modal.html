@@ -1,0 +1,66 @@
+<div sc-modal="indexCtrl.relatoriosCtrl.modal" class="sc-modal-md">
+	<div class="sc-modal-header">
+		Relatório
+		<i class="sc-modal-close sc-icon sc-icon-fechar-1 sc-badge-hover-red" ng-click="indexCtrl.relatoriosCtrl.modal.close()"></i>
+	</div>
+
+	<div class="sc-modal-body">
+		<form ng-init="indexCtrl.relatoriosCtrl.init()">
+			<div class="flex-row-with-padding">
+				<div class="fcol-xs-100">
+					<div class="sc-label">Título do Relatório</div>
+					<input class="sc-input-default sc-input-block" ng-model="indexCtrl.relatoriosCtrl.params.titulo">
+				</div>
+				<div class="fcol-xs-50">
+					<div class="sc-label">Colunas</div>
+					<span class="sc-dropdown" sc-dropdown-menu>
+						<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.relatoriosCtrl.colunas_menu_toggle()" type="button">
+							Selecione as colunas
+							<i class="sc-icon sc-m-l-xs" ng-class="indexCtrl.relatoriosCtrl.colunas_menu_IsOn ? 'sc-icon-seta-5-cima' : 'sc-icon-seta-5-baixo'"></i>
+						</button>
+						<ul class="sc-dropdown-menu sc-scroll-bar" ng-if="indexCtrl.relatoriosCtrl.colunas_menu_IsOn" style="max-height: 20em; min-width: 13em; overflow: auto; display: block;">
+							<div>
+								<li ng-repeat="option in indexCtrl.relatoriosCtrl.columns_list track by $index">
+									<span ng-click="indexCtrl.relatoriosCtrl.set_column(option)">
+										<i ng-class="option.checked ? 'sc-icon-visto-3' : 'sc-icon-quadrado-1'"></i>
+										{{option.label}}
+									</span>
+								</li>
+							</div>
+						</ul>
+					</span>
+				</div>
+				<div class="fcol-xs-50">
+					<div class="sc-label">Agrupar por</div>
+					<span class="sc-dropdown" sc-dropdown-menu>
+						<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.relatoriosCtrl.agrupamento_menu_toggle()" type="button">
+							Selecione uma opção
+							<i class="sc-icon sc-m-l-xs" ng-class="indexCtrl.relatoriosCtrl.agrupamentos_menu_IsOn ? 'sc-icon-seta-5-cima' : 'sc-icon-seta-5-baixo'"></i>
+						</button>
+						<ul class="sc-dropdown-menu sc-scroll-bar" ng-if="indexCtrl.relatoriosCtrl.agrupamentos_menu_IsOn" style="max-height: 20em; min-width: 13em; overflow: auto; display: block;">
+							<div>
+								<li ng-repeat="option in indexCtrl.relatoriosCtrl.agrupamento_list track by $index">
+									<span ng-click="indexCtrl.relatoriosCtrl.set_group(option)">
+										<i ng-class="option.checked ? 'sc-icon-circulo-2' : 'sc-icon-circulo-1'"></i>
+										{{option.label}}
+									</span>
+								</li>
+							</div>
+						</ul>
+					</span>
+				</div>
+				<div class="fcol-xs-50">
+					<div class="sc-label">Status:</div>
+					<select style="max-width: 13em;" class="sc-input-default sc-input-block" ng-options="status as status.label for status in indexCtrl.relatoriosCtrl.status_list" ng-model="indexCtrl.relatoriosCtrl.params.status">
+						<option label="Selecione um status" ng-value="empty"></option>
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="sc-modal-footer">
+		<button class="sc-btn sc-btn-blue" ng-click="indexCtrl.relatoriosCtrl.gerarRelatorio()">Gerar relatório</button>
+		<button class="sc-btn sc-btn-default" ng-click="indexCtrl.relatoriosCtrl.modal.close()">Fechar</button>
+	</div>
+</div>
