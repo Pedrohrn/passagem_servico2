@@ -305,6 +305,7 @@ angular.module('scApp').lazy
 
 						msg = data.message
 						scTopMessages.openSuccess msg
+						@init()
 					(response)=>
 						@loading = false
 
