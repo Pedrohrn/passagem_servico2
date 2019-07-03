@@ -77,4 +77,3 @@ class Objeto < ApplicationRecord
 	end
 
 end
-

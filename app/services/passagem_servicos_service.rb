@@ -69,10 +69,25 @@ class PassagemServicosService
 		objetos = params.delete(:objetos) || []
 		params[:objetos_attributes] = objetos.map do |objeto|
 			objeto[:categoria_id] = objeto.delete(:categoria)[:id]
+			objeto = set_itens(objeto)
 			objeto
 		end
 
 		params
+	end
+
+	def self.set_itens(objeto)
+		itens_obj = objeto.delete(:itens)
+		objeto[:itens] = itens_obj.map do |item|
+			item[:item_qtd] = item.delete(:item_qtd)
+			if item[:item_qtd] <= 0 || item[:item_qtd] == nil
+				item[:item_qtd] = 1
+			end
+
+			item
+		end
+
+		objeto
 	end
 
 	private
