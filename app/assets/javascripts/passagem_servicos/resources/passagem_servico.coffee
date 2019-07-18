@@ -12,16 +12,13 @@ angular.module('scApp').lazy
 				method: 'GET'
 				transformRequest: encapsulateDate
 
-			create:
+			submit:
 				method: 'POST'
 				transformRequest: encapsulateDate
+				url: 'http://localhost:3000/passagem_servicos/submit'
 
 			destroy:
 				method: 'DELETE'
-
-			update:
-				method: 'PUT'
-				transformRequest: encapsulateDate
 
 			micro_update:
 				method: 'PUT'

@@ -28,14 +28,6 @@ class PassagemServicosService
 		end
 	end
 
-	def self.update(opts, params)
-		self.submit(opts, params)
-	end
-
-	def self.create(opts, params)
-		self.submit(opts, params)
-	end
-
 	def self.submit(opts, params)
 		pessoa_saiu = params.delete(:pessoa_saiu) || {}
 		pessoa_entrou = params.delete(:pessoa_entrou) || {}
@@ -46,22 +38,27 @@ class PassagemServicosService
 		params.delete(:data_criacao)
 
 		params = set_objetos(params)
-		passagem = model.find_by(id: params[:id]) || model.new
 
-		passagem.assign_attributes(params)
+		passagem, errors = nil, []
+		ApplicationRecord.transaction do
+			passagem = model.find_by(id: params[:id]) || model.new
 
-		message = passagem.new_record? ? 'Registro cadastrado com sucesso!' :	'Registro atualizado com sucesso!'
+			passagem.assign_attributes(params)
+			unless passagem.save
+				errors = passagem.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
 
-
-		return [:success, { passagem_servico: passagem.to_frontend_obj, message: message }] if passagem.save
-		[:error, passagem.errors.full_messages]
+		return [:error, errors] if errors.any?
+		[:success, { passagem_servico: passagem.to_frontend_obj }]
 	end
 
 	def self.destroy(opts, params)
 		passagem = model.find_by(id: params[:id])
 		passagem.destroy
 
-		return [:success, { message: 'Registro excluído com sucesso!' }] if passagem.destroy
+		return [:success, {}] if passagem.destroy
 		[:error, passagem.errors.full_messages]
 	end
 
@@ -69,25 +66,10 @@ class PassagemServicosService
 		objetos = params.delete(:objetos) || []
 		params[:objetos_attributes] = objetos.map do |objeto|
 			objeto[:categoria_id] = objeto.delete(:categoria)[:id]
-			objeto = set_itens(objeto)
 			objeto
 		end
 
 		params
-	end
-
-	def self.set_itens(objeto)
-		itens_obj = objeto.delete(:itens)
-		objeto[:itens] = itens_obj.map do |item|
-			item[:item_qtd] = item.delete(:item_qtd)
-			if item[:item_qtd] <= 0 || item[:item_qtd] == nil
-				item[:item_qtd] = 1
-			end
-
-			item
-		end
-
-		objeto
 	end
 
 	private
@@ -97,7 +79,7 @@ class PassagemServicosService
 
 		passagem.desativada_em = passagem.desativada? ? nil : Time.now
 
-		return [:success, { passagem_servico: passagem.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if passagem.save
+		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
 		[:error, passagem.errors.full_messages]
 	end
 	private_class_method :desativar_reativar
@@ -115,7 +97,7 @@ class PassagemServicosService
 
 		passagem.passada_em = passagem.realizada? ? nil : Time.now
 
-		return [:success, { passagem_servico: passagem.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if passagem.save
+		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
 		[:error, passagem.errors.full_messages]
 	end
 	private_class_method :passar_servico
