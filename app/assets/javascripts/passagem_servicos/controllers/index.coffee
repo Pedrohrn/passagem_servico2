@@ -1,15 +1,15 @@
 angular.module('scApp').lazy
 .controller 'PassagemServicos::IndexCtrl', [
-	'$scModal', 'scAlert', 'scToggle', 'scTopMessages', 'Templates', 'PassagemServico', 'Categoria', 'Perfil'
-	(scModal, scAlert, scToggle, scTopMessages, Templates, PassagemServico, Categoria, Perfil)->
+	'$scModal', 'scAlert', 'scToggle', 'scTopMessages', 'Templates', 'PassagemServico', 'Categoria', 'Perfil', 'PassagemServicos::FormFactory'
+	(scModal, scAlert, scToggle, scTopMessages, Templates, PassagemServico, Categoria, Perfil, FormFactory)->
 		vm = this
 		vm.templates = Templates
 
+		vm.formFact = new FormFactory
+
 		vm.init = ->
 			vm.filtro.exec()
-			for status in vm.logCtrl.logKeys
-				if status.filtro == true
-					vm.filtro.list.push(status)
+			vm.filtro.list.push(status) for status in vm.logCtrl.logKeys when status.filtro
 
 		vm.relatoriosCtrl =
 			modal: new scModal()
@@ -139,27 +139,6 @@ angular.module('scApp').lazy
 				else
 					@list.push(passagem)
 					passagem.checked = true
-
-
-		vm.novaPassagemCtrl =
-			params: {}
-			newRecord: false
-
-			novaPassagem: (params={})->
-				@params = params
-
-				return unless !@newRecord
-				@newRecord = !@newRecord
-
-			cancelar: ->
-				@params = {}
-
-				scAlert.open
-					title: 'Deseja mesmo cancelar a edição? Dados não salvos serão perdidos.'
-					buttons: [
-						{ label: 'Sim', color: 'yellow', action: -> vm.novaPassagemCtrl.newRecord = false },
-						{ label: 'Não', color: 'gray' }
-					]
 
 		vm.filtro =
 			filtro_avancado: false
@@ -552,8 +531,9 @@ angular.module('scApp').lazy
 						passagem = vm.listCtrl.list.find (obj)-> obj.id == data.passagem_servico.id
 						angular.extend passagem, data.passagem_servico
 
-						msg = data.message
-						scTopMessages.openSuccess msg
+						label = if params.micro_update_type == 'desativar' then 'desativado' else 'reativado'
+
+						scTopMessages.openSuccess "Registro #{label} com sucesso!"
 					(response)=>
 						@loading = false
 
@@ -570,37 +550,6 @@ angular.module('scApp').lazy
 				console.log @list
 
 		vm.itemCtrl =
-			duplicata: false
-			dupParams: {}
-
-			init: (passagem)->
-					passagem.acc = new scToggle()
-					passagem.edit = new scToggle()
-					passagem.menu = new scToggle()
-					passagem.passar_servico_modal = new scModal()
-					passagem.log = new scModal()
-
-			edit: (passagem)->
-				if passagem.edit.opened
-					passagem.acc.opened = false
-					return
-				else
-					passagem.edit.opened = !passagem.edit.opened
-					passagem.acc.opened = false
-					return if passagem.carregando
-					PassagemServico.show passagem,
-						(data)=>
-							passagem.carregando = false
-
-							passagem = vm.listCtrl.list.find (obj)-> obj.id == data.passagem_servico.id
-							angular.extend passagem, data.passagem_servico
-
-						(response)=>
-							passagem.carregando = false
-
-							errors = response.data?.errors
-							scTopMessages.openDanger errors unless Object.blank(errors)
-
 			passarServico: (passagem)->
 				passagem.passar_servico_modal.active = !passagem.passar_servico_modal.active
 
@@ -626,13 +575,14 @@ angular.module('scApp').lazy
 						msg = response.data?.errors
 						scTopMessages.openDanger msg unless Object.blank(errors)
 
-
 			duplicar: (passagem)->
-				delete passagem.id
-				for objeto in passagem.objetos
-					delete objeto.id
+				obj = angular.copy passagem
+				obj.objetos ||= []
 
-				vm.novaPassagemCtrl.novaPassagem(passagem)
+				delete obj.id
+				delete objeto.id for objeto in obj.objetos
+
+				vm.formFact.open(obj)
 
 			disable: (passagem)->
 				if passagem.status.key == 'desativada'
@@ -659,42 +609,6 @@ angular.module('scApp').lazy
 
 			open_log: (passagem)->
 				passagem.log.active = !passagem.log.active
-
-			accToggle: (passagem)->
-				if passagem.edit.opened
-					@cancelar(passagem)
-				else if !passagem.acc.opened
-					passagem.acc.opened = true
-					passagem.edit.opened = false
-					carregarPassagem(passagem)
-				else
-					passagem.acc.opened = false
-					passagem.edit.opened = false
-
-			cancelar: (passagem)->
-				scAlert.open
-					title: 'Deseja mesmo fechar o formulário? Dados não salvos serão perdidos.'
-					buttons: [
-						{ label: 'Sim', color: 'yellow', action: -> vm.itemCtrl.fecharForm(passagem) },
-						{ label: 'Não', color: 'gray' },
-					]
-
-			fecharForm: (passagem)->
-				if vm.novaPassagemCtrl.newRecord then vm.novaPassagemCtrl.newRecord = false
-				else if passagem.edit && passagem.edit.opened then passagem.edit.opened = false
-				passagem.acc.opened = true
-
-
-		carregarPassagem = (passagem)->
-			return if passagem.carregada || passagem.carregando
-			passagem.carregando = true
-
-			PassagemServico.show passagem,
-				(data)=>
-					passagem.carregada  = true
-					passagem.carregando = false
-
-					angular.extend passagem, data.passagem_servico
 
 		vm.passarServicoModal =
 			params: {}

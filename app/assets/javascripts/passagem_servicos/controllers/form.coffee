@@ -5,13 +5,18 @@ angular.module('scApp').lazy
 		vm = this
 		vm.params = {}
 		vm.passagem = null
-		vm.new = false
 
-		vm.init = (passagem)->
+		vm.baseFact = null
+
+		vm.init = (passagem, baseFact)->
+			vm.baseFact = baseFact
+
 			vm.passagem = passagem || {}
 			vm.params = angular.copy vm.passagem
 			vm.params.objetos = angular.copy vm.passagem.objetos || []
 			vm.params.status = 'pendente'
+
+			vm.newRecord = !vm.params.id
 
 		vm.formCtrl =
 			loading: false
@@ -101,12 +106,18 @@ angular.module('scApp').lazy
 		vm.submit = (passagem) ->
 			return if passagem.carregando
 
-			PassagemServico.create vm.params,
+			PassagemServico.submit vm.params,
 				(data)=>
 					passagem.carregando = false
 					passagem.salva = true
-					scTopMessages.openSuccess data.message
+
+					label = if vm.newRecord then 'criado' else 'atualizado'
+
+					scTopMessages.openSuccess "Registro #{label} com sucesso!"
+
 					angular.extend passagem, data.passagem_servico
+
+					vm.baseFact.close()
 				(response)=>
 					passagem.carregando = false
 					errors = response.data?.errors

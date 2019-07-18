@@ -1,4 +1,4 @@
-<div ng-controller="PassagemServicos::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem)">
+<div ng-controller="PassagemServicos::FormCtrl as formCtrl" ng-init="formCtrl.init(passagem, formFact)">
 	<form class="sc-m-h-md sc-p-t-sm">
 		<div class="sc-fieldset flex-row">
 			<div class="fcol-xs-90 fcol-sm-50 fcol-md-25">
@@ -79,7 +79,7 @@
 							</li>
 							<li class="flex-row sc-p-b-md" ng-repeat="item in objeto.itens track by $index">
 								<div class="fcol-xs-5em">
-									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999"/>
+									<input class="sc-input-default sc-input-block sc-input-thin align-right" ng-model="item.item_qtd" type="number" step="1" max="999" min="1"/>
 								</div>
 								<div class="fcol-xs-60 sc-m-l-lg">
 									<input class="sc-input-default sc-input-block sc-input-thin" placeholder="Descreva o item aqui" ng-model="item.item_name" type="text" />
@@ -119,7 +119,7 @@
 				<span ng-if="!formCtrl.formCtrl.loading">Salvar</span>
 				<span ng-if="formCtrl.formCtrl.loading"><i class="sc-icon sc-icon-carregando-1 sc-icon-spin"></i>Salvando</span>
 			</button>
-			<button class="sc-btn sc-btn-red sc-btn-block-only-xs" type="button" ng-click="indexCtrl.itemCtrl.cancelar(passagem)">Cancelar</button>
+			<button class="sc-btn sc-btn-red sc-btn-block-only-xs" type="button" ng-click="formCtrl.baseFact.cancelar()">Cancelar</button>
 		</div>
 	</form>
 </div>

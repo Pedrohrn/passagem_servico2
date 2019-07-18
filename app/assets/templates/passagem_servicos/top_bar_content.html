@@ -1,6 +1,6 @@
 <div class="flex-row sc-text-sm-xs">
 	<div class="left">
-		<button class="sc-btn sc-btn-green" type="button" ng-click="indexCtrl.novaPassagemCtrl.novaPassagem()">
+		<button class="sc-btn sc-btn-green" type="button" ng-click="indexCtrl.formFact.init()">
 			<span ng-if="!screen.isXs">Nova Passagem</span>
 			<i ng-if="screen.isXs" class="sc-icon sc-icon-mais-1"></i>
 		</button>
@@ -30,27 +30,27 @@
 </div>
 <div ng-if="indexCtrl.filtro.filtro_avancado" class="flex-row ng-animation-slider sc-p-sm" id="top-bar-filter">
 	<form class="col-xs-12 sc-p-sm" ng-init="indexCtrl.filtro.init()" ng-submit="indexCtrl.filtro.buscar(params)">
-		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
+		<div class="col-xs-6 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Entrou:</div>
 			<select class="sc-input-default sc-input-block" ng-options="porteiro as porteiro.nome for porteiro in indexCtrl.pessoas.list track by porteiro.id" ng-model="params.pessoa_entrou"></select>
 		</div>
-		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
+		<div class="col-xs-6 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Saiu</div>
 			<select class="sc-input-default sc-input-block" ng-options="porteiro as porteiro.nome for porteiro in indexCtrl.pessoas.list track by porteiro.id" ng-model="params.pessoa_saiu"></select>
 		</div>
-		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
+		<div class="col-xs-6 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Início</div>
 			<input class="sc-input-default sc-input-block" type="date" max="3000-12-31" min="2001-01-01" ng-model="params.data_inicio" sc-date-input/>
 		</div>
-		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
+		<div class="col-xs-6 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Fim</div>
 			<input class="sc-input-default sc-input-block" type="date" max="3000-12-31" min="2001-01-01" ng-model="params.data_fim" sc-date-input/>
 		</div>
-		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
+		<div class="col-xs-6 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Tipo de data</div>
 			<select class="sc-input-default sc-input-block" ng-options="tipoData as tipoData.label disable when tipoData.log for tipoData in indexCtrl.filtro.list track by tipoData.id" ng-model="params.tipoData"></select>
 		</div>
-		<div class="col-xs-4 col-sm-4 col-md-3 sc-m-b-md">
+		<div class="col-xs-6 col-sm-4 col-md-3 sc-m-b-md">
 			<div class="sc-label">Status</div>
 			<select class="sc-input-default sc-input-block" ng-options="status as status.key.capitalize() for status in indexCtrl.filtro.filtroKeys track by status.id" ng-model="params.status"></select>
 		</div>

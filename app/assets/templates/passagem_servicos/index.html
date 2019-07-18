@@ -12,17 +12,21 @@
 	<section id="passagens">
 		<div class="sc-p-t-xl sc-bg-white">
 			<ul multi-check-group class="sc-accordion" sc-scroll="listCtrl.nextPage()">
-				<li ng-if="indexCtrl.novaPassagemCtrl.newRecord" class="sc-acc-blue">
-					<div class="sc-accordion-head flex-row" ng-click="indexCtrl.novaPassagemCtrl.cancelar()">
+
+				<!-- Nova Passagem -->
+				<li ng-if="indexCtrl.formFact.opened" class="sc-acc-blue">
+					<div class="sc-accordion-head flex-row" ng-click="indexCtrl.formFact.cancelar()">
 						<div class="fcol-xs-2em">
 							<i class="sc-icon sc-icon-mais-1 sc-text-white"></i>
 						</div>
 						<span class="sc-text-white sc-text-bold">Nova Passagem</span>
 					</div>
-					<div class="sc-accordion-body">
-						<div ng-include="indexCtrl.templates.passagem_servicos.form" ng-init="passagem = indexCtrl.novaPassagemCtrl.params"></div>
+					<div class="sc-accordion-body" ng-init="">
+						<div ng-include="indexCtrl.templates.passagem_servicos.form" ng-init="passagem = indexCtrl.formFact.passagem; formFact = indexCtrl.formFact"></div>
 					</div>
 				</li>
+				<!-- Nova Passagem -->
+
 				<li class="sc-accordion-head" style="border-bottom: 1px solid #e2e2e2; border-top: none;">
 					<div class="flex-row flex-column align-items-center sc-text-blue" style="min-height: 2.5em;">
 						<div class="fcol-order-0 align-center fcol-sm-3em">
@@ -48,8 +52,14 @@
 						</div>
 					</div>
 				</li>
-				<li ng-repeat="passagem in indexCtrl.listCtrl.list track by $index" class="sc-accordion-head" ng-class="{'sc-acc-blue': passagem.acc.opened || passagem.edit.opened }" ng-init="indexCtrl.itemCtrl.init(passagem)">
-					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="indexCtrl.itemCtrl.accToggle(passagem)" ng-class="{'sc-opac-70': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && passagem.edit.opened , 'sc-acc-selected': passagem.checked }">
+				<li 
+					class="sc-accordion-head"
+					ng-controller="PassagemServicos::ShowCtrl as itemCtrl"
+					ng-repeat="passagem in indexCtrl.listCtrl.list track by $index"
+					ng-class="{'sc-acc-blue': passagem.acc.opened }"
+					ng-init="itemCtrl.init(passagem)"
+				>
+					<div class="flex-row flex-column sc-accordion-head sc-text-gray" ng-click="itemCtrl.accToggle()" ng-class="{'sc-opac-70': passagem.excluindo && passagem.acc.opened , 'sc-opac-20': passagem.excluindo && itemCtrl.formFact.opened , 'sc-acc-selected': passagem.checked }">
 						<div class="fcol-xs-3em align-center fcol-order-0" sc-stop-click>
 							<input multi-check type="checkbox" ng-click="indexCtrl.selections.selectPassagem(passagem, $event)" ng-model="passagem.checked" class="sc-checkbox sc-checkbox-blue">
 						</div>
@@ -57,23 +67,23 @@
 							<span class="sc-border-radius sc-bg-{{passagem.status.color}} sc-text-white sc-p-v-xs sc-p-h-lg sc-text-sm">{{passagem.status.label}}</span>
 						</div>
 						<div class="fcol-xs-auto fcol-order-1 sc-p-sm">
-							<i class="sc-icon sc-icon-seta-8-baixo sc-text-red hidden-xs sc-p-r-md" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }"></i>
+							<i class="sc-icon sc-icon-seta-8-baixo sc-text-red hidden-xs sc-p-r-md" ng-class="{'sc-text-white': itemCtrl.formFact.opened || passagem.acc.opened }"></i>
 							{{passagem.pessoa_saiu.nome}}
 						</div>
 						<div class="fcol-xs-auto fcol-order-2 sc-p-sm">
-							<i class="sc-icon sc-icon-seta-8-cima sc-text-green hidden-xs sc-p-r-md" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }"></i>
+							<i class="sc-icon sc-icon-seta-8-cima sc-text-green hidden-xs sc-p-r-md" ng-class="{'sc-text-white': itemCtrl.formFact.opened || passagem.acc.opened }"></i>
 							{{passagem.pessoa_entrou.nome}}
 						</div>
-						<div class="fcol-xs-7em fcol-order-3 sc-p-sm" ng-class="{'sc-text-white': passagem.edit.opened || passagem.acc.opened }">{{passagem.data_criacao | date: "dd/MM/yyyy"}}</div>
+						<div class="fcol-xs-7em fcol-order-3 sc-p-sm" ng-class="{'sc-text-white': itemCtrl.formFact.opened || passagem.acc.opened }">{{passagem.data_criacao | date: "dd/MM/yyyy"}}</div>
 						<div class="fcol-xs-7em fcol-order-4 visible-xs sc-p-sm"></div>
 						<div class="fcol-xs-3em align-center sc-p-sm fcol-order-5" sc-stop-click>
 							<div class="sc-dropdown">
-								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray" ng-class="{'sc-text-white sc-badge-hover-white': passagem.edit.opened || passagem.acc.opened }" ng-click="passagem.menu.toggle()"></i>
+								<i class="sc-icon sc-icon-reticiencias-v sc-badge-hover-gray" ng-class="{'sc-text-white sc-badge-hover-white': itemCtrl.formFact.opened || passagem.acc.opened }" ng-click="passagem.menu.toggle()"></i>
 								<ul class="sc-dropdown-menu ng-animation-slider pull-right" ng-if="passagem.menu.opened">
 									<li ng-if="passagem.status.label == 'Pendente'" ng-click="indexCtrl.itemCtrl.passarServico(passagem)">
 										<span><i class="sc-icon sc-icon-seta-6-direita-esquerda"></i> Passar Serviço</span>
 									</li>
-									<li ng-click="indexCtrl.itemCtrl.edit(passagem)">
+									<li ng-click="itemCtrl.formCtrl.open()">
 										<span><i class="sc-icon sc-icon-lapis"></i>Editar</span>
 									</li>
 									<li ng-click="indexCtrl.itemCtrl.duplicar(passagem)">
@@ -101,11 +111,11 @@
 							</span>
 						</div>
 					</div>
-					<div ng-if="passagem.acc.opened && !passagem.edit.opened && !passagem.loading" class="sc-accordion-body ng-animation-slider">
+					<div ng-if="passagem.acc.opened && !itemCtrl.formFact.opened && !passagem.loading" class="sc-accordion-body ng-animation-slider">
 						<div ng-include="indexCtrl.templates.passagem_servicos.show"></div>
 					</div>
-					<div ng-if="passagem.edit.opened && !passagem.acc.opened && !passagem.loading" class="sc-accordion-body ng-animation-slider">
-						<div ng-include="indexCtrl.templates.passagem_servicos.form"></div>
+					<div ng-if="passagem.acc.opened && itemCtrl.formFact.opened && !passagem.loading" class="sc-accordion-body ng-animation-slider">
+						<div ng-include="indexCtrl.templates.passagem_servicos.form" ng-init="formFact = itemCtrl.formFact"></div>
 					</div>
 					<div ng-if="passagem.log.active">
 						<div ng-include="indexCtrl.templates.passagem_servicos.log_passagem"></div>
