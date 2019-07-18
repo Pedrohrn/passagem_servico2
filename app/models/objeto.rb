@@ -9,8 +9,6 @@ class Objeto < ApplicationRecord
 	validate :validar_campos
 	validate :validar_items
 
-	#before_validation :validar_item_qtd
-
 	def to_frontend_obj
 		{
 			id: id,
@@ -30,6 +28,10 @@ class Objeto < ApplicationRecord
 		itens
 	end
 
+	def itens
+		(super || []).deep_symbolize_keys
+	end
+
 	private
 
 	def validar_campos
@@ -43,37 +45,15 @@ class Objeto < ApplicationRecord
 
 	def validar_items
 		itens.each{ |item|
-			next if item.deep_symbolize_keys[:item_name].present?
-			errors.add(:base, "Item (descrição) não pode ser vazio!")
-		}
+			if item[:item_name].blank?
+				errors.add(:base, "Item (descrição) não pode ser vazio!")
+			end
 
-		itens.each{ |item|
-			next if item.deep_symbolize_keys[:item_name].length < 201
-			errors.add(:base, "A descrição do item é muito longa (máximo permitido: 200 caracteres)!")
+			if item[:item_name].length > 200
+				errors.add(:base, "A descrição do item é muito longa (máximo permitido: 200 caracteres)!")
+			end
 		}
 
 		errors.empty?
-
-		itens.map { |item|
-			next if item.deep_symbolize_keys[:item_qtd] >= 1
-			item.deep_symbolize_keys[:item_qtd] = 1
-			item
-		}
-
-		itens
 	end
-
-	def validar_item_qtd
-		itens.map{ |item|
-			next if item.deep_symbolize_keys[:item_qtd] >= 1
-			item.deep_symbolize_keys[:item_qtd] = 1
-			puts item
-			puts item.to_h
-			puts item.to_s.to_sym
-		}
-		puts itens
-		puts 'itens -validar_qtd'
-
-	end
-
 end
