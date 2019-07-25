@@ -479,18 +479,20 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
-						if !@newRecord
-							angular.extend categoria, data.categoria
-							item.edit.opened = false
-							message = "Registro atualizado com sucesso!"
-						else
-							vm.categoriasCtrl.list.push(data.categoria)
-							@newRecord = false
-							message = "Registro cadastrado com sucesso!"
-						scTopMessages.openSuccess message
-						@init()
-						@creatingModeOn = false
+						status = data.status
+						if status == 'success'
+							categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
+							if !@newRecord
+								angular.extend categoria, data.categoria
+								item.edit.opened = false
+								message = "Registro atualizado com sucesso!"
+							else
+								vm.categoriasCtrl.list.push(data.categoria)
+								@newRecord = false
+								message = "Registro cadastrado com sucesso!"
+							scTopMessages.openSuccess message
+							@init()
+							@creatingModeOn = false
 					(response)=>
 						@loading = false
 
@@ -544,12 +546,15 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						passagem = vm.listCtrl.list.find (obj)-> obj.id == data.passagem_servico.id
-						angular.extend passagem, data.passagem_servico
+						status = data.status
+						if status == 'success'
 
-						label = if params.micro_update_type == 'desativar' then 'desativado' else 'reativado'
+							passagem = vm.listCtrl.list.find (obj)-> obj.id == data.passagem_servico.id
+							angular.extend passagem, data.passagem_servico
 
-						scTopMessages.openSuccess "Registro #{label} com sucesso!"
+							label = if params.micro_update_type == 'desativar' then 'desativado' else 'reativado'
+
+							scTopMessages.openSuccess "Registro #{label} com sucesso!"
 					(response)=>
 						@loading = false
 
