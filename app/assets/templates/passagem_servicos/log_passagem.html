@@ -17,7 +17,7 @@
 					<span class="sc-text">User - {{item.acao.key.capitalize()}} {{item.data_inicio | date: "dd/MM/yyyy" }} às {{item.data_inicio | date: "mediumTime" }}</span>
 					<i class="sc-icon right" ng-class="{'sc-icon-menos-1': item.acc.opened , 'sc-icon-mais-1': !item.acc.opened}"></i>
 				</div>
-				<div class="angular-slider" ng-if="item.acc.opened">
+				<div class="ng-animation-slider" ng-if="item.acc.opened">
 					<div class="sc-m-t-md">
 						<span>passagem.registros?</span>
 					</div>

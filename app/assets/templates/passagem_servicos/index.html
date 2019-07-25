@@ -21,7 +21,7 @@
 						</div>
 						<span class="sc-text-white sc-text-bold">Nova Passagem</span>
 					</div>
-					<div class="sc-accordion-body" ng-init="">
+					<div class="sc-accordion-body">
 						<div ng-include="indexCtrl.templates.passagem_servicos.form" ng-init="passagem = indexCtrl.formFact.passagem; formFact = indexCtrl.formFact"></div>
 					</div>
 				</li>
@@ -52,7 +52,7 @@
 						</div>
 					</div>
 				</li>
-				<li 
+				<li
 					class="sc-accordion-head"
 					ng-controller="PassagemServicos::ShowCtrl as itemCtrl"
 					ng-repeat="passagem in indexCtrl.listCtrl.list track by $index"
