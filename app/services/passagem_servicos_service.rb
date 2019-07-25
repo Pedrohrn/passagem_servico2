@@ -51,15 +51,23 @@ class PassagemServicosService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { passagem_servico: passagem.to_frontend_obj }]
+		[:success, { passagem_servico: passagem.to_frontend_obj, status: 'success' }]
 	end
 
 	def self.destroy(opts, params)
-		passagem = model.find_by(id: params[:id])
-		passagem.destroy
+		passagem, errors = nil, []
+		ApplicationRecord.transaction do
+			passagem = model.find_by(id: params[:id])
+			passagem.destroy
 
-		return [:success, {}] if passagem.destroy
-		[:error, passagem.errors.full_messages]
+			unless passagem.destroy
+				errors = passagem.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
+
+		return [:error, errors] if errors.any?
+		[:success, {status: 'success'}]
 	end
 
 	def self.set_objetos(params)
@@ -75,30 +83,46 @@ class PassagemServicosService
 	private
 
 	def self.desativar_reativar(params)
-		passagem = model.find_by(id: params[:id])
+		passagem, errors = nil, []
+		ApplicationRecord.transaction do
+			passagem = model.find_by(id: params[:id])
 
-		passagem.desativada_em = passagem.desativada? ? nil : Time.now
+			passagem.desativada_em = passagem.desativada? ? nil : Time.now
 
-		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
-		[:error, passagem.errors.full_messages]
+			unless passagem.save
+				errors = passagem.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
+
+		return [:error, errors] if errors.any?
+		[:success, { passagem_servico: passagem.to_frontend_obj, status: 'success' }]
 	end
 	private_class_method :desativar_reativar
 
 	def self.passar_servico(params)
 		pessoa_saiu = params.delete(:pessoa_saiu) || {}
 		pessoa_entrou = params.delete(:pessoa_entrou) || {}
+		params.delete(:micro_update_type)
 
 		params[:pessoa_saiu_id] = pessoa_saiu[:id]
 		params[:pessoa_entrou_id] = pessoa_entrou[:id]
 
-		passagem = model.find_by(id: params[:id])
-		params.delete(:micro_update_type)
-		passagem.assign_attributes(params)
+		passagem, errors = nil, []
+		ApplicationRecord.transaction do
+			passagem = model.find_by(id: params[:id])
+			passagem.passada_em = passagem.realizada? ? nil : Time.now
+			passagem.assign_attributes(params)
 
-		passagem.passada_em = passagem.realizada? ? nil : Time.now
+			unless passagem.save
+				errors = passagem.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
 
-		return [:success, { passagem_servico: passagem.to_frontend_obj }] if passagem.save
-		[:error, passagem.errors.full_messages]
+		return [:error, errors] if errors.any?
+		[:success, { passagem_servico: passagem.to_frontend_obj, status: 'success' }]
+
 	end
 	private_class_method :passar_servico
 

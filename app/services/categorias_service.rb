@@ -9,26 +9,20 @@ class CategoriasService
 		[:success, resp]
 	end
 
-	def self.create(opts, params)
-		self.submit(opts, params)
-	end
-
-	def self.update(opts, params)
-		self.submit(opts, params)
-	end
-
 	def self.submit(opts, params)
-		categoria = model.find_by(id: params[:id]) || model.new
-		categoria.assign_attributes(params)
-		message =
-		if categoria.new_record?
-			'Registro cadastrado com sucesso!'
-		else
-			'Registro atualizado com sucesso!'
+		categoria, errors = nil, []
+		ApplicationRecord.transaction do
+			categoria = model.find_by(id: params[:id]) || model.new
+			categoria.assign_attributes(params)
+
+			unless categoria.save
+				errors = categoria.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
 		end
 
-		return [:success, { categoria: categoria.to_frontend_obj, message: message }] if categoria.save
-		[:error, categoria.errors.full_messages]
+		return [:error, errors] if errors.any?
+		[:success, { categoria: categoria.to_frontend_obj, status: 'success' }]
 	end
 
 	def self.micro_update(opts, params)
@@ -41,21 +35,37 @@ class CategoriasService
 	end
 
 	def self.destroy(opts, params)
-		categoria = model.find_by(id: params[:id])
-		categoria.destroy
+		categoria, errors = nil, []
+		ApplicationRecord.transaction do
+			categoria = model.find_by(id: params[:id])
+			categoria.destroy
 
-		return [:success, { message: 'Registro excluído com sucesso!'}] if categoria.destroy
-		[:error, { message: 'Registro não encontrado!' } ]
+			unless categoria.destroy
+				errors = categoria.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
+
+		return [:error, errors ] if errors.any?
+		[:success, {status: 'success'} ]
 	end
 
 	private
 
 	def self.desativar_reativar(params)
-		categoria = model.find_by(id: params[:id])
-		categoria.desativada_em = categoria.desativada? ? nil : Time.now
+		categoria, errors = nil, []
+		ApplicationRecord.transaction do
+			categoria = model.find_by(id: params[:id])
+			categoria.desativada_em = categoria.desativada? ? nil : Time.now
 
-		return [:success, { categoria: categoria.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if categoria.save
-		[:error, categoria.errors.full_messages]
+			unless categoria.save
+				errors = categoria.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
+
+		return [:error, errors] if errors.any?
+		[:success, { categoria: categoria.to_frontend_obj, status: 'success' }]
 	end
 	private_class_method :desativar_reativar
 end

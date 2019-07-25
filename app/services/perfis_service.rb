@@ -9,29 +9,23 @@ class PerfisService
 		[ :success, resp ]
 	end
 
-	def self.create(opts, params)
-		self.submit(opts, params)
-	end
-
-	def self.update(opts, params)
-		self.submit(opts, params)
-	end
-
 	def self.submit(opts, params)
 		params = set_objetos(params)
 
-		perfil = model.find_by(id: params[:id]) || model.new
-		perfil.assign_attributes(params)
+		perfil, errors = nil, []
+		ApplicationRecord.transaction do
+			perfil = model.find_by(id: params[:id]) || model.new
+			perfil.assign_attributes(params)
 
-		message =
-		if perfil.new_record?
-			'Registro cadastrado com sucesso!'
-		else
-			'Registro atualizado com sucesso!'
+			unless perfil.save
+				errors = perfil.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
 		end
 
-		return [:success, { perfil: perfil.to_frontend_obj, message: message }] if perfil.save
-		[:error, perfil.errors.full_messages]
+		return [:error, errors] if errors.any?
+		[:success, { perfil: perfil.to_frontend_obj, status: 'success' }]
+
 	end
 
 	def self.micro_update(opts, params)
@@ -44,11 +38,19 @@ class PerfisService
 	end
 
 	def self.destroy(opts, params)
-		perfil = model.find_by(id: params[:id])
-		perfil.destroy
+		perfil, errors = nil, []
+		AplicationRecord.transaction do
+			perfil = model.find_by(id: params[:id])
+			perfil.destroy
 
-		return [:success, { message: 'Registro excluído com sucesso!'}] if perfil.destroy
-		[:error, perfil.errors.full_messages]
+			unless perfil.destroy
+				errors = perfil.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
+
+		return [:error, errors] if errors.any?
+		[:success, {status: 'success'}]
 	end
 
 	def self.set_objetos(params)
@@ -65,12 +67,20 @@ class PerfisService
 	private
 
 	def self.desativar_reativar(params)
-		perfil = model.find_by(id: params[:id])
-		perfil.desativado_em = perfil.desativado? ? nil : Time.now
+		perfil, errors = nil, []
+		AplicationRecord.transaction do
+			perfil = model.find_by(id: params[:id])
+			perfil.desativado_em = perfil.desativado? ? nil : Time.now
 
-		return [:success, { perfil: perfil.to_frontend_obj, message: 'Registro atualizado com sucesso!' }] if perfil.save
+			unless perfil.save
+				errors = perfil.errors.full_messages
+				raise ActiveRecord::Rollback
+			end
+		end
 
-		[:error, perfil.errors.full_messages]
+		return [:error, errors] if errors.any?
+		[:success, { perfil: perfil.to_frontend_obj, status: 'success' }]
+
 	end
 	private_class_method :desativar_reativar
 

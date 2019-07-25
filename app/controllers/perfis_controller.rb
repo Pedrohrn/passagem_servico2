@@ -23,8 +23,8 @@ class PerfisController < ApplicationController
 		end
 	end
 
-	def create
-		st, resp = service.create({}, perfis_params)
+	def submit
+		st, resp = service.submit({}, perfis_params)
 
 		case st
 		when :success then render json: resp, status: :ok
@@ -43,15 +43,6 @@ class PerfisController < ApplicationController
 
 	def micro_update
 		st, resp = service.micro_update({}, micro_update_params)
-
-		case st
-		when :success then render json: resp, status: :ok
-		when :error then render json: { errors: resp }, status: :error
-		end
-	end
-
-	def update
-		st, resp = service.update({}, perfis_params)
 
 		case st
 		when :success then render json: resp, status: :ok

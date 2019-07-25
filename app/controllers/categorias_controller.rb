@@ -14,17 +14,8 @@ class CategoriasController < ApplicationController
 		end
 	end
 
-	def create
-		st, resp = service.create({}, categorias_params)
-
-		case st
-		when :success then render json: resp, status: :ok
-		when :error then render json: { errors: resp }, status: :error
-		end
-	end
-
-	def update
-		st, resp = service.update({}, categorias_params)
+	def submit
+		st, resp = service.submit({}, categorias_params)
 
 		case st
 		when :success then render json: resp, status: :ok
