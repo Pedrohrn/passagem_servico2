@@ -11,16 +11,13 @@ angular.module('scApp').lazy
 	 		show:
 	 			method: 'GET'
 
-	 		update:
-	 			method: 'PUT'
+	 		submit:
+	 			method: 'POST'
+	 			url: 'http://localhost:3000/categorias/submit'
 	 			transformRequest: encapsulateData
 
 	 		destroy:
 	 			method: 'DELETE'
-
-	 		create:
-	 			method: 'POST'
-	 			transformRequest: encapsulateData
 
 	 		micro_update:
 	 			method: 'PUT'

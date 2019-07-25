@@ -14,12 +14,9 @@ angular.module('scApp').lazy
 			destroy:
 				method: 'DELETE'
 
-			update:
-				method: 'PUT'
-				transformRequest: encapsulateData
-
-			create:
+			submit:
 				method: 'POST'
+				url: 'http://localhost:3000/perfis/submit'
 				transformRequest: encapsulateData
 
 			micro_update:

@@ -9,14 +9,16 @@ Rails.application.routes.draw do
   	end
   end
 
-  resources :perfis, 							only: [:index, :show, :create, :destroy, :update] do
+  resources :perfis, 							only: [:index, :show, :destroy] do
   	collection do
+      post :submit
   		put :micro_update
   	end
   end
 
-  resources :categorias, 					only: [:index, :show, :create, :destroy, :update] do
+  resources :categorias, 					only: [:index, :show, :destroy] do
   	collection do
+      post :submit
   		put :micro_update
   	end
   end
