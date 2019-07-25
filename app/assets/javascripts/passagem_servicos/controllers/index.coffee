@@ -239,11 +239,11 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						perfil = vm.perfisCtrl.list.find (perf)-> item.id == perf.id
-						vm.perfisCtrl.list.remove(perfil)
-
-						msg = data.message
-						scTopMessages.openSuccess msg
+						status = data.status
+						if status == 'success'
+							perfil = vm.perfisCtrl.list.find (perf)-> item.id == perf.id
+							vm.perfisCtrl.list.remove(perfil)
+							scTopMessages.openSuccess 'Registro excluído com sucesso!'
 					(response)=>
 						@loading = false
 
@@ -279,11 +279,11 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						perfil = vm.perfisCtrl.list.find (perf)-> data.perfil.id == perf.id
-						angular.extend perfil, data.perfil
-
-						msg = data.message
-						scTopMessages.openSuccess msg
+						status = data.status
+						if status == 'success'
+							perfil = vm.perfisCtrl.list.find (perf)-> data.perfil.id == perf.id
+							angular.extend perfil, data.perfil
+							scTopMessages.openSuccess 'Registro atualizado com sucesso!'
 						@init()
 					(response)=>
 						@loading = false
@@ -356,18 +356,22 @@ angular.module('scApp').lazy
 			submit: (item)->
 				@params = angular.copy item
 				return if @loading
-				Perfil.create @params,
+				Perfil.submit @params,
 					(data)=>
 						@loading = false
-						if @params.id
-							perfil = vm.perfisCtrl.list.find (obj)-> data.perfil.id == obj.id
-							angular.extend perfil, data.perfil
-						else if @newRecord
-							vm.perfisCtrl.list.push(data.perfil)
-						msg = data.message
-						scTopMessages.openSuccess msg
-						@resetForm(item)
-						@init()
+
+						status = data.status
+						if status == 'success'
+							if @params.id
+								perfil = vm.perfisCtrl.list.find (obj)-> data.perfil.id == obj.id
+								angular.extend perfil, data.perfil
+								message = 'Registro atualizado com sucesso!'
+							else if @newRecord
+								vm.perfisCtrl.list.push(data.perfil)
+								message = 'Registro cadastrado com sucesso!'
+							scTopMessages.openSuccess message
+							@resetForm(item)
+							@init()
 
 					(response)=>
 						@loading = false
@@ -380,6 +384,7 @@ angular.module('scApp').lazy
 			list: []
 			params: {}
 			loading: false
+			creatingModeOn: false
 
 			init: ->
 				for item in @list
@@ -406,18 +411,27 @@ angular.module('scApp').lazy
 				Categoria.destroy item,
 					(data)=>
 						@loading = false
-						msg = data.message
 
-						categoria = vm.categoriasCtrl.list.find (cat)-> item.id == cat.id
-						vm.categoriasCtrl.list.remove(categoria)
-						scTopMessages.openSuccess msg
+						status = data.status
+						if status == 'success'
+							categoria = vm.categoriasCtrl.list.find (cat)-> item.id == cat.id
+							vm.categoriasCtrl.list.remove(categoria)
+							scTopMessages.openSuccess 'Registro excluído com sucesso!'
 					(response)=>
 						@loading = false
 						errors = response.data?.errors
 						scTopMessages.openDanger errors
 
 			edit: (item) ->
-				item.edit.toggle()
+				if @creatingModeOn
+					scAlert.open
+						title: "Termine a edição atual para editar outra categoria!"
+						buttons: [
+							{ label: 'Ok', color: 'gray' }
+						]
+				else
+					@creatingModeOn = true
+					item.edit.toggle()
 
 			toggleMenu: (item)->
 				item.toolbar.opened = !item.toolbar.opened
@@ -439,11 +453,13 @@ angular.module('scApp').lazy
 				Categoria.micro_update params,
 					(data)=>
 						@loading = false
-						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
-						angular.extend categoria, data.categoria
 
-						msg = data.message
-						scTopMessages.openSuccess msg
+						status = data.status
+						if status == 'success'
+							categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
+							angular.extend categoria, data.categoria
+
+							scTopMessages.openSuccess 'Registro atualizado com sucesso!'
 					(response)=>
 						@loading = false
 						errors = response.data?.errors
@@ -459,22 +475,22 @@ angular.module('scApp').lazy
 
 			submit: (item) ->
 				return if @loading
-				Categoria.create @params,
+				Categoria.submit @params,
 					(data)=>
 						@loading = false
 
 						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
 						if !@newRecord
 							angular.extend categoria, data.categoria
+							item.edit.opened = false
+							message = "Registro atualizado com sucesso!"
 						else
 							vm.categoriasCtrl.list.push(data.categoria)
-						msg = data.message
-						scTopMessages.openSuccess msg
-						if @newRecord
 							@newRecord = false
-						else if item.edit.opened && item.edit.opened
-							item.edit.opened = false
+							message = "Registro cadastrado com sucesso!"
+						scTopMessages.openSuccess message
 						@init()
+						@creatingModeOn = false
 					(response)=>
 						@loading = false
 
@@ -488,7 +504,7 @@ angular.module('scApp').lazy
 						title: 'Deseja mesmo cancelar a edição?'
 						messages: [ { msg: 'Dados não salvos serão perdidos.' } ]
 						buttons: [
-							{ label: 'Sim', color: 'yellow', action: -> vm.categoriasCtrl.newRecord = false },
+							{ label: 'Sim', color: 'yellow', action: -> vm.categoriasCtrl.newRecord = false; vm.categoriasCtrl.creatingModeOn = false },
 							{ label: 'Não', color: 'gray' }
 						]
 				else if item.edit && item.edit.opened
@@ -496,7 +512,7 @@ angular.module('scApp').lazy
 						title: 'Deseja mesmo cancelar a edição?'
 						messages: [ {msg: 'Dados não salvos serão perdidos.' } ]
 						buttons: [
-							{ label: 'Sim', color: 'yellow', action: -> item.edit.toggle() }
+							{ label: 'Sim', color: 'yellow', action: -> item.edit.toggle(); vm.categoriasCtrl.creatingModeOn = false }
 						]
 
 		vm.permissoesCtrl =
@@ -566,9 +582,9 @@ angular.module('scApp').lazy
 				PassagemServico.destroy passagem,
 					(data)=>
 						passagem.deleting = false
-
-						msg = data.message
-						scTopMessages.openSuccess msg
+						status = data.status
+						if status == 'success'
+							scTopMessages.openSuccess 'Registro excluído com sucesso!'
 					(response)=>
 						passagem.deleting = false
 
