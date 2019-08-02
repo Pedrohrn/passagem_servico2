@@ -239,11 +239,9 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
-							perfil = vm.perfisCtrl.list.find (perf)-> item.id == perf.id
-							vm.perfisCtrl.list.remove(perfil)
-							scTopMessages.openSuccess 'Registro excluído com sucesso!'
+						perfil = vm.perfisCtrl.list.find (perf)-> item.id == perf.id
+						vm.perfisCtrl.list.remove(perfil)
+						scTopMessages.openSuccess 'Registro excluído com sucesso!'
 					(response)=>
 						@loading = false
 
@@ -279,11 +277,9 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
-							perfil = vm.perfisCtrl.list.find (perf)-> data.perfil.id == perf.id
-							angular.extend perfil, data.perfil
-							scTopMessages.openSuccess 'Registro atualizado com sucesso!'
+						perfil = vm.perfisCtrl.list.find (perf)-> data.perfil.id == perf.id
+						angular.extend perfil, data.perfil
+						scTopMessages.openSuccess 'Registro atualizado com sucesso!'
 						@init()
 					(response)=>
 						@loading = false
@@ -360,18 +356,16 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
-							if @params.id
-								perfil = vm.perfisCtrl.list.find (obj)-> data.perfil.id == obj.id
-								angular.extend perfil, data.perfil
-								message = 'Registro atualizado com sucesso!'
-							else if @newRecord
-								vm.perfisCtrl.list.push(data.perfil)
-								message = 'Registro cadastrado com sucesso!'
-							scTopMessages.openSuccess message
-							@resetForm(item)
-							@init()
+						if @params.id
+							perfil = vm.perfisCtrl.list.find (obj)-> data.perfil.id == obj.id
+							angular.extend perfil, data.perfil
+							message = 'Registro atualizado com sucesso!'
+						else if @newRecord
+							vm.perfisCtrl.list.push(data.perfil)
+							message = 'Registro cadastrado com sucesso!'
+						scTopMessages.openSuccess message
+						@resetForm(item)
+						@init()
 
 					(response)=>
 						@loading = false
@@ -412,11 +406,9 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
-							categoria = vm.categoriasCtrl.list.find (cat)-> item.id == cat.id
-							vm.categoriasCtrl.list.remove(categoria)
-							scTopMessages.openSuccess 'Registro excluído com sucesso!'
+						categoria = vm.categoriasCtrl.list.find (cat)-> item.id == cat.id
+						vm.categoriasCtrl.list.remove(categoria)
+						scTopMessages.openSuccess 'Registro excluído com sucesso!'
 					(response)=>
 						@loading = false
 						errors = response.data?.errors
@@ -454,12 +446,10 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
-							categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
-							angular.extend categoria, data.categoria
+						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
+						angular.extend categoria, data.categoria
 
-							scTopMessages.openSuccess 'Registro atualizado com sucesso!'
+						scTopMessages.openSuccess 'Registro atualizado com sucesso!'
 					(response)=>
 						@loading = false
 						errors = response.data?.errors
@@ -479,20 +469,18 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
-							categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
-							if !@newRecord
-								angular.extend categoria, data.categoria
-								item.edit.opened = false
-								message = "Registro atualizado com sucesso!"
-							else
-								vm.categoriasCtrl.list.push(data.categoria)
-								@newRecord = false
-								message = "Registro cadastrado com sucesso!"
-							scTopMessages.openSuccess message
-							@init()
-							@creatingModeOn = false
+						categoria = vm.categoriasCtrl.list.find (cat)-> data.categoria.id == cat.id
+						if !@newRecord
+							angular.extend categoria, data.categoria
+							item.edit.opened = false
+							message = "Registro atualizado com sucesso!"
+						else
+							vm.categoriasCtrl.list.push(data.categoria)
+							@newRecord = false
+							message = "Registro cadastrado com sucesso!"
+						scTopMessages.openSuccess message
+						@init()
+						@creatingModeOn = false
 					(response)=>
 						@loading = false
 
@@ -546,15 +534,12 @@ angular.module('scApp').lazy
 					(data)=>
 						@loading = false
 
-						status = data.status
-						if status == 'success'
+						passagem = vm.listCtrl.list.find (obj)-> obj.id == data.passagem_servico.id
+						angular.extend passagem, data.passagem_servico
 
-							passagem = vm.listCtrl.list.find (obj)-> obj.id == data.passagem_servico.id
-							angular.extend passagem, data.passagem_servico
+						label = if params.micro_update_type == 'desativar' then 'desativado' else 'reativado'
 
-							label = if params.micro_update_type == 'desativar' then 'desativado' else 'reativado'
-
-							scTopMessages.openSuccess "Registro #{label} com sucesso!"
+						scTopMessages.openSuccess "Registro #{label} com sucesso!"
 					(response)=>
 						@loading = false
 
@@ -587,9 +572,7 @@ angular.module('scApp').lazy
 				PassagemServico.destroy passagem,
 					(data)=>
 						passagem.deleting = false
-						status = data.status
-						if status == 'success'
-							scTopMessages.openSuccess 'Registro excluído com sucesso!'
+						scTopMessages.openSuccess 'Registro excluído com sucesso!'
 					(response)=>
 						passagem.deleting = false
 

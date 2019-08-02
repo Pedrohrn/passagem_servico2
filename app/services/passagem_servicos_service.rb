@@ -51,7 +51,7 @@ class PassagemServicosService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { passagem_servico: passagem.to_frontend_obj, status: 'success' }]
+		[:success, { passagem_servico: passagem.to_frontend_obj}]
 	end
 
 	def self.destroy(opts, params)
@@ -67,7 +67,7 @@ class PassagemServicosService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, {status: 'success'}]
+		[:success, {}]
 	end
 
 	def self.set_objetos(params)
@@ -96,7 +96,7 @@ class PassagemServicosService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { passagem_servico: passagem.to_frontend_obj, status: 'success' }]
+		[:success, { passagem_servico: passagem.to_frontend_obj }]
 	end
 	private_class_method :desativar_reativar
 
@@ -121,7 +121,7 @@ class PassagemServicosService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { passagem_servico: passagem.to_frontend_obj, status: 'success' }]
+		[:success, { passagem_servico: passagem.to_frontend_obj }]
 
 	end
 	private_class_method :passar_servico

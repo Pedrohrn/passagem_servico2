@@ -113,11 +113,9 @@ angular.module('scApp').lazy
 
 					label = if vm.newRecord then 'criado' else 'atualizado'
 
-					status = data.status
-					if status == 'success'
-						scTopMessages.openSuccess "Registro #{label} com sucesso!"
-						angular.extend passagem, data.passagem_servico
-						vm.baseFact.close()
+					scTopMessages.openSuccess "Registro #{label} com sucesso!"
+					angular.extend passagem, data.passagem_servico
+					vm.baseFact.close()
 				(response)=>
 					passagem.carregando = false
 					errors = response.data?.errors

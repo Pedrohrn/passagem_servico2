@@ -24,7 +24,7 @@ class PerfisService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { perfil: perfil.to_frontend_obj, status: 'success' }]
+		[:success, { perfil: perfil.to_frontend_obj }]
 
 	end
 
@@ -50,7 +50,7 @@ class PerfisService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, {status: 'success'}]
+		[:success, {}]
 	end
 
 	def self.set_objetos(params)
@@ -79,7 +79,7 @@ class PerfisService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { perfil: perfil.to_frontend_obj, status: 'success' }]
+		[:success, { perfil: perfil.to_frontend_obj }]
 
 	end
 	private_class_method :desativar_reativar

@@ -22,7 +22,7 @@ class CategoriasService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { categoria: categoria.to_frontend_obj, status: 'success' }]
+		[:success, { categoria: categoria.to_frontend_obj }]
 	end
 
 	def self.micro_update(opts, params)
@@ -47,7 +47,7 @@ class CategoriasService
 		end
 
 		return [:error, errors ] if errors.any?
-		[:success, {status: 'success'} ]
+		[:success, {} ]
 	end
 
 	private
@@ -65,7 +65,7 @@ class CategoriasService
 		end
 
 		return [:error, errors] if errors.any?
-		[:success, { categoria: categoria.to_frontend_obj, status: 'success' }]
+		[:success, { categoria: categoria.to_frontend_obj }]
 	end
 	private_class_method :desativar_reativar
 end
